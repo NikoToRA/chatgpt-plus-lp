@@ -91,7 +91,7 @@
   <header class="sticky top-0 z-50 w-full bg-primary-800 shadow-md">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
       <div class="flex items-center">
-        <img src="images/wonderdrill-logo.svg" alt="Wonder Drill" class="h-8 mr-3">
+        <img src="images/wonderdrill-logo.png" alt="Wonder Drill" class="h-8 mr-3">
         <span class="text-white font-bold text-xl md:text-2xl">ChatGPT Plus 医療機関向け</span>
       </div>
       <nav class="hidden md:flex space-x-6">
@@ -124,17 +124,22 @@
   <!-- ヒーローセクション -->
   <section class="bg-gradient-wonder text-white py-20">
     <div class="container mx-auto px-4">
-      <div class="max-w-4xl mx-auto text-center">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-shadow">医療現場で"すぐに"使えるChatGPT</h1>
-        <p class="text-xl md:text-2xl mb-10">カード決済ゼロ。請求書払い。最短24時間で利用開始。</p>
-        <div class="flex flex-col md:flex-row justify-center gap-4">
-          <a href="sample-quote.pdf" download class="pdf-download-btn bg-secondary-500 hover:bg-secondary-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center">
-            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-            30秒で見積PDFを取得
-          </a>
-          <a href="#service" class="bg-transparent border-2 border-white hover:bg-white hover:text-primary-800 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors">サービス詳細を見る</a>
+      <div class="md:flex items-center justify-between">
+        <div class="md:w-1/2 text-center md:text-left mb-10 md:mb-0">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-shadow">医療現場で"すぐに"使えるChatGPT</h1>
+          <p class="text-xl md:text-2xl mb-10">カード決済ゼロ。請求書払い。最短24時間で利用開始。</p>
+          <div class="flex flex-col md:flex-row justify-center md:justify-start gap-4">
+            <a href="sample-quote.pdf" download class="pdf-download-btn bg-secondary-500 hover:bg-secondary-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center">
+              <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              30秒で見積PDFを取得
+            </a>
+            <a href="#service" class="bg-transparent border-2 border-white hover:bg-white hover:text-primary-800 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors">サービス詳細を見る</a>
+          </div>
+        </div>
+        <div class="md:w-1/2 flex justify-center md:justify-end">
+          <img src="images/doctor-ai.png" alt="医療AI" class="rounded-lg shadow-xl max-w-full md:max-w-md">
         </div>
       </div>
     </div>
@@ -144,7 +149,9 @@
   <section class="bg-primary-700 text-white py-4">
     <div class="container mx-auto px-4">
       <div class="flex flex-col md:flex-row items-center justify-center gap-4 text-center md:text-left">
-        <img src="images/doctor-icon.svg" alt="医師監修" class="w-16 h-16">
+        <div class="w-16 h-16 rounded-full bg-white p-1 flex items-center justify-center">
+          <img src="images/doctor-icon.svg" alt="医師監修" class="w-12 h-12">
+        </div>
         <div>
           <h2 class="text-xl font-bold">医師監修のサービス設計</h2>
           <p>医療現場の実態を熟知した医師チームが監修。病院業務に最適化されています。</p>
