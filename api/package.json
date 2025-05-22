@@ -1,0 +1,15 @@
+{
+  "name": "chatgpt-plus-lp-api",
+  "version": "1.0.0",
+  "description": "Azure Functions API for ChatGPT Plus medical institution landing page",
+  "scripts": {
+    "start": "func start",
+    "test": "echo \"No tests yet\""
+  },
+  "dependencies": {
+    "pdfkit": "^0.14.0"
+  },
+  "devDependencies": {
+    "azure-functions-core-tools": "^4.0.5530"
+  }
+}
