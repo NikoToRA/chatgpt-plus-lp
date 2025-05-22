@@ -122,24 +122,23 @@
   </header>
 
   <!-- ヒーローセクション -->
-  <section class="bg-gradient-wonder text-white py-20">
-    <div class="container mx-auto px-4">
-      <div class="flex flex-col md:flex-row items-center">
-        <div class="md:w-1/2 md:pr-8 text-center md:text-left">
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-shadow">医療現場で"すぐに"使えるChatGPT</h1>
-          <p class="text-xl md:text-2xl mb-10">カード決済ゼロ。請求書払い。最短24時間で利用開始。</p>
-          <div class="flex flex-col md:flex-row justify-center md:justify-start gap-4">
-            <a href="sample-quote.pdf" download class="pdf-download-btn bg-secondary-500 hover:bg-secondary-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center">
-              <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-              </svg>
-              30秒で見積PDFを取得
-            </a>
-            <a href="#service" class="bg-transparent border-2 border-white hover:bg-white hover:text-primary-800 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors">サービス詳細を見る</a>
-          </div>
-        </div>
-        <div class="md:w-1/2 mt-10 md:mt-0">
-          <img src="images/doctor-ai.png" alt="医療AI" class="w-full max-w-md mx-auto rounded-lg shadow-lg">
+  <section class="relative text-white py-20">
+    <div class="absolute inset-0 z-0">
+      <img src="images/doctor-ai.png" alt="医療AI" class="w-full h-full object-cover object-center">
+      <div class="absolute inset-0 bg-primary-800 bg-opacity-70"></div>
+    </div>
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-shadow">医療現場で"すぐに"使えるChatGPT</h1>
+        <p class="text-xl md:text-2xl mb-10">カード決済ゼロ。請求書払い。最短24時間で利用開始。</p>
+        <div class="flex flex-col md:flex-row justify-center gap-4">
+          <a href="sample-quote.pdf" download class="pdf-download-btn bg-secondary-500 hover:bg-secondary-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center">
+            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+            30秒で見積PDFを取得
+          </a>
+          <a href="#service" class="bg-transparent border-2 border-white hover:bg-white hover:text-primary-800 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors">サービス詳細を見る</a>
         </div>
       </div>
     </div>
