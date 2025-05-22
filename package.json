@@ -1,0 +1,17 @@
+{
+  "name": "chatgpt-plus-lp",
+  "version": "1.0.0",
+  "description": "ChatGPT Plus medical institution landing page with automated form handling",
+  "main": "index.js",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "netlify build"
+  },
+  "dependencies": {
+    "@notionhq/client": "^2.2.14",
+    "pdfkit": "^0.14.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.15.2"
+  }
+}

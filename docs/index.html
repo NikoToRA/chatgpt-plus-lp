@@ -730,10 +730,9 @@
       if (estimateForm) {
         estimateForm.addEventListener('submit', function(e) {
           e.preventDefault();
-          // 通常はここでフォームデータを送信するAJAX処理などを行いますが、
-          // 今回はサンプルPDFをダウンロードする簡易的な実装にします
-          window.location.href = 'sample-quote.pdf';
+          // フォーム送信処理をform-handler.jsに移動
         });
       }
     });
   </script>
+  <script src="js/form-handler.js"></script>
