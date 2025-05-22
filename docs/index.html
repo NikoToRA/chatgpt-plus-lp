@@ -91,7 +91,7 @@
   <header class="sticky top-0 z-50 w-full bg-primary-800 shadow-md">
     <div class="container mx-auto px-4 py-4 flex justify-between items-center">
       <div class="flex items-center">
-        <img src="images/wonderdrill-logo.svg" alt="Wonder Drill" class="h-8 mr-3">
+        <img src="images/wonderdrill-logo.png" alt="Wonder Drill" class="h-8 mr-3">
         <span class="text-white font-bold text-xl md:text-2xl">ChatGPT Plus 医療機関向け</span>
       </div>
       <nav class="hidden md:flex space-x-6">
@@ -124,17 +124,22 @@
   <!-- ヒーローセクション -->
   <section class="bg-gradient-wonder text-white py-20">
     <div class="container mx-auto px-4">
-      <div class="max-w-4xl mx-auto text-center">
-        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-shadow">医療現場で"すぐに"使えるChatGPT</h1>
-        <p class="text-xl md:text-2xl mb-10">カード決済ゼロ。請求書払い。最短24時間で利用開始。</p>
-        <div class="flex flex-col md:flex-row justify-center gap-4">
-          <a href="sample-quote.pdf" download class="pdf-download-btn bg-secondary-500 hover:bg-secondary-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center">
-            <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-            30秒で見積PDFを取得
-          </a>
-          <a href="#service" class="bg-transparent border-2 border-white hover:bg-white hover:text-primary-800 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors">サービス詳細を見る</a>
+      <div class="flex flex-col md:flex-row items-center">
+        <div class="md:w-1/2 md:pr-8 text-center md:text-left">
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-shadow">医療現場で"すぐに"使えるChatGPT</h1>
+          <p class="text-xl md:text-2xl mb-10">カード決済ゼロ。請求書払い。最短24時間で利用開始。</p>
+          <div class="flex flex-col md:flex-row justify-center md:justify-start gap-4">
+            <a href="sample-quote.pdf" download class="pdf-download-btn bg-secondary-500 hover:bg-secondary-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors flex items-center justify-center">
+              <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+              30秒で見積PDFを取得
+            </a>
+            <a href="#service" class="bg-transparent border-2 border-white hover:bg-white hover:text-primary-800 text-white px-8 py-4 rounded-xl font-bold text-lg transition-colors">サービス詳細を見る</a>
+          </div>
+        </div>
+        <div class="md:w-1/2 mt-10 md:mt-0">
+          <img src="images/doctor-ai.png" alt="医療AI" class="w-full max-w-md mx-auto rounded-lg shadow-lg">
         </div>
       </div>
     </div>
@@ -555,59 +560,7 @@
     </div>
   </section>
 
-  <!-- スケール戦略セクション -->
-  <section class="py-16 bg-gradient-wonder text-white">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <span class="text-secondary-300 font-medium uppercase">スケール戦略</span>
-        <h2 class="text-3xl md:text-4xl font-bold mt-2">成長に合わせた段階的な展開</h2>
-        <div class="section-divider bg-secondary-300 my-6"></div>
-      </div>
-      
-      <div class="max-w-4xl mx-auto">
-        <div class="relative">
-          <!-- タイムライン線 -->
-          <div class="hidden md:block absolute left-0 top-0 bottom-0 w-1 bg-secondary-300"></div>
-          
-          <!-- STEP1 -->
-          <div class="relative md:pl-12 mb-12">
-            <div class="bg-secondary-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg font-bold absolute left-0 transform -translate-x-1/2 z-10 hidden md:flex">1</div>
-            <div class="bg-primary-700 p-6 rounded-lg">
-              <h3 class="text-xl font-bold mb-3 flex items-center">
-                <span class="bg-secondary-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold mr-3 md:hidden">1</span>
-                STEP1: 現在のサービス
-              </h3>
-              <p class="text-gray-200">現在は個別に手動でアカウントを発行しています。医療機関ごとのニーズに合わせたきめ細かい対応が可能です。</p>
-            </div>
-          </div>
-          
-          <!-- STEP2 -->
-          <div class="relative md:pl-12 mb-12">
-            <div class="bg-secondary-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg font-bold absolute left-0 transform -translate-x-1/2 z-10 hidden md:flex">2</div>
-            <div class="bg-primary-700 p-6 rounded-lg">
-              <h3 class="text-xl font-bold mb-3 flex items-center">
-                <span class="bg-secondary-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold mr-3 md:hidden">2</span>
-                STEP2: 管理ダッシュボード開発
-              </h3>
-              <p class="text-gray-200">導入数が増えた段階で、法人管理用ダッシュボードを開発予定。アカウント管理や利用状況の可視化が可能になります。</p>
-            </div>
-          </div>
-          
-          <!-- STEP3 -->
-          <div class="relative md:pl-12">
-            <div class="bg-secondary-500 text-white rounded-full w-10 h-10 flex items-center justify-center text-lg font-bold absolute left-0 transform -translate-x-1/2 z-10 hidden md:flex">3</div>
-            <div class="bg-primary-700 p-6 rounded-lg">
-              <h3 class="text-xl font-bold mb-3 flex items-center">
-                <span class="bg-secondary-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-lg font-bold mr-3 md:hidden">3</span>
-                STEP3: SaaS型サービスへ
-              </h3>
-              <p class="text-gray-200">将来的には医療機関がアカウントを自主追加できるSaaS型に展開。より柔軟で拡張性の高いサービスを目指します。</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+
 
   <!-- よくある質問セクション -->
   <section id="faq" class="py-16 bg-white">
