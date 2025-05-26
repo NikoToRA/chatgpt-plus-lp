@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
           submitButton.textContent = originalButtonText;
           return;
         }
-        if (!formData.purpose.trim()) {
+        if (!formData.purpose || formData.purpose.trim() === '' || formData.purpose === '選択してください') {
           alert('お問い合わせ目的を選択してください。');
           submitButton.disabled = false;
           submitButton.textContent = originalButtonText;
@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // デバッグ用：送信前のデータをログ出力
         console.log('Sending form data:', formData);
+        console.log('Purpose value:', `"${formData.purpose}"`, 'Length:', formData.purpose.length);
         
         // Azure Functions APIを呼び出し
         const response = await fetch('/api/submit-form', {
