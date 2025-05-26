@@ -32,20 +32,20 @@ document.addEventListener('DOMContentLoaded', function() {
           message: document.getElementById('message').value || ''
         };
         
-        // バリデーション
-        if (!formData.organization.trim()) {
+        // バリデーション（安全なチェック）
+        if (!formData.organization || !formData.organization.trim()) {
           alert('医療機関名を入力してください。');
           submitButton.disabled = false;
           submitButton.textContent = originalButtonText;
           return;
         }
-        if (!formData.name.trim()) {
+        if (!formData.name || !formData.name.trim()) {
           alert('ご担当者名を入力してください。');
           submitButton.disabled = false;
           submitButton.textContent = originalButtonText;
           return;
         }
-        if (!formData.email.trim()) {
+        if (!formData.email || !formData.email.trim()) {
           alert('メールアドレスを入力してください。');
           submitButton.disabled = false;
           submitButton.textContent = originalButtonText;
@@ -55,12 +55,12 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Purpose validation check:', {
           value: formData.purpose,
           isEmpty: !formData.purpose,
-          isTrimEmpty: formData.purpose.trim() === '',
+          isTrimEmpty: formData.purpose ? formData.purpose.trim() === '' : true,
           isPlaceholder: formData.purpose === '選択してください'
         });
         
-        if (!formData.purpose || formData.purpose.trim() === '' || formData.purpose === '選択してください') {
-          alert('お問い合わせ目的を選択してください。現在の値: "' + formData.purpose + '"');
+        if (!formData.purpose || (formData.purpose && formData.purpose.trim() === '') || formData.purpose === '選択してください') {
+          alert('お問い合わせ目的を選択してください。現在の値: "' + (formData.purpose || 'undefined') + '"');
           submitButton.disabled = false;
           submitButton.textContent = originalButtonText;
           return;
