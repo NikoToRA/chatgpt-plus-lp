@@ -12,13 +12,39 @@ document.addEventListener('DOMContentLoaded', function() {
       
       try {
         const formData = {
-          organization: document.getElementById('organization').value,
-          name: document.getElementById('name').value,
-          email: document.getElementById('email').value,
-          purpose: document.getElementById('purpose').value,
-          accounts: document.getElementById('accounts').value,
-          message: document.getElementById('message').value
+          organization: document.getElementById('organization').value || '',
+          name: document.getElementById('name').value || '',
+          email: document.getElementById('email').value || '',
+          purpose: document.getElementById('purpose').value || '',
+          accounts: document.getElementById('accounts').value || '1-3',
+          message: document.getElementById('message').value || ''
         };
+        
+        // バリデーション
+        if (!formData.organization.trim()) {
+          alert('医療機関名を入力してください。');
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
+          return;
+        }
+        if (!formData.name.trim()) {
+          alert('ご担当者名を入力してください。');
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
+          return;
+        }
+        if (!formData.email.trim()) {
+          alert('メールアドレスを入力してください。');
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
+          return;
+        }
+        if (!formData.purpose.trim()) {
+          alert('お問い合わせ目的を選択してください。');
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
+          return;
+        }
         
         // デバッグ用：送信前のデータをログ出力
         console.log('Sending form data:', formData);
