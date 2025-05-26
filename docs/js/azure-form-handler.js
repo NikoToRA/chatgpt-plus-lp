@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
           organization: document.getElementById('organization').value,
           name: document.getElementById('name').value,
           email: document.getElementById('email').value,
+          purpose: document.getElementById('purpose').value,
           accounts: document.getElementById('accounts').value,
           message: document.getElementById('message').value
         };
@@ -35,14 +36,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const a = document.createElement('a');
             a.style.display = 'none';
             a.href = url;
-            a.download = 'chatgpt-plus-quote.pdf';
+            a.download = 'chatgpt-plus-service-guide.pdf';
             document.body.appendChild(a);
             a.click();
             
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
             
-            alert('お問い合わせありがとうございます。見積PDFがダウンロードされました。');
+            // お問い合わせ目的に応じたメッセージ
+            const purpose = formData.purpose;
+            if (purpose === 'お申し込み') {
+              alert('お申し込みありがとうございます。サービス資料がダウンロードされました。\n\n承りました。お打ち合わせの日程調整については、後日メールにてご連絡いたします。');
+            } else if (purpose === '資料請求') {
+              alert('資料請求ありがとうございます。サービス資料がダウンロードされました。\n\nご不明点がございましたら、お気軽にお問い合わせください。');
+            } else {
+              alert('お問い合わせありがとうございます。サービス資料がダウンロードされました。');
+            }
           } else {
             const data = await response.json();
             alert(data.message || 'お問い合わせが完了しました。');

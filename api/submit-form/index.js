@@ -12,7 +12,7 @@ const generatePDF = (formData) => {
         resolve(pdfData);
       });
       
-      doc.fontSize(25).text('ChatGPT Plus 医療法人向け見積書', { align: 'center' });
+      doc.fontSize(25).text('ChatGPT Plus 医療機関向けサービス資料', { align: 'center' });
       doc.moveDown();
       doc.fontSize(14).text(`医療機関名: ${formData.organization}`);
       doc.moveDown();
@@ -24,7 +24,22 @@ const generatePDF = (formData) => {
       doc.moveDown();
       
       doc.moveDown();
-      doc.fontSize(16).text('料金プラン', { underline: true });
+      doc.fontSize(16).text('サービス概要', { underline: true });
+      doc.moveDown();
+      
+      doc.fontSize(14).text('• アカウント取得代行サービス');
+      doc.moveDown();
+      doc.text('• 初期セットアップ・導入支援');
+      doc.moveDown();
+      doc.text('• 一括請求・料金管理');
+      doc.moveDown();
+      doc.text('• 医療機関専用サポート窓口');
+      doc.moveDown();
+      doc.text('• セキュリティ対策・運用支援');
+      doc.moveDown();
+      doc.moveDown();
+      
+      doc.fontSize(16).text('料金プラン（参考）', { underline: true });
       doc.moveDown();
       
       let accountCount = 1;
@@ -53,7 +68,7 @@ const generatePDF = (formData) => {
       doc.moveDown();
       doc.moveDown();
       
-      doc.fontSize(10).text('※ 本見積書の有効期限は発行日より30日間です。', { align: 'center' });
+      doc.fontSize(10).text('※ 詳細な料金やプランについては、お気軽にお問い合わせください。', { align: 'center' });
       doc.moveDown();
       doc.text('※ お問い合わせ: support@wonder-drill.com', { align: 'center' });
       
@@ -72,6 +87,7 @@ const saveToAzureTable = (formData, context) => {
       organization: formData.organization,
       name: formData.name,
       email: formData.email,
+      purpose: formData.purpose || '',
       accounts: formData.accounts,
       message: formData.message || '',
       submissionDate: new Date().toISOString()
@@ -93,7 +109,7 @@ module.exports = async function (context, req) {
   try {
     const formData = req.body;
     
-    if (!formData.organization || !formData.name || !formData.email) {
+    if (!formData.organization || !formData.name || !formData.email || !formData.purpose) {
       context.res = {
         status: 400,
         body: JSON.stringify({ message: 'Missing required fields' })
@@ -108,7 +124,7 @@ module.exports = async function (context, req) {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename=chatgpt-plus-quote.pdf'
+        'Content-Disposition': 'attachment; filename=chatgpt-plus-service-guide.pdf'
       },
       body: pdfBuffer.toString('base64'),
       isBase64Encoded: true
