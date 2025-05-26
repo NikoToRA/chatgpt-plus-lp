@@ -3,9 +3,9 @@ const { TableClient } = require('@azure/data-tables');
 
 // Azure Table Storage設定
 const getTableClient = () => {
-  const connectionString = process.env.AzureWebJobsStorage;
+  const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
   if (!connectionString) {
-    throw new Error('AzureWebJobsStorage connection string is not configured');
+    throw new Error('AZURE_STORAGE_CONNECTION_STRING connection string is not configured');
   }
   return new TableClient(connectionString, 'FormSubmissions');
 };
@@ -47,12 +47,12 @@ const testDatabaseConnection = async (context) => {
     context.log('Testing database connection...');
     
     // 環境変数チェック
-    const connectionString = process.env.AzureWebJobsStorage;
+    const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
     context.log('Connection string exists:', !!connectionString);
     context.log('Connection string preview:', connectionString ? connectionString.substring(0, 50) + '...' : 'NOT SET');
     
     if (!connectionString) {
-      return { success: false, error: 'AzureWebJobsStorage not configured' };
+      return { success: false, error: 'AZURE_STORAGE_CONNECTION_STRING not configured' };
     }
     
     // Table Client作成テスト
