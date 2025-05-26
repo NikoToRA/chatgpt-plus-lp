@@ -173,7 +173,7 @@ const generatePDF = (formData) => {
 };
 
 module.exports = async function (context, req) {
-  context.log('Processing form submission request');
+  context.log('Processing form submission request - v2');
   
   try {
     // DB接続テストを実行（デバッグ用）
