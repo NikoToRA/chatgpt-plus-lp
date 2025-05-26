@@ -13,24 +13,49 @@ document.addEventListener('DOMContentLoaded', function() {
       try {
         // フォーム要素の存在確認
         const purposeElement = document.getElementById('purpose');
+        console.log('=== PURPOSE ELEMENT DEBUG ===');
         console.log('Purpose element:', purposeElement);
+        console.log('Purpose element exists:', !!purposeElement);
         console.log('Purpose element value:', purposeElement ? purposeElement.value : 'ELEMENT NOT FOUND');
         console.log('Purpose element selectedIndex:', purposeElement ? purposeElement.selectedIndex : 'N/A');
+        console.log('Purpose element tagName:', purposeElement ? purposeElement.tagName : 'N/A');
         
         if (purposeElement && purposeElement.options) {
+          console.log('Purpose element options count:', purposeElement.options.length);
           console.log('Purpose element options:', Array.from(purposeElement.options).map(opt => ({value: opt.value, text: opt.text, selected: opt.selected})));
+          console.log('Selected option:', purposeElement.options[purposeElement.selectedIndex]);
         } else {
           console.log('Purpose element options: N/A (element or options not found)');
         }
+        console.log('=== END DEBUG ===');
 
+        // フォームデータを安全に取得
+        const organizationEl = document.getElementById('organization');
+        const nameEl = document.getElementById('name');
+        const emailEl = document.getElementById('email');
+        const accountsEl = document.getElementById('accounts');
+        const messageEl = document.getElementById('message');
+        
         const formData = {
-          organization: document.getElementById('organization').value || '',
-          name: document.getElementById('name').value || '',
-          email: document.getElementById('email').value || '',
-          purpose: purposeElement ? purposeElement.value : '',
-          accounts: document.getElementById('accounts').value || '1-3',
-          message: document.getElementById('message').value || ''
+          organization: organizationEl ? organizationEl.value || '' : '',
+          name: nameEl ? nameEl.value || '' : '',
+          email: emailEl ? emailEl.value || '' : '',
+          purpose: purposeElement ? purposeElement.value || '' : '',
+          accounts: accountsEl ? accountsEl.value || '1-3' : '1-3',
+          message: messageEl ? messageEl.value || '' : ''
         };
+        
+        console.log('=== FORM DATA DEBUG ===');
+        console.log('All form elements found:', {
+          organization: !!organizationEl,
+          name: !!nameEl,
+          email: !!emailEl,
+          purpose: !!purposeElement,
+          accounts: !!accountsEl,
+          message: !!messageEl
+        });
+        console.log('Form data values:', formData);
+        console.log('=== END FORM DATA DEBUG ===');
         
         // バリデーション（安全なチェック）
         if (!formData.organization || !formData.organization.trim()) {
