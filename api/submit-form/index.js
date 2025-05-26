@@ -20,8 +20,15 @@ const generatePDF = (formData) => {
       doc.moveDown();
       doc.text(`メールアドレス: ${formData.email}`);
       doc.moveDown();
+      doc.text(`お問い合わせ目的: ${formData.purpose}`);
+      doc.moveDown();
       doc.text(`希望アカウント数: ${formData.accounts}`);
       doc.moveDown();
+      
+      if (formData.message) {
+        doc.text(`お問い合わせ内容: ${formData.message}`);
+        doc.moveDown();
+      }
       
       doc.moveDown();
       doc.fontSize(16).text('サービス概要', { underline: true });
@@ -52,12 +59,12 @@ const generatePDF = (formData) => {
           break;
         case '4-10':
           accountCount = 10;
-          monthlyPrice = 5500; // 10% discount for 4-10 accounts
+          monthlyPrice = 5500;
           yearlyPrice = 60500;
           break;
         case '11+':
           accountCount = 15;
-          monthlyPrice = 5000; // 20% discount for 11+ accounts
+          monthlyPrice = 5000;
           yearlyPrice = 55000;
           break;
       }
@@ -79,41 +86,11 @@ const generatePDF = (formData) => {
   });
 };
 
-const saveToAzureTable = (formData, context) => {
-  try {
-    const entity = {
-      PartitionKey: "FormSubmission",
-      RowKey: new Date().getTime().toString(),
-      organization: formData.organization,
-      name: formData.name,
-      email: formData.email,
-      purpose: formData.purpose || '',
-      accounts: formData.accounts,
-      message: formData.message || '',
-      submissionDate: new Date().toISOString()
-    };
-    
-    context.bindings.outputTable = entity;
-    
-    return entity;
-  } catch (error) {
-    context.log.error('Error saving to Azure Table:', error);
-    // テーブル保存に失敗してもPDF生成は続行
-    return null;
-  }
-};
-
 module.exports = async function (context, req) {
   context.log('Processing form submission request');
   
   try {
-    // デバッグ用ログを追加
-    context.log('Request method:', req.method);
-    context.log('Request headers:', JSON.stringify(req.headers));
-    context.log('Request body:', JSON.stringify(req.body));
-    context.log('Request rawBody:', req.rawBody);
-    
-    // リクエストボディの処理を改善
+    // リクエストボディの処理
     let formData;
     
     if (typeof req.body === 'string') {
@@ -127,14 +104,9 @@ module.exports = async function (context, req) {
       formData = req.body;
     }
     
-    context.log('Parsed formData:', JSON.stringify(formData));
+    context.log('Received form data:', JSON.stringify(formData));
     
-    // 各フィールドの値をログ出力
-    context.log('organization:', formData?.organization);
-    context.log('name:', formData?.name);
-    context.log('email:', formData?.email);
-    context.log('purpose:', formData?.purpose);
-    
+    // バリデーション
     if (!formData || !formData.organization || !formData.name || !formData.email || !formData.purpose) {
       context.log('Validation failed - missing required fields');
       context.res = {
@@ -150,10 +122,12 @@ module.exports = async function (context, req) {
       return;
     }
     
+    // PDF生成
+    context.log('Generating PDF...');
     const pdfBuffer = await generatePDF(formData);
-    // Azure Storage設定が完了するまで一時的にコメントアウト
-    // const tableEntity = saveToAzureTable(formData, context);
+    context.log('PDF generated successfully, size:', pdfBuffer.length);
     
+    // レスポンス
     context.res = {
       status: 200,
       headers: {
@@ -163,12 +137,20 @@ module.exports = async function (context, req) {
       body: pdfBuffer.toString('base64'),
       isBase64Encoded: true
     };
+    
+    context.log('Response sent successfully');
   } catch (error) {
     context.log.error('Error processing form submission:', error);
     
     context.res = {
       status: 500,
-      body: JSON.stringify({ message: 'Internal Server Error', error: error.message })
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ 
+        message: 'Internal Server Error', 
+        error: error.message 
+      })
     };
   }
 };
