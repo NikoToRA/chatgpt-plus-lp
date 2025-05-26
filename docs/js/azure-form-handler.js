@@ -120,8 +120,12 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Save Error:', saveError);
         
         if (response.ok) {
-          // PDFレスポンスの場合
-          if (response.headers.get('Content-Type') === 'application/pdf') {
+          const contentType = response.headers.get('Content-Type');
+          console.log('Response Content-Type:', contentType);
+          
+          // PDFレスポンスの場合（Content-Typeチェックを緩和）
+          if (contentType && (contentType.includes('application/pdf') || contentType.includes('application/octet-stream'))) {
+            console.log('Processing as PDF response');
             const blob = await response.blob();
             const url = window.URL.createObjectURL(blob);
             
@@ -153,17 +157,59 @@ document.addEventListener('DOMContentLoaded', function() {
               alert('お問い合わせありがとうございます。サービス資料がダウンロードされました。' + dbStatusMessage);
             }
           } else {
-            // JSONレスポンスの場合
-            const data = await response.json();
-            console.log('JSON Response:', data);
-            alert(data.message || 'お問い合わせが完了しました。');
+            // レスポンスがPDFでない場合は、まずテキストとして取得
+            console.log('Processing as non-PDF response');
+            const responseText = await response.text();
+            console.log('Response text preview:', responseText.substring(0, 100));
+            
+            // PDFの場合（JVBERで始まる）
+            if (responseText.startsWith('JVBERi0x') || responseText.startsWith('%PDF')) {
+              console.log('Detected PDF in text response, converting to blob');
+              // Base64デコードしてPDFとして処理
+              const binaryString = atob(responseText.startsWith('JVBERi0x') ? responseText : responseText.substring(responseText.indexOf('JVBERi0x')));
+              const bytes = new Uint8Array(binaryString.length);
+              for (let i = 0; i < binaryString.length; i++) {
+                bytes[i] = binaryString.charCodeAt(i);
+              }
+              const blob = new Blob([bytes], { type: 'application/pdf' });
+              const url = window.URL.createObjectURL(blob);
+              
+              const a = document.createElement('a');
+              a.style.display = 'none';
+              a.href = url;
+              a.download = 'chatgpt-plus-service-guide.pdf';
+              document.body.appendChild(a);
+              a.click();
+              
+              window.URL.revokeObjectURL(url);
+              document.body.removeChild(a);
+              
+              alert('資料請求ありがとうございます。サービス資料がダウンロードされました。');
+            } else {
+              // JSONとして処理
+              try {
+                const data = JSON.parse(responseText);
+                console.log('JSON Response:', data);
+                alert(data.message || 'お問い合わせが完了しました。');
+              } catch (jsonError) {
+                console.error('JSON parse error:', jsonError);
+                console.log('Raw response:', responseText);
+                alert('レスポンスの処理でエラーが発生しました。');
+              }
+            }
           }
           
           estimateForm.reset();
         } else {
-          const errorData = await response.json();
-          console.log('Error Response:', errorData);
-          throw new Error(errorData.message || 'エラーが発生しました。');
+          // エラーレスポンスの処理も安全に
+          try {
+            const errorData = await response.json();
+            console.log('Error Response:', errorData);
+            throw new Error(errorData.message || 'エラーが発生しました。');
+          } catch (parseError) {
+            console.error('Error response parse failed:', parseError);
+            throw new Error('サーバーエラーが発生しました。');
+          }
         }
       } catch (error) {
         console.error('Form submission error:', error);
