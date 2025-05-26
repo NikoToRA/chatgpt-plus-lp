@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       try {
         // フォーム要素の存在確認
-        const purposeElement = document.getElementById('purpose');
+        const purposeElement = document.getElementById('contact-purpose');
         console.log('=== PURPOSE ELEMENT DEBUG ===');
         console.log('Purpose element:', purposeElement);
         console.log('Purpose element exists:', !!purposeElement);
