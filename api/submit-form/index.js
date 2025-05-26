@@ -1,4 +1,45 @@
 const PDFDocument = require('pdfkit');
+const { TableClient } = require('@azure/data-tables');
+
+// Azure Table Storage設定
+const getTableClient = () => {
+  const connectionString = process.env.AzureWebJobsStorage;
+  if (!connectionString) {
+    throw new Error('AzureWebJobsStorage connection string is not configured');
+  }
+  return new TableClient(connectionString, 'FormSubmissions');
+};
+
+// Table Storageにデータを保存
+const saveToTableStorage = async (formData) => {
+  try {
+    const tableClient = getTableClient();
+    
+    // テーブルが存在しない場合は作成
+    await tableClient.createTable();
+    
+    // エンティティを作成
+    const entity = {
+      partitionKey: 'FormSubmission',
+      rowKey: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      organization: formData.organization,
+      name: formData.name,
+      email: formData.email,
+      purpose: formData.purpose,
+      accounts: formData.accounts,
+      message: formData.message || '',
+      submittedAt: new Date().toISOString(),
+      timestamp: new Date()
+    };
+    
+    // エンティティを挿入
+    const result = await tableClient.createEntity(entity);
+    return result;
+  } catch (error) {
+    console.error('Error saving to Table Storage:', error);
+    throw error;
+  }
+};
 
 const generatePDF = (formData) => {
   return new Promise((resolve, reject) => {
@@ -120,6 +161,16 @@ module.exports = async function (context, req) {
         })
       };
       return;
+    }
+    
+    // Table Storageにデータを保存
+    context.log('Saving data to Table Storage...');
+    try {
+      const saveResult = await saveToTableStorage(formData);
+      context.log('Data saved to Table Storage successfully:', saveResult);
+    } catch (saveError) {
+      context.log.error('Failed to save to Table Storage:', saveError);
+      // Table Storage保存に失敗してもPDF生成は続行
     }
     
     // PDF生成
