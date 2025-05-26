@@ -16,7 +16,12 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Purpose element:', purposeElement);
         console.log('Purpose element value:', purposeElement ? purposeElement.value : 'ELEMENT NOT FOUND');
         console.log('Purpose element selectedIndex:', purposeElement ? purposeElement.selectedIndex : 'N/A');
-        console.log('Purpose element options:', purposeElement ? Array.from(purposeElement.options).map(opt => ({value: opt.value, text: opt.text, selected: opt.selected})) : 'N/A');
+        
+        if (purposeElement && purposeElement.options) {
+          console.log('Purpose element options:', Array.from(purposeElement.options).map(opt => ({value: opt.value, text: opt.text, selected: opt.selected})));
+        } else {
+          console.log('Purpose element options: N/A (element or options not found)');
+        }
 
         const formData = {
           organization: document.getElementById('organization').value || '',
