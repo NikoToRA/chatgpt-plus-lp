@@ -107,12 +107,31 @@ module.exports = async function (context, req) {
   context.log('Processing form submission request');
   
   try {
+    // デバッグ用ログを追加
+    context.log('Request method:', req.method);
+    context.log('Request headers:', JSON.stringify(req.headers));
+    context.log('Request body:', JSON.stringify(req.body));
+    context.log('Request rawBody:', req.rawBody);
+    
     const formData = req.body;
     
-    if (!formData.organization || !formData.name || !formData.email || !formData.purpose) {
+    // 各フィールドの値をログ出力
+    context.log('organization:', formData?.organization);
+    context.log('name:', formData?.name);
+    context.log('email:', formData?.email);
+    context.log('purpose:', formData?.purpose);
+    
+    if (!formData || !formData.organization || !formData.name || !formData.email || !formData.purpose) {
+      context.log('Validation failed - missing required fields');
       context.res = {
         status: 400,
-        body: JSON.stringify({ message: 'Missing required fields' })
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          message: 'Missing required fields',
+          received: formData
+        })
       };
       return;
     }
