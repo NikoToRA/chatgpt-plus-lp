@@ -32,6 +32,21 @@ document.addEventListener('DOMContentLoaded', function() {
           body: JSON.stringify(formData)
         });
         
+        // デバッグ情報をログ出力
+        console.log('Response status:', response.status);
+        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+        
+        // DB接続状況をチェック
+        const dbTest = response.headers.get('X-DB-Test');
+        const saveResult = response.headers.get('X-Save-Result');
+        const saveError = response.headers.get('X-Save-Error');
+        
+        if (dbTest) {
+          console.log('DB Test Result:', JSON.parse(dbTest));
+        }
+        console.log('Save Result:', saveResult);
+        console.log('Save Error:', saveError);
+        
         if (response.ok) {
           // PDFレスポンスの場合
           if (response.headers.get('Content-Type') === 'application/pdf') {
@@ -48,24 +63,34 @@ document.addEventListener('DOMContentLoaded', function() {
             window.URL.revokeObjectURL(url);
             document.body.removeChild(a);
             
+            // DB保存状況に応じたメッセージ
+            let dbStatusMessage = '';
+            if (saveResult === 'SUCCESS') {
+              dbStatusMessage = '\n✅ データベース保存: 成功';
+            } else if (saveResult === 'FAILED') {
+              dbStatusMessage = '\n⚠️ データベース保存: 失敗（' + (saveError || '不明なエラー') + '）';
+            }
+            
             // お問い合わせ目的に応じたメッセージ
             const purpose = formData.purpose;
             if (purpose === 'お申し込み') {
-              alert('お申し込みありがとうございます。サービス資料がダウンロードされました。\n\n承りました。お打ち合わせの日程調整については、後日メールにてご連絡いたします。');
+              alert('お申し込みありがとうございます。サービス資料がダウンロードされました。\n\n承りました。お打ち合わせの日程調整については、後日メールにてご連絡いたします。' + dbStatusMessage);
             } else if (purpose === '資料請求') {
-              alert('資料請求ありがとうございます。サービス資料がダウンロードされました。\n\nご不明点がございましたら、お気軽にお問い合わせください。');
+              alert('資料請求ありがとうございます。サービス資料がダウンロードされました。\n\nご不明点がございましたら、お気軽にお問い合わせください。' + dbStatusMessage);
             } else {
-              alert('お問い合わせありがとうございます。サービス資料がダウンロードされました。');
+              alert('お問い合わせありがとうございます。サービス資料がダウンロードされました。' + dbStatusMessage);
             }
           } else {
             // JSONレスポンスの場合
             const data = await response.json();
+            console.log('JSON Response:', data);
             alert(data.message || 'お問い合わせが完了しました。');
           }
           
           estimateForm.reset();
         } else {
           const errorData = await response.json();
+          console.log('Error Response:', errorData);
           throw new Error(errorData.message || 'エラーが発生しました。');
         }
       } catch (error) {

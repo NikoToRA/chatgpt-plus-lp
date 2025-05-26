@@ -41,6 +41,47 @@ const saveToTableStorage = async (formData) => {
   }
 };
 
+// DB接続テスト関数
+const testDatabaseConnection = async (context) => {
+  try {
+    context.log('Testing database connection...');
+    
+    // 環境変数チェック
+    const connectionString = process.env.AzureWebJobsStorage;
+    context.log('Connection string exists:', !!connectionString);
+    context.log('Connection string preview:', connectionString ? connectionString.substring(0, 50) + '...' : 'NOT SET');
+    
+    if (!connectionString) {
+      return { success: false, error: 'AzureWebJobsStorage not configured' };
+    }
+    
+    // Table Client作成テスト
+    const tableClient = getTableClient();
+    context.log('Table client created successfully');
+    
+    // テーブル作成テスト
+    await tableClient.createTable();
+    context.log('Table creation/verification successful');
+    
+    // テストエンティティ作成
+    const testEntity = {
+      partitionKey: 'Test',
+      rowKey: `test_${Date.now()}`,
+      testField: 'DB connection test',
+      timestamp: new Date()
+    };
+    
+    // テストデータ挿入
+    const result = await tableClient.createEntity(testEntity);
+    context.log('Test entity created successfully:', result);
+    
+    return { success: true, message: 'Database connection successful' };
+  } catch (error) {
+    context.log.error('Database connection test failed:', error);
+    return { success: false, error: error.message };
+  }
+};
+
 const generatePDF = (formData) => {
   return new Promise((resolve, reject) => {
     try {
@@ -135,6 +176,10 @@ module.exports = async function (context, req) {
   context.log('Processing form submission request');
   
   try {
+    // DB接続テストを実行（デバッグ用）
+    const dbTest = await testDatabaseConnection(context);
+    context.log('Database test result:', dbTest);
+    
     // リクエストボディの処理
     let formData;
     
@@ -161,7 +206,8 @@ module.exports = async function (context, req) {
         },
         body: JSON.stringify({ 
           message: 'Missing required fields',
-          received: formData
+          received: formData,
+          dbTest: dbTest
         })
       };
       return;
@@ -169,11 +215,15 @@ module.exports = async function (context, req) {
     
     // Table Storageにデータを保存
     context.log('Saving data to Table Storage...');
+    let saveResult = null;
+    let saveError = null;
+    
     try {
-      const saveResult = await saveToTableStorage(formData);
+      saveResult = await saveToTableStorage(formData);
       context.log('Data saved to Table Storage successfully:', saveResult);
-    } catch (saveError) {
-      context.log.error('Failed to save to Table Storage:', saveError);
+    } catch (error) {
+      saveError = error;
+      context.log.error('Failed to save to Table Storage:', error);
       // Table Storage保存に失敗してもPDF生成は続行
     }
     
@@ -182,18 +232,21 @@ module.exports = async function (context, req) {
     const pdfBuffer = await generatePDF(formData);
     context.log('PDF generated successfully, size:', pdfBuffer.length);
     
-    // レスポンス
+    // レスポンス（デバッグ情報付き）
     context.res = {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename=chatgpt-plus-service-guide.pdf'
+        'Content-Disposition': 'attachment; filename=chatgpt-plus-service-guide.pdf',
+        'X-DB-Test': JSON.stringify(dbTest),
+        'X-Save-Result': saveResult ? 'SUCCESS' : 'FAILED',
+        'X-Save-Error': saveError ? saveError.message : 'NONE'
       },
       body: pdfBuffer.toString('base64'),
       isBase64Encoded: true
     };
     
-    context.log('Response sent successfully');
+    context.log('Response sent successfully with debug headers');
   } catch (error) {
     context.log.error('Error processing form submission:', error);
     
