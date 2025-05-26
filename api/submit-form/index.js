@@ -118,7 +118,8 @@ module.exports = async function (context, req) {
     }
     
     const pdfBuffer = await generatePDF(formData);
-    const tableEntity = saveToAzureTable(formData, context);
+    // Azure Storage設定が完了するまで一時的にコメントアウト
+    // const tableEntity = saveToAzureTable(formData, context);
     
     context.res = {
       status: 200,
