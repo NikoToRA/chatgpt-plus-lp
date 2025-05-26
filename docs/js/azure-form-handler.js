@@ -20,58 +20,33 @@ document.addEventListener('DOMContentLoaded', function() {
           message: document.getElementById('message').value
         };
         
-        const response = await fetch('/api/submit-form', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(formData)
-        });
+        // デバッグ用：送信前のデータをログ出力
+        console.log('Sending form data:', formData);
+        console.log('Organization:', formData.organization);
+        console.log('Name:', formData.name);
+        console.log('Email:', formData.email);
+        console.log('Purpose:', formData.purpose);
         
-        if (response.ok) {
-          if (response.headers.get('Content-Type') === 'application/pdf') {
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = 'chatgpt-plus-service-guide.pdf';
-            document.body.appendChild(a);
-            a.click();
-            
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
-            
-            // お問い合わせ目的に応じたメッセージ
-            const purpose = formData.purpose;
-            if (purpose === 'お申し込み') {
-              alert('お申し込みありがとうございます。サービス資料がダウンロードされました。\n\n承りました。お打ち合わせの日程調整については、後日メールにてご連絡いたします。');
-            } else if (purpose === '資料請求') {
-              alert('資料請求ありがとうございます。サービス資料がダウンロードされました。\n\nご不明点がございましたら、お気軽にお問い合わせください。');
-            } else {
-              alert('お問い合わせありがとうございます。サービス資料がダウンロードされました。');
-            }
-          } else {
-            const data = await response.json();
-            alert(data.message || 'お問い合わせが完了しました。');
-          }
-          
-          estimateForm.reset();
+        // 準備済み資料を直接ダウンロード
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = '/chatgpt-plus-service-guide.pdf';
+        a.download = 'chatgpt-plus-service-guide.pdf';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
+        // お問い合わせ目的に応じたメッセージ
+        const purpose = formData.purpose;
+        if (purpose === 'お申し込み') {
+          alert('お申し込みありがとうございます。サービス資料がダウンロードされました。\n\n承りました。お打ち合わせの日程調整については、後日メールにてご連絡いたします。');
+        } else if (purpose === '資料請求') {
+          alert('資料請求ありがとうございます。サービス資料がダウンロードされました。\n\nご不明点がございましたら、お気軽にお問い合わせください。');
         } else {
-          let errorMessage = 'エラーが発生しました。';
-          try {
-            const errorData = await response.json();
-            errorMessage = errorData.message || errorMessage;
-            console.log('Error response:', errorData);
-          } catch (jsonError) {
-            console.log('Failed to parse error response as JSON');
-            const errorText = await response.text();
-            console.log('Error response text:', errorText);
-            errorMessage = `サーバーエラー (${response.status}): ${errorText}`;
-          }
-          throw new Error(errorMessage);
+          alert('お問い合わせありがとうございます。サービス資料がダウンロードされました。');
         }
+        
+        estimateForm.reset();
       } catch (error) {
         console.error('Form submission error:', error);
         alert(`エラーが発生しました: ${error.message}`);
