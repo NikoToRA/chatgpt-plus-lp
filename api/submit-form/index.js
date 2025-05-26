@@ -113,7 +113,21 @@ module.exports = async function (context, req) {
     context.log('Request body:', JSON.stringify(req.body));
     context.log('Request rawBody:', req.rawBody);
     
-    const formData = req.body;
+    // リクエストボディの処理を改善
+    let formData;
+    
+    if (typeof req.body === 'string') {
+      try {
+        formData = JSON.parse(req.body);
+      } catch (parseError) {
+        context.log('JSON parse error:', parseError);
+        formData = req.body;
+      }
+    } else {
+      formData = req.body;
+    }
+    
+    context.log('Parsed formData:', JSON.stringify(formData));
     
     // 各フィールドの値をログ出力
     context.log('organization:', formData?.organization);

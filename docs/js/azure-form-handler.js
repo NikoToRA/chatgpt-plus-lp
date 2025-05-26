@@ -59,8 +59,18 @@ document.addEventListener('DOMContentLoaded', function() {
           
           estimateForm.reset();
         } else {
-          const errorData = await response.json();
-          throw new Error(errorData.message || 'エラーが発生しました。');
+          let errorMessage = 'エラーが発生しました。';
+          try {
+            const errorData = await response.json();
+            errorMessage = errorData.message || errorMessage;
+            console.log('Error response:', errorData);
+          } catch (jsonError) {
+            console.log('Failed to parse error response as JSON');
+            const errorText = await response.text();
+            console.log('Error response text:', errorText);
+            errorMessage = `サーバーエラー (${response.status}): ${errorText}`;
+          }
+          throw new Error(errorMessage);
         }
       } catch (error) {
         console.error('Form submission error:', error);

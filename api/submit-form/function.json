@@ -7,13 +7,13 @@
       "name": "req",
       "methods": [
         "post"
-      ]
+      ],
+      "route": "submit-form"
     },
     {
       "type": "http",
       "direction": "out",
       "name": "res"
     }
-
   ]
 }
