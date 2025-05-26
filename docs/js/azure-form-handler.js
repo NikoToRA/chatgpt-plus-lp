@@ -11,11 +11,18 @@ document.addEventListener('DOMContentLoaded', function() {
       submitButton.textContent = '処理中...';
       
       try {
+        // フォーム要素の存在確認
+        const purposeElement = document.getElementById('purpose');
+        console.log('Purpose element:', purposeElement);
+        console.log('Purpose element value:', purposeElement ? purposeElement.value : 'ELEMENT NOT FOUND');
+        console.log('Purpose element selectedIndex:', purposeElement ? purposeElement.selectedIndex : 'N/A');
+        console.log('Purpose element options:', purposeElement ? Array.from(purposeElement.options).map(opt => ({value: opt.value, text: opt.text, selected: opt.selected})) : 'N/A');
+
         const formData = {
           organization: document.getElementById('organization').value || '',
           name: document.getElementById('name').value || '',
           email: document.getElementById('email').value || '',
-          purpose: document.getElementById('purpose').value || '',
+          purpose: purposeElement ? purposeElement.value : '',
           accounts: document.getElementById('accounts').value || '1-3',
           message: document.getElementById('message').value || ''
         };
@@ -39,8 +46,16 @@ document.addEventListener('DOMContentLoaded', function() {
           submitButton.textContent = originalButtonText;
           return;
         }
+        
+        console.log('Purpose validation check:', {
+          value: formData.purpose,
+          isEmpty: !formData.purpose,
+          isTrimEmpty: formData.purpose.trim() === '',
+          isPlaceholder: formData.purpose === '選択してください'
+        });
+        
         if (!formData.purpose || formData.purpose.trim() === '' || formData.purpose === '選択してください') {
-          alert('お問い合わせ目的を選択してください。');
+          alert('お問い合わせ目的を選択してください。現在の値: "' + formData.purpose + '"');
           submitButton.disabled = false;
           submitButton.textContent = originalButtonText;
           return;
