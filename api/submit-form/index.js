@@ -79,7 +79,11 @@ const generatePDF = (formData) => {
       doc.moveDown();
       doc.text('• 初期セットアップ・導入支援');
       doc.moveDown();
-      doc.text('• 一括請求・料金管理');
+      doc.text('• 一括請求料金管理の代行');
+      doc.moveDown();
+      doc.text('  複数アカウントもまとめて管理。当社でまとめてお支払い。');
+      doc.moveDown();
+      doc.text('  請求書でもクレジットカードでも選べます');
       doc.moveDown();
       doc.text('• 医療機関専用サポート窓口');
       doc.moveDown();
