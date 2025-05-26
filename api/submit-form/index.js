@@ -65,20 +65,26 @@ const generatePDF = (formData) => {
 };
 
 const saveToAzureTable = (formData, context) => {
-  const entity = {
-    PartitionKey: "FormSubmission",
-    RowKey: new Date().getTime().toString(),
-    organization: formData.organization,
-    name: formData.name,
-    email: formData.email,
-    accounts: formData.accounts,
-    message: formData.message || '',
-    submissionDate: new Date().toISOString()
-  };
-  
-  context.bindings.outputTable = entity;
-  
-  return entity;
+  try {
+    const entity = {
+      PartitionKey: "FormSubmission",
+      RowKey: new Date().getTime().toString(),
+      organization: formData.organization,
+      name: formData.name,
+      email: formData.email,
+      accounts: formData.accounts,
+      message: formData.message || '',
+      submissionDate: new Date().toISOString()
+    };
+    
+    context.bindings.outputTable = entity;
+    
+    return entity;
+  } catch (error) {
+    context.log.error('Error saving to Azure Table:', error);
+    // テーブル保存に失敗してもPDF生成は続行
+    return null;
+  }
 };
 
 module.exports = async function (context, req) {
@@ -95,10 +101,8 @@ module.exports = async function (context, req) {
       return;
     }
     
-    const [pdfBuffer, tableEntity] = await Promise.all([
-      generatePDF(formData),
-      saveToAzureTable(formData, context)
-    ]);
+    const pdfBuffer = await generatePDF(formData);
+    const tableEntity = saveToAzureTable(formData, context);
     
     context.res = {
       status: 200,
@@ -106,7 +110,7 @@ module.exports = async function (context, req) {
         'Content-Type': 'application/pdf',
         'Content-Disposition': 'attachment; filename=chatgpt-plus-quote.pdf'
       },
-      body: pdfBuffer,
+      body: pdfBuffer.toString('base64'),
       isBase64Encoded: true
     };
   } catch (error) {
