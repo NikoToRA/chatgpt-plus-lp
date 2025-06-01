@@ -1,0 +1,52 @@
+# このファイルは重複するため無効化されています
+# 有効なワークフローファイル: azure-static-web-apps-wonderful-flower-0f6517b00.yml
+
+# name: Azure Static Web Apps CI/CD
+
+# on:
+#   push:
+#     branches:
+#       - main
+#   pull_request:
+#     types: [opened, synchronize, reopened, closed]
+#     branches:
+#       - main
+
+# jobs:
+#   build_and_deploy_job:
+#     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+#     runs-on: ubuntu-latest
+#     name: Build and Deploy Job
+#     steps:
+#       - uses: actions/checkout@v3
+#         with:
+#           submodules: true
+#       - name: Build And Deploy
+#         id: builddeploy
+#         uses: Azure/static-web-apps-deploy@v1
+#         with:
+#           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+#           repo_token: ${{ secrets.GITHUB_TOKEN }}
+#           action: "upload"
+#           ###### Repository/Build Configurations ######
+#           app_location: "/docs" # App source code path
+#           api_location: "/api" # Api source code path - optional
+#           output_location: "/docs" # Built app content directory - optional
+#           ###### End of Repository/Build Configurations ######
+#         env:
+#           SKIP_DEPLOY_ON_MISSING_SECRETS: true
+
+#   close_pull_request_job:
+#     if: github.event_name == 'pull_request' && github.event.action == 'closed'
+#     runs-on: ubuntu-latest
+#     name: Close Pull Request Job
+#     steps:
+#       - name: Close Pull Request
+#         id: closepullrequest
+#         uses: Azure/static-web-apps-deploy@v1
+#         with:
+#           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+#           action: "close"
+#           app_location: "/docs"
+#         env:
+#           SKIP_DEPLOY_ON_MISSING_SECRETS: true
