@@ -1,0 +1,359 @@
+/* 医療機関向けプロフェッショナルスタイル */
+
+:root {
+  /* ベースカラー（信頼・清潔感） */
+  --primary-blue: #1e40af;
+  --secondary-blue: #3b82f6;
+  --accent-teal: #0891b2;
+  
+  /* 年額プランの控えめな強調 */
+  --yearly-bg: #eff6ff;
+  --yearly-border: #3b82f6;
+  --yearly-badge: #059669;
+  
+  /* テキスト（高い可読性） */
+  --text-primary: #1f2937;
+  --text-secondary: #4b5563;
+  --text-white: #ffffff;
+  
+  /* 背景色 */
+  --bg-light: #f9fafb;
+  --bg-white: #ffffff;
+  
+  /* ボタンカラー */
+  --btn-primary: #1e40af;
+  --btn-secondary: #3b82f6;
+  --btn-hover: #1e3a8a;
+}
+
+/* 価格セクション全体の調整 */
+#pricing {
+  padding: 4rem 1rem;
+  background-color: var(--bg-light);
+}
+
+/* 価格比較テーブル */
+.pricing-comparison {
+  max-width: 1200px;
+  margin: 3rem auto;
+  padding: 0 1rem;
+}
+
+.professional-table {
+  width: 100%;
+  background: var(--bg-white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-collapse: collapse;
+}
+
+.professional-table th {
+  background-color: var(--primary-blue);
+  color: var(--text-white);
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.professional-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: var(--text-primary);
+  font-size: 1rem;
+}
+
+.professional-table tr:last-child td {
+  border-bottom: none;
+}
+
+.professional-table tr.recommended {
+  background-color: var(--yearly-bg);
+  position: relative;
+}
+
+.professional-table tr.recommended td {
+  font-weight: 500;
+}
+
+/* 価格カードのリセットと再構築 */
+.pricing-card {
+  background: var(--bg-white);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 通常のカードヘッダー */
+.pricing-card .card-header {
+  background-color: var(--secondary-blue);
+  color: var(--text-white);
+  padding: 2rem;
+  text-align: center;
+}
+
+/* 年額プランのカードヘッダー（控えめな強調） */
+.pricing-card.featured .card-header {
+  background-color: var(--primary-blue);
+  position: relative;
+}
+
+/* 推奨バッジ（控えめ） */
+.pricing-card.featured .recommended-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: var(--yearly-badge);
+  color: var(--text-white);
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* カードボディ */
+.pricing-card .card-body {
+  padding: 2rem;
+  flex-grow: 1;
+  background-color: var(--bg-white);
+}
+
+/* 価格表示 */
+.pricing-card .price {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text-white);
+  margin-bottom: 0.5rem;
+}
+
+.pricing-card .price-period {
+  font-size: 1rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* 年額プランの追加情報 */
+.pricing-card.featured .savings-info {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  margin-top: 1rem;
+  font-size: 0.875rem;
+}
+
+/* 機能リスト */
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.feature-list li {
+  display: flex;
+  align-items: start;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.feature-list .icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background-color: var(--secondary-blue);
+  color: var(--text-white);
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* 年額プランの特別な利点 */
+.yearly-benefits {
+  background-color: var(--yearly-bg);
+  border: 1px solid var(--yearly-border);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-top: 1.5rem;
+}
+
+.yearly-benefits h4 {
+  color: var(--primary-blue);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.yearly-benefits ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.yearly-benefits li {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  padding-left: 1.5rem;
+  position: relative;
+  margin-bottom: 0.25rem;
+}
+
+.yearly-benefits li:before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--yearly-badge);
+  font-weight: 600;
+}
+
+/* CTAボタン */
+.cta-button {
+  display: block;
+  width: 100%;
+  padding: 1rem 2rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 1rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: none;
+  text-decoration: none;
+}
+
+/* 月額プランのボタン */
+.cta-button.secondary {
+  background-color: var(--btn-secondary);
+  color: var(--text-white);
+}
+
+.cta-button.secondary:hover {
+  background-color: var(--secondary-blue);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* 年額プランのボタン */
+.cta-button.primary {
+  background-color: var(--btn-primary);
+  color: var(--text-white);
+}
+
+.cta-button.primary:hover {
+  background-color: var(--btn-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(30, 64, 175, 0.3);
+}
+
+/* 追加のCTAボタン（資料請求など） */
+.additional-cta {
+  display: flex;
+  gap: 1rem;
+  margin-top: 3rem;
+  justify-content: center;
+}
+
+.additional-cta .btn-outline {
+  padding: 0.75rem 2rem;
+  border: 2px solid var(--primary-blue);
+  color: var(--primary-blue);
+  background-color: transparent;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.additional-cta .btn-outline:hover {
+  background-color: var(--primary-blue);
+  color: var(--text-white);
+}
+
+/* アクセシビリティ向上 */
+.pricing-section {
+  font-size: 16px;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+}
+
+/* 高コントラスト保証 */
+.pricing-card .card-body,
+.professional-table td {
+  color: var(--text-primary);
+  background-color: var(--bg-white);
+}
+
+/* スクリーンリーダー用の追加情報 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  .professional-table {
+    font-size: 0.875rem;
+  }
+  
+  .professional-table th,
+  .professional-table td {
+    padding: 0.75rem 0.5rem;
+  }
+  
+  .pricing-card {
+    margin-bottom: 2rem;
+  }
+  
+  .additional-cta {
+    flex-direction: column;
+  }
+  
+  .additional-cta .btn-outline {
+    width: 100%;
+  }
+}
+
+/* 既存のスタイルをオーバーライド */
+#pricing .grid > div {
+  transform: none !important;
+}
+
+#pricing .shadow-xl {
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* フォーカス状態の改善 */
+.cta-button:focus,
+.btn-outline:focus {
+  outline: 3px solid var(--accent-teal);
+  outline-offset: 2px;
+}
+
+/* 印刷時のスタイル */
+@media print {
+  .pricing-card {
+    break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #e5e7eb;
+  }
+  
+  .cta-button,
+  .additional-cta {
+    display: none;
+  }
+}
