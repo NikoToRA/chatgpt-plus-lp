@@ -64,22 +64,27 @@
 
 /* Section 1: ATTENTION (注意) - ワークフロー */
 .aidma-attention {
-  background: linear-gradient(135deg, var(--neutral-gray-900) 0%, var(--medical-trust) 100%);
-  color: var(--neutral-white);
+  background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%);
+  color: #ffffff;
+  position: relative;
+  z-index: 1;
 }
 
 .aidma-attention .section-title {
-  background: var(--gradient-attention);
+  background: linear-gradient(135deg, #ff6b35 0%, #ff8e53 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  text-fill-color: transparent;
   font-weight: 800;
+  display: inline-block;
 }
 
 .aidma-attention .timeline-step {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   transition: all 0.3s ease;
 }
 
@@ -92,15 +97,16 @@
 
 /* Section 2: INTEREST (興味) - 料金・機能 */
 .aidma-interest {
-  background: var(--interest-bg);
-  color: var(--neutral-gray-900);
+  background: #eff6ff;
+  color: #111827;
 }
 
 .aidma-interest .pricing-card {
-  background: var(--neutral-white);
-  border: 2px solid var(--interest-secondary);
+  background: #ffffff;
+  border: 2px solid #3b82f6;
   border-radius: 20px;
   transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .aidma-interest .pricing-card:hover {
@@ -227,16 +233,18 @@
 
 /* Enhanced Readability */
 .text-high-contrast {
-  color: var(--neutral-gray-900);
+  color: var(--neutral-gray-900) !important;
   text-shadow: none;
   font-weight: 600;
 }
 
 .bg-high-contrast {
-  background: var(--neutral-white);
+  background: rgba(255, 255, 255, 0.95) !important;
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
 /* Mobile Optimization */
