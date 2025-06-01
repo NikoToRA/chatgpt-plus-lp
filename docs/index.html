@@ -9,14 +9,12 @@
   <!-- Preload critical CSS files -->
   <link rel="preload" href="css/modern-styles.css" as="style">
   <link rel="preload" href="css/aidma-colors.css" as="style">
-  <link rel="preload" href="css/visibility-fix.css" as="style">
-  <link rel="preload" href="css/pc-layout-fix.css" as="style">
+  <link rel="preload" href="css/balanced-layout.css" as="style">
   
   <!-- Load CSS files -->
   <link rel="stylesheet" href="css/modern-styles.css">
   <link rel="stylesheet" href="css/aidma-colors.css">
-  <link rel="stylesheet" href="css/visibility-fix.css">
-  <link rel="stylesheet" href="css/pc-layout-fix.css">
+  <link rel="stylesheet" href="css/balanced-layout.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -638,94 +636,6 @@
     </div>
   </section>
 
-  <!-- 導入フローセクション -->
-  <section id="flow" class="py-16 bg-gradient-wonder text-white">
-    <div class="container mx-auto px-4">
-      <div class="text-center mb-12">
-        <span class="text-secondary-300 font-medium uppercase">導入フロー</span>
-        <h2 class="text-3xl md:text-4xl font-bold mt-2">たった3ステップで導入完了</h2>
-        <div class="section-divider bg-secondary-300 my-6"></div>
-      </div>
-      
-      <div class="max-w-4xl mx-auto">
-        <!-- 3ステップカード（モバイル表示用） -->
-        <div class="md:hidden space-y-8">
-          <div class="bg-white rounded-lg p-6 text-primary-800 step-card">
-            <div class="bg-secondary-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mx-auto mb-4">1</div>
-            <h3 class="text-2xl font-bold mb-3 text-center">医療機関からの申込</h3>
-            <p class="text-gray-700">お問い合わせフォームまたはお電話でご連絡ください。必要なアカウント数やご要望をお伺いします。</p>
-          </div>
-          
-          <div class="bg-white rounded-lg p-6 text-primary-800 step-card">
-            <div class="bg-secondary-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mx-auto mb-4">2</div>
-            <h3 class="text-2xl font-bold mb-3 text-center">アカウント取得・設定</h3>
-            <p class="text-gray-700">当社がChatGPT Plusアカウントを取得し、必要な初期設定を行います。医療機関様は何もする必要がありません。</p>
-          </div>
-          
-          <div class="bg-white rounded-lg p-6 text-primary-800 step-card">
-            <div class="bg-secondary-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold mx-auto mb-4">3</div>
-            <h3 class="text-2xl font-bold mb-3 text-center">IDとPWの納品・即利用開始</h3>
-            <p class="text-gray-700">アカウント情報と利用ガイドをお届けします。受け取り後すぐにChatGPT Plusをご利用いただけます。</p>
-          </div>
-        </div>
-        
-        <!-- 3ステップフロー（デスクトップ表示用） -->
-        <div class="hidden md:block relative">
-          <!-- ステップ線 -->
-          <div class="absolute left-1/2 top-0 bottom-0 w-1 bg-secondary-300 transform -translate-x-1/2"></div>
-          
-          <!-- ステップ1 -->
-          <div class="relative grid grid-cols-2 gap-8 mb-16">
-            <div class="text-right pr-12">
-              <div class="bg-secondary-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold absolute right-0 transform translate-x-1/2 z-10">1</div>
-              <h3 class="text-2xl font-bold mb-4">医療機関からの申込</h3>
-              <p class="text-gray-200">お問い合わせフォームまたはお電話でご連絡ください。必要なアカウント数やご要望をお伺いします。</p>
-            </div>
-            <div class="pl-12">
-              <div class="bg-white p-4 rounded-lg shadow step-card">
-                <svg class="h-16 w-16 text-primary-800 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                </svg>
-              </div>
-            </div>
-          </div>
-          
-          <!-- ステップ2 -->
-          <div class="relative grid grid-cols-2 gap-8 mb-16">
-            <div class="order-2 pl-12">
-              <div class="bg-secondary-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold absolute left-0 transform -translate-x-1/2 z-10">2</div>
-              <h3 class="text-2xl font-bold mb-4">アカウント取得・設定</h3>
-              <p class="text-gray-200">当社がChatGPT Plusアカウントを取得し、必要な初期設定を行います。医療機関様は何もする必要がありません。</p>
-            </div>
-            <div class="order-1 text-right pr-12">
-              <div class="bg-white p-4 rounded-lg shadow step-card">
-                <svg class="h-16 w-16 text-primary-800 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-              </div>
-            </div>
-          </div>
-          
-          <!-- ステップ3 -->
-          <div class="relative grid grid-cols-2 gap-8">
-            <div class="text-right pr-12">
-              <div class="bg-secondary-500 text-white rounded-full w-12 h-12 flex items-center justify-center text-xl font-bold absolute right-0 transform translate-x-1/2 z-10">3</div>
-              <h3 class="text-2xl font-bold mb-4">IDとPWの納品・即利用開始</h3>
-              <p class="text-gray-200">アカウント情報と利用ガイドをお届けします。受け取り後すぐにChatGPT Plusをご利用いただけます。</p>
-            </div>
-            <div class="pl-12">
-              <div class="bg-white p-4 rounded-lg shadow step-card">
-                <svg class="h-16 w-16 text-primary-800 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- AIDMA: INTEREST - 料金モデルセクション -->
   <section id="pricing" class="aidma-interest py-20">
@@ -851,42 +761,52 @@
         </div>
         
         <!-- 10アカウント以上 -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition-shadow">
-          <div class="bg-primary-50 p-6 text-center">
-            <h3 class="text-2xl font-bold text-primary-800">10アカウント以上</h3>
+        <div class="pricing-card transform hover:scale-105 transition-all duration-300">
+          <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-8 text-center rounded-t-3xl">
+            <div class="inline-block bg-purple-500 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">🎯 大規模プラン</div>
+            <h3 class="text-3xl font-black text-gray-900 mb-2">10アカウント以上</h3>
             <div class="mt-4">
-              <span class="text-4xl font-bold text-primary-800">ご相談</span>
-              <p class="text-sm text-gray-600 mt-1">ディスカウントプラン</p>
+              <span class="text-5xl font-black text-purple-600">ご相談</span>
+              <span class="text-gray-600 text-xl"></span>
+              <p class="text-gray-600 mt-2 font-semibold">ボリューム割引適用</p>
             </div>
           </div>
-          <div class="p-6">
-            <ul class="space-y-3">
+          <div class="p-8 bg-white rounded-b-3xl">
+            <ul class="space-y-4 mb-8">
               <li class="flex items-start">
-                <svg class="h-6 w-6 text-secondary-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span class="text-gray-700">ボリュームディスカウント</span>
+                <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">ボリュームディスカウント</span>
               </li>
               <li class="flex items-start">
-                <svg class="h-6 w-6 text-secondary-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span class="text-gray-700">カスタマイズ対応</span>
+                <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">カスタマイズ対応</span>
               </li>
               <li class="flex items-start">
-                <svg class="h-6 w-6 text-secondary-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span class="text-gray-700">専任サポート担当者</span>
+                <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">専任サポート担当者</span>
               </li>
               <li class="flex items-start">
-                <svg class="h-6 w-6 text-secondary-500 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                </svg>
-                <span class="text-gray-700">管理ダッシュボード提供</span>
+                <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">管理ダッシュボード提供</span>
               </li>
             </ul>
-            <a href="#contact" class="mt-6 block text-center bg-primary-800 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors">お問い合わせ</a>
+            <a href="#contact" class="w-full btn-action-secondary py-4 text-lg font-bold">📞 お問い合わせ</a>
           </div>
         </div>
       </div>
