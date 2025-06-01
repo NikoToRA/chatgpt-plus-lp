@@ -26,7 +26,4 @@ jobs:
       - uses: anthropics/claude-code-action@beta
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          # Optional: add custom trigger phrase (default: @claude)
-          # trigger_phrase: "/claude"
-          # Optional: add assignee trigger for issues
-          # assignee_trigger: "claude" 
+          # APIキーなしで試す（GitHub App経由）
