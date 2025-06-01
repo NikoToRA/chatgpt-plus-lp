@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
           message: document.getElementById('message').value
         };
         
-        const response = await fetch('/.netlify/functions/submit-form', {
+        const response = await fetch('/api/submit-form', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
