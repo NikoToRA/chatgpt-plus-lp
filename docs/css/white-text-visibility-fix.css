@@ -1,0 +1,237 @@
+/* White Text Visibility Fix - Comprehensive Solution */
+/* 白文字の視認性問題を修正 */
+
+/* ========================================
+   1. 年額プランカードの修正
+   ======================================== */
+.pricing-card.featured {
+  /* メジャーカラー：深い青のグラデーション背景 */
+  background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%) !important;
+  border: 2px solid #60a5fa !important;
+  box-shadow: 0 20px 30px rgba(30, 64, 175, 0.3) !important;
+}
+
+/* 年額プランのチェックリスト背景修正 */
+.pricing-card.featured .pricing-features {
+  background: rgba(30, 64, 175, 0.15) !important;
+  border-radius: 12px;
+  padding: 1rem !important;
+  margin: 1rem 0 !important;
+}
+
+.pricing-card.featured .pricing-features li {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.pricing-card.featured .pricing-features .feature-icon {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #ffffff !important;
+}
+
+/* 年額プランのタイトルと価格 */
+.pricing-card.featured .pricing-title {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.pricing-card.featured .pricing-price {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+}
+
+.pricing-card.featured .pricing-original {
+  color: #cbd5e1 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+.pricing-card.featured .pricing-period {
+  color: #e0e7ff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* ========================================
+   2. CTAボタンの修正（まずはご相談から等）
+   ======================================== */
+/* プライマリアクションボタン */
+.btn-action-primary,
+.btn-primary,
+a[href="#contact"].btn-primary,
+a[href="#contact"]:not(.nav-link) {
+  /* メジャーカラー：紫から青のグラデーション */
+  background: linear-gradient(135deg, #6b21a8 0%, #2563eb 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+  box-shadow: 0 4px 15px rgba(107, 33, 168, 0.3) !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-action-primary:hover,
+.btn-primary:hover,
+a[href="#contact"].btn-primary:hover,
+a[href="#contact"]:not(.nav-link):hover {
+  background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 6px 20px rgba(107, 33, 168, 0.4) !important;
+}
+
+/* ワークフローセクションのCTAボタン */
+.workflow-cta .btn-primary,
+.workflow-action .btn-primary {
+  background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%) !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ========================================
+   3. ヘッダーとナビゲーションの修正
+   ======================================== */
+.header-glass {
+  background: rgba(15, 23, 42, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.header-glass .nav-link {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+.header-glass .nav-link:hover {
+  color: #60a5fa !important;
+}
+
+/* モバイルメニュー */
+.mobile-menu {
+  background: rgba(15, 23, 42, 0.98) !important;
+}
+
+.mobile-menu .nav-link {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ========================================
+   4. ワークフローセクションの修正
+   ======================================== */
+.timeline-step {
+  background: rgba(30, 64, 175, 0.1) !important;
+  border: 1px solid rgba(96, 165, 250, 0.3) !important;
+}
+
+.timeline-step .text-white {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ハイコントラストボックス */
+.bg-high-contrast {
+  background: #1e293b !important;
+  color: #ffffff !important;
+}
+
+.bg-high-contrast * {
+  color: #ffffff !important;
+}
+
+/* ========================================
+   5. その他の白文字要素の修正
+   ======================================== */
+/* バッジとラベル */
+.badge-popular,
+.badge-recommended {
+  background: linear-gradient(135deg, #dc2626 0%, #f59e0b 100%) !important;
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* フッターの白文字 */
+footer .text-white {
+  color: #ffffff !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* ========================================
+   6. グラデーションテキストの修正
+   ======================================== */
+.text-gradient {
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  text-fill-color: transparent !important;
+  /* フォールバック */
+  color: #2563eb !important;
+}
+
+/* ========================================
+   7. 汎用的な白文字修正
+   ======================================== */
+/* 白文字が見えない可能性のある全要素 */
+.text-white:not(.pricing-card *),
+[class*="text-white"]:not(.pricing-card *) {
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* 透明度の高い要素の修正 */
+.bg-opacity-10,
+.bg-opacity-20,
+.bg-opacity-30 {
+  background-color: rgba(30, 64, 175, 0.15) !important;
+}
+
+/* ========================================
+   8. レスポンシブ対応
+   ======================================== */
+@media (max-width: 768px) {
+  .pricing-card.featured {
+    background: linear-gradient(135deg, #1e40af 0%, #3730a3 100%) !important;
+  }
+  
+  .btn-action-primary,
+  .btn-primary {
+    font-size: 1rem !important;
+    padding: 0.75rem 1.5rem !important;
+  }
+}
+
+/* ========================================
+   9. アクセシビリティ強化
+   ======================================== */
+/* フォーカス時の視認性向上 */
+.btn-primary:focus,
+.btn-action-primary:focus,
+a:focus {
+  outline: 3px solid #60a5fa !important;
+  outline-offset: 2px !important;
+}
+
+/* 高コントラストモード対応 */
+@media (prefers-contrast: high) {
+  .pricing-card.featured {
+    background: #1e293b !important;
+    border: 3px solid #ffffff !important;
+  }
+  
+  .btn-primary,
+  .btn-action-primary {
+    background: #3730a3 !important;
+    border: 2px solid #ffffff !important;
+  }
+}
+
+/* ========================================
+   10. 印刷時の対応
+   ======================================== */
+@media print {
+  .pricing-card.featured {
+    background: #f3f4f6 !important;
+    color: #1f2937 !important;
+    border: 2px solid #1f2937 !important;
+  }
+  
+  .pricing-card.featured * {
+    color: #1f2937 !important;
+    text-shadow: none !important;
+  }
+}
