@@ -30,6 +30,8 @@ jobs:
           api_location: "/api" # Api source code path - optional
           output_location: "/docs" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
+        env:
+          SKIP_DEPLOY_ON_MISSING_SECRETS: true
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
@@ -43,3 +45,5 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
           action: "close"
           app_location: "/docs"
+        env:
+          SKIP_DEPLOY_ON_MISSING_SECRETS: true
