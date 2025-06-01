@@ -19,12 +19,20 @@ permissions:
 jobs:
   claude-code-action:
     if: |
-      (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-      (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-      (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
+      (github.event.comment.body && contains(github.event.comment.body, '@claude')) ||
+      (github.event.issue.body && contains(github.event.issue.body, '@claude')) ||
+      (github.event.review.body && contains(github.event.review.body, '@claude'))
     runs-on: ubuntu-latest
     steps:
+      - name: Debug Info
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Action: ${{ github.event.action }}"
+          echo "Comment: ${{ github.event.comment.body }}"
+          echo "Issue: ${{ github.event.issue.body }}"
+          echo "Review: ${{ github.event.review.body }}"
+          echo "Checking for @claude trigger..."
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
