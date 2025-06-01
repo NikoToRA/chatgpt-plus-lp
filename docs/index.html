@@ -10,11 +10,13 @@
   <link rel="preload" href="css/modern-styles.css" as="style">
   <link rel="preload" href="css/aidma-colors.css" as="style">
   <link rel="preload" href="css/visibility-fix.css" as="style">
+  <link rel="preload" href="css/pc-layout-fix.css" as="style">
   
   <!-- Load CSS files -->
   <link rel="stylesheet" href="css/modern-styles.css">
   <link rel="stylesheet" href="css/aidma-colors.css">
   <link rel="stylesheet" href="css/visibility-fix.css">
+  <link rel="stylesheet" href="css/pc-layout-fix.css">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -103,10 +105,18 @@
             <span class="text-white/90 text-sm">48時間以内に利用開始可能</span>
           </div>
           
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 leading-tight">
-            医療現場のための<br>
-            <span class="gradient-text typing-animation" data-text="ChatGPT Plus" data-speed="150"></span>
-          </h1>
+          <div class="doctor-hero-container">
+            <div class="doctor-image-wrapper">
+              <img src="images/female-doctor.svg" alt="笑顔の女医がChatGPTを持っている" class="doctor-image">
+              <div class="chatgpt-badge">ChatGPT</div>
+            </div>
+            <div>
+              <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 leading-tight">
+                医療現場のための<br>
+                <span class="gradient-text typing-animation" data-text="ChatGPT Plus" data-speed="150"></span>
+              </h1>
+            </div>
+          </div>
           
           <p class="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
             クレジットカード不要、<span class="text-white font-semibold">請求書払い</span>で即導入。<br>
@@ -1000,8 +1010,8 @@
   <!-- フッター -->
   <footer class="bg-primary-900 text-gray-400 py-12">
     <div class="container mx-auto px-4">
-      <div class="grid md:grid-cols-4 gap-8">
-        <div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="lg:col-span-1">
           <h3 class="text-xl font-bold text-white mb-4">ChatGPT Plus<br>医療機関向け</h3>
           <p class="text-sm">医療現場のAI活用を促進し、業務効率化を実現するアカウント管理代行サービス</p>
         </div>
@@ -1017,9 +1027,9 @@
         <div>
           <h4 class="text-lg font-medium text-white mb-4">リンク</h4>
           <ul class="space-y-2">
-            <li><a href="#purpose" class="hover:text-white transition-colors">目的</a></li>
-            <li><a href="#flow" class="hover:text-white transition-colors">導入フロー</a></li>
-            <li><a href="#price" class="hover:text-white transition-colors">料金</a></li>
+            <li><a href="#benefits" class="hover:text-white transition-colors">導入メリット</a></li>
+            <li><a href="#workflow" class="hover:text-white transition-colors">業務フロー</a></li>
+            <li><a href="#pricing" class="hover:text-white transition-colors">料金プラン</a></li>
             <li><a href="#faq" class="hover:text-white transition-colors">よくある質問</a></li>
           </ul>
         </div>
