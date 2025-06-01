@@ -1,0 +1,87 @@
+/* Hero Section Background Update */
+
+/* Hero section with doctor-ai.png as background */
+.hero-background-image {
+  position: relative;
+  background-image: url('../images/doctor-ai.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Overlay for better text readability */
+.hero-background-image::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(17, 24, 39, 0.9) 0%, 
+    rgba(30, 64, 175, 0.85) 50%, 
+    rgba(17, 24, 39, 0.9) 100%);
+  z-index: 1;
+}
+
+/* Ensure content is above overlay */
+.hero-background-image > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* Remove the female-doctor SVG container */
+.doctor-hero-container {
+  display: none !important;
+}
+
+/* Enhanced background effects */
+.hero-background-image .absolute {
+  opacity: 0.3;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .hero-background-image {
+    background-attachment: scroll;
+    background-position: center top;
+  }
+  
+  .hero-background-image::before {
+    background: linear-gradient(to bottom, 
+      rgba(17, 24, 39, 0.9) 0%, 
+      rgba(30, 64, 175, 0.9) 100%);
+  }
+}
+
+/* High resolution displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .hero-background-image {
+    background-size: cover;
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+  }
+}
+
+/* Remove web meeting style elements */
+.hero-section .relative.lg\:pl-12.fade-in,
+section .relative .aspect-video {
+  display: none !important;
+}
+
+/* Adjust layout after removing right column */
+.hero-section .grid.lg\:grid-cols-2 {
+  display: block !important;
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+/* Center align hero content */
+.hero-section .text-center.lg\:text-left {
+  text-align: center !important;
+}
+
+.hero-section .justify-center.lg\:justify-start {
+  justify-content: center !important;
+}

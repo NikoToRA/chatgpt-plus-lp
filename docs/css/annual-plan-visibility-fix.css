@@ -1,112 +1,70 @@
 /* Annual Plan Text Visibility Fix */
 
-/* Ensure all text in the featured pricing card has proper contrast */
+/* Fix for featured pricing card (年額プラン) text visibility */
 .pricing-card.featured {
-  /* Ensure the gradient background is properly applied */
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  color: #ffffff !important;
 }
 
-/* Fix the header section of the featured card */
-.pricing-card.featured > div:first-child {
-  background: transparent !important; /* Remove conflicting background */
-}
-
-.pricing-card.featured .p-8.text-center.rounded-t-3xl {
-  background: transparent !important; /* Ensure transparent background */
-}
-
-/* Ensure all text elements are visible with proper contrast */
+/* Ensure all text in featured card is white and visible */
 .pricing-card.featured h3,
-.pricing-card.featured span,
-.pricing-card.featured p {
+.pricing-card.featured .text-white {
   color: #ffffff !important;
   opacity: 1 !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Add subtle shadow for better readability */
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* Fix the gray text that might have poor contrast */
+/* Fix gray text to be lighter for better contrast */
 .pricing-card.featured .text-gray-200 {
-  color: #e5e7eb !important; /* Lighter gray for better contrast */
+  color: #e5e7eb !important;
   opacity: 1 !important;
 }
 
-/* Ensure the pricing amount is clearly visible */
+/* Enhanced visibility for price display */
 .pricing-card.featured .text-5xl {
-  color: #ffffff !important;
-  font-weight: 900 !important;
+  font-weight: 900;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* Fix the discount box visibility */
+/* Fix for semi-transparent backgrounds */
 .pricing-card.featured .bg-white.bg-opacity-20 {
-  background: rgba(255, 255, 255, 0.25) !important; /* Increase opacity for better visibility */
+  background-color: rgba(255, 255, 255, 0.25) !important;
   backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Ensure badge visibility */
+.pricing-card.featured .inline-block {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+  color: #ffffff !important;
+  font-weight: bold;
+}
+
+/* Fix for the discount box */
+.pricing-card.featured .bg-white.bg-opacity-20.rounded-xl {
+  background-color: rgba(255, 255, 255, 0.2) !important;
   border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
-/* Ensure the emoji and text in the badge are visible */
-.pricing-card.featured .inline-block.bg-white.bg-opacity-20 {
-  background: rgba(255, 255, 255, 0.3) !important;
-  color: #ffffff !important;
-  font-weight: 700 !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+/* Ensure proper z-index for featured card */
+.pricing-card.featured {
+  z-index: 20;
+  position: relative;
 }
 
-/* Fix the popular badge at the top */
-.pricing-card.featured .absolute.-top-6 > div {
-  background: linear-gradient(135deg, #dc2626 0%, #f97316 100%) !important;
-  color: #ffffff !important;
-  font-weight: 900 !important;
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4);
-  z-index: 50;
-}
-
-/* Ensure list items in the featured card are visible */
-.pricing-card.featured li span {
-  color: #1f2937 !important; /* Dark gray for list items in white background section */
-}
-
-/* Mobile responsive fixes */
+/* Fix scale transformation on mobile */
 @media (max-width: 768px) {
   .pricing-card.featured {
-    transform: scale(1) !important; /* Remove scaling on mobile */
-  }
-  
-  .pricing-card.featured .text-5xl {
-    font-size: 2.5rem !important; /* Adjust font size for mobile */
+    transform: scale(1) !important;
   }
 }
 
 /* High contrast mode support */
 @media (prefers-contrast: high) {
-  .pricing-card.featured {
-    background: #000080 !important;
-    border: 3px solid #ffffff !important;
-  }
-  
-  .pricing-card.featured h3,
-  .pricing-card.featured span,
-  .pricing-card.featured p {
-    color: #ffffff !important;
-    text-shadow: none !important;
-  }
-  
   .pricing-card.featured .text-gray-200 {
     color: #ffffff !important;
   }
-}
-
-/* Ensure z-index hierarchy */
-.pricing-card {
-  position: relative;
-  z-index: 10;
-}
-
-.pricing-card.featured {
-  z-index: 20;
-}
-
-.pricing-card.featured .absolute.-top-6 {
-  z-index: 30;
+  
+  .pricing-card.featured .bg-white.bg-opacity-20 {
+    background-color: rgba(255, 255, 255, 0.4) !important;
+  }
 }
