@@ -18,11 +18,15 @@
     ".json": "application/json",
     ".css": "text/css",
     ".js": "application/javascript",
-    ".html": "text/html"
+    ".html": "text/html",
+    ".pdf": "application/pdf"
   },
   "globalHeaders": {
     "X-Content-Type-Options": "nosniff",
     "X-Frame-Options": "DENY",
-    "Content-Security-Policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:"
+    "Content-Security-Policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:",
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization"
   }
 } 
