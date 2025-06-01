@@ -1,0 +1,316 @@
+/* Visibility Improvements for ChatGPT Plus Medical LP */
+
+/* Hero Section Improvements */
+.hero-image-container {
+  position: relative;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.hero-image-container img {
+  border-radius: 1.5rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+/* Improve text contrast throughout the site */
+h1, h2, h3, h4, h5, h6 {
+  color: #111827;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Dark background sections - ensure text is visible */
+.bg-gray-900 h1, .bg-gray-900 h2, .bg-gray-900 h3,
+.bg-gray-800 h1, .bg-gray-800 h2, .bg-gray-800 h3,
+[class*="from-gray-900"] h1, [class*="from-gray-900"] h2, [class*="from-gray-900"] h3 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.bg-gray-900 p, .bg-gray-800 p,
+[class*="from-gray-900"] p {
+  color: #e5e7eb !important;
+}
+
+/* Improve gradient text visibility */
+.gradient-text {
+  font-weight: 900;
+  font-size: 1.1em;
+  filter: brightness(1.3) contrast(1.2);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Button improvements for better visibility */
+.btn {
+  font-weight: 700;
+  letter-spacing: 0.025em;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%);
+}
+
+.btn-secondary {
+  background: #ffffff;
+  color: #1e40af;
+  border: 2px solid #3b82f6;
+  font-weight: 700;
+}
+
+.btn-secondary:hover {
+  background: #eff6ff;
+  border-color: #2563eb;
+  color: #1e3a8a;
+}
+
+/* Card improvements */
+.card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+}
+
+.card h3 {
+  color: #111827;
+  font-weight: 800;
+}
+
+.card p {
+  color: #4b5563;
+  line-height: 1.7;
+}
+
+/* Pricing card improvements */
+.pricing-card {
+  border: 2px solid #e5e7eb;
+}
+
+.pricing-card:hover {
+  border-color: #3b82f6;
+}
+
+.pricing-card.featured {
+  border: 3px solid #2563eb;
+  position: relative;
+  z-index: 20;
+}
+
+/* Trust indicators improvements */
+.text-gray-400 {
+  color: #6b7280 !important;
+}
+
+.text-gray-300 {
+  color: #9ca3af !important;
+}
+
+/* Section improvements */
+section {
+  position: relative;
+  z-index: 1;
+}
+
+/* Improve FAQ visibility */
+#faq .bg-gray-50 {
+  background: #f9fafb;
+  border-left: 4px solid #3b82f6;
+}
+
+#faq h3 {
+  color: #1e3a8a;
+  font-weight: 700;
+}
+
+/* Form improvements */
+input, select, textarea {
+  background: #ffffff;
+  border: 2px solid #d1d5db;
+  color: #111827;
+  font-weight: 500;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #3b82f6;
+  background: #ffffff;
+}
+
+label {
+  color: #374151;
+  font-weight: 600;
+}
+
+/* Mobile menu improvements */
+#mobile-menu {
+  background: rgba(17, 24, 39, 0.98);
+}
+
+#mobile-menu a {
+  color: #e5e7eb;
+  font-weight: 500;
+}
+
+#mobile-menu a:hover {
+  color: #ffffff;
+}
+
+/* Badge improvements */
+.inline-flex.items-center.gap-2.bg-white\\/10 {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Floating elements */
+.animate-float {
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* Timeline improvements */
+.timeline-step {
+  background: rgba(255, 255, 255, 0.98) !important;
+  border: 2px solid rgba(59, 130, 246, 0.2);
+}
+
+.timeline-step h3 {
+  color: #111827 !important;
+  font-weight: 900;
+}
+
+.timeline-step p {
+  color: #374151 !important;
+  font-weight: 600;
+}
+
+/* High contrast mode for AIDMA sections */
+.bg-high-contrast {
+  background: rgba(255, 255, 255, 0.98) !important;
+  color: #111827 !important;
+}
+
+.bg-high-contrast p, .bg-high-contrast span {
+  color: #111827 !important;
+}
+
+/* Action buttons in workflow */
+.btn-action-primary, .btn-action-secondary {
+  font-weight: 800;
+  letter-spacing: 0.025em;
+  box-shadow: 0 4px 14px 0 rgba(0, 0, 0, 0.1);
+}
+
+/* Footer improvements */
+footer {
+  background: #0f172a;
+}
+
+footer h3, footer h4 {
+  color: #ffffff;
+}
+
+footer a {
+  color: #cbd5e1;
+}
+
+footer a:hover {
+  color: #ffffff;
+}
+
+/* Scroll indicator */
+.animate-bounce {
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+/* Trust banner improvements */
+section.relative.bg-white.py-12 {
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Service section cards */
+#service .bg-white {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb;
+}
+
+#service .bg-white:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-color: #3b82f6;
+}
+
+/* Featured service card */
+#service .bg-primary-800 {
+  background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+  .gradient-text {
+    font-size: 1em;
+  }
+  
+  h1 {
+    font-size: 2.5rem !important;
+  }
+  
+  h2 {
+    font-size: 2rem !important;
+  }
+  
+  .hero-image-container {
+    margin-top: 2rem;
+  }
+}
+
+/* Print styles for better readability */
+@media print {
+  body {
+    background: white;
+    color: black;
+  }
+  
+  .gradient-text {
+    -webkit-text-fill-color: black !important;
+    color: black !important;
+  }
+  
+  .btn {
+    border: 2px solid black;
+    color: black;
+  }
+}
+
+/* Accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+  .animate-float,
+  .animate-bounce,
+  .animate-pulse {
+    animation: none;
+  }
+}
+
+/* Focus visible improvements */
+:focus-visible {
+  outline: 3px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Skip to content link */
+.skip-to-content {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 1rem;
+  background: #1e40af;
+  color: white;
+  text-decoration: none;
+  border-radius: 0 0 0.5rem 0;
+}
+
+.skip-to-content:focus {
+  left: 0;
+  top: 0;
+}
