@@ -195,7 +195,7 @@ function generateInvoiceHTML(data) {
     <div class="invoice-info">
       <div class="company-info">
         <h3>請求者</h3>
-        <p><strong>ワンダードリル株式会社</strong><br>
+        <p><strong>Wonder Drill株式会社</strong><br>
         〒123-4567 東京都渋谷区〇〇1-2-3<br>
         TEL: 03-1234-5678<br>
         Email: info@wonderdrill.com</p>
