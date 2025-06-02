@@ -151,6 +151,32 @@
 
 /* Remove animated border for subtle approach */
 
+/* Fix 8: Adjust font sizes for better text layout */
+/* Make contact section title fit on one line */
+#contact .bg-primary-800 h2 {
+  font-size: 2.5rem !important; /* Slightly smaller than text-3xl */
+  line-height: 1.2 !important;
+}
+
+/* Ensure popular plan button text displays correctly */
+.pricing-card.featured .btn-action-primary {
+  font-size: 1rem !important; /* Smaller font for two-line layout */
+  line-height: 1.3 !important;
+  padding: 1rem !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  #contact .bg-primary-800 h2 {
+    font-size: 2rem !important;
+  }
+  
+  .pricing-card.featured .btn-action-primary {
+    font-size: 0.9rem !important;
+    padding: 0.875rem !important;
+  }
+}
+
 /* Fix 7: Change "今すぐ始める" card to blue for better visibility */
 /* Target the specific card with bg-primary-800 class */
 #service .bg-primary-800 {
