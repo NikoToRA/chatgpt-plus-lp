@@ -76,17 +76,51 @@
   }
 }
 
-/* Fix 6: Ensure proper z-index stacking */
+/* Fix 6: Ensure proper z-index stacking and prevent badge cutoff */
 .pricing-card.featured {
   position: relative;
   z-index: 20 !important;
+  /* Add padding top to prevent badge cutoff */
+  margin-top: 2rem !important;
 }
 
 .pricing-card.featured .absolute.-top-6 {
   z-index: 30 !important;
 }
 
-/* Fix 7: Debug helper - Remove in production */
+/* Ensure the pricing section has enough padding to show the badge */
+#pricing .container {
+  padding-top: 2rem !important;
+}
+
+/* Fix 7: Change "今すぐ始める" card to blue for better visibility */
+#service .bg-primary-800:has(h3:contains("今すぐ始める")),
+#service > div > div.grid > div:last-child {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border-color: #2563eb !important;
+}
+
+/* Ensure white text remains visible on blue background */
+#service > div > div.grid > div:last-child h3,
+#service > div > div.grid > div:last-child p {
+  color: #ffffff !important;
+}
+
+/* Make the button stand out more */
+#service > div > div.grid > div:last-child a {
+  background-color: #fbbf24 !important; /* Amber/yellow for contrast */
+  color: #111827 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+#service > div > div.grid > div:last-child a:hover {
+  background-color: #f59e0b !important;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Fix 8: Debug helper - Remove in production */
 /* This will highlight any remaining white-on-white text issues */
 @media (prefers-reduced-motion: no-preference) and (max-width: 1px) {
   /* Disabled by default - change max-width to 9999px to enable during debugging */
