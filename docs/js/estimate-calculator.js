@@ -246,7 +246,7 @@ function generateInvoiceHTML(data) {
         </tr>
         ${data.lectureService ? `
         <tr>
-          <td>使用例のレクチャー</td>
+          <td>医療現場活用講義</td>
           <td>1回</td>
           <td>¥${PRICING.additionalServices.lecture.toLocaleString()}</td>
           <td class="amount">¥${PRICING.additionalServices.lecture.toLocaleString()}</td>
