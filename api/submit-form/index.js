@@ -237,7 +237,7 @@ module.exports = async function (context, req) {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename=chatgpt-plus-service-guide.pdf',
+        'Content-Disposition': 'attachment; filename=ChatGPT_DL.pdf',
         'X-DB-Test': JSON.stringify(dbTest),
         'X-Save-Result': saveResult ? 'SUCCESS' : 'FAILED',
         'X-Save-Error': saveError ? saveError.message : 'NONE'

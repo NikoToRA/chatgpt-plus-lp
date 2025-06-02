@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const a = document.createElement('a');
             a.style.display = 'none';
             a.href = url;
-            a.download = 'chatgpt-plus-service-guide.pdf';
+            a.download = 'ChatGPT_DL.pdf';
             document.body.appendChild(a);
             a.click();
             
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', function() {
               const a = document.createElement('a');
               a.style.display = 'none';
               a.href = url;
-              a.download = 'chatgpt-plus-service-guide.pdf';
+              a.download = 'ChatGPT_DL.pdf';
               document.body.appendChild(a);
               a.click();
               
@@ -218,8 +218,8 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Falling back to static PDF download');
         const a = document.createElement('a');
         a.style.display = 'none';
-        a.href = '/chatgpt-plus-service-guide.pdf';
-        a.download = 'chatgpt-plus-service-guide.pdf';
+        a.href = '/ChatGPT_DL.pdf';
+        a.download = 'ChatGPT_DL.pdf';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
