@@ -63,22 +63,30 @@
   z-index: 10;
 }
 
-/* Enhanced download button with subtle styling */
-button[type="submit"]:contains("資料"),
-button[type="submit"] {
-  background: linear-gradient(135deg, #3b82f6, #2563eb) !important;
+/* Enhanced download button with better styling */
+button[type="submit"],
+.btn-download {
+  background: linear-gradient(135deg, #f59e0b, #d97706) !important;
   color: #ffffff !important;
-  font-weight: 600 !important;
-  position: relative;
-  overflow: hidden;
+  font-weight: 700 !important;
+  font-size: 1.1rem !important;
+  padding: 0.875rem 2rem !important;
+  border: none !important;
+  border-radius: 0.75rem !important;
+  position: relative !important;
+  overflow: hidden !important;
   box-shadow: 
-    0 4px 15px rgba(59, 130, 246, 0.3),
-    0 2px 4px rgba(0, 0, 0, 0.1) !important;
+    0 8px 25px rgba(245, 158, 11, 0.4),
+    0 3px 10px rgba(0, 0, 0, 0.15) !important;
   transition: all 0.3s ease !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  z-index: 15 !important;
 }
 
 /* Animated gradient overlay on button */
-button[type="submit"]::before {
+button[type="submit"]::before,
+.btn-download::before {
   content: '';
   position: absolute;
   top: -50%;
@@ -88,19 +96,31 @@ button[type="submit"]::before {
   background: linear-gradient(
     45deg,
     transparent,
-    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.4),
     transparent
   );
   transform: rotate(45deg);
-  animation: button-shine 3s ease-in-out infinite;
+  animation: button-shine 4s ease-in-out infinite;
+  z-index: 1;
 }
 
-/* Button hover state with subtle enhancement */
-button[type="submit"]:hover {
-  transform: translateY(-2px) !important;
+/* Button hover state with enhanced styling */
+button[type="submit"]:hover,
+.btn-download:hover {
+  transform: translateY(-3px) scale(1.02) !important;
   box-shadow: 
-    0 6px 20px rgba(59, 130, 246, 0.4),
-    0 3px 8px rgba(0, 0, 0, 0.15) !important;
+    0 12px 35px rgba(245, 158, 11, 0.6),
+    0 5px 15px rgba(0, 0, 0, 0.2) !important;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b) !important;
+}
+
+/* Ensure button text stays above overlay */
+button[type="submit"] span,
+button[type="submit"]:not(:empty),
+.btn-download span,
+.btn-download:not(:empty) {
+  position: relative;
+  z-index: 2;
 }
 
 /* Enhanced contact card styling */
