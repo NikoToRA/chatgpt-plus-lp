@@ -1,0 +1,190 @@
+/* Cyber Geometric Pattern and Enhanced Contact Section */
+
+/* Cyber geometric pattern background for contact section */
+#contact {
+  position: relative;
+  background: #0f172a !important; /* Dark base color */
+  overflow: hidden;
+}
+
+/* Animated geometric pattern overlay */
+#contact::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(30deg, transparent 40%, rgba(59, 130, 246, 0.1) 40%, rgba(59, 130, 246, 0.1) 60%, transparent 60%),
+    linear-gradient(60deg, transparent 40%, rgba(139, 92, 246, 0.1) 40%, rgba(139, 92, 246, 0.1) 60%, transparent 60%),
+    linear-gradient(90deg, transparent 40%, rgba(236, 72, 153, 0.1) 40%, rgba(236, 72, 153, 0.1) 60%, transparent 60%);
+  background-size: 50px 50px, 80px 80px, 100px 100px;
+  animation: cyber-shift 20s linear infinite;
+  z-index: 1;
+}
+
+/* Additional geometric elements */
+#contact::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.2) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
+  background-size: 300px 300px, 400px 400px, 500px 500px;
+  animation: cyber-pulse 10s ease-in-out infinite;
+  z-index: 1;
+}
+
+/* Animated hexagon grid */
+#contact .cyber-hexagon {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 35px, rgba(59, 130, 246, 0.1) 35px, rgba(59, 130, 246, 0.1) 70px),
+    repeating-linear-gradient(60deg, transparent, transparent 35px, rgba(139, 92, 246, 0.1) 35px, rgba(139, 92, 246, 0.1) 70px),
+    repeating-linear-gradient(-60deg, transparent, transparent 35px, rgba(236, 72, 153, 0.1) 35px, rgba(236, 72, 153, 0.1) 70px);
+  animation: cyber-rotate 30s linear infinite;
+  z-index: 1;
+}
+
+/* Ensure content stays above the pattern */
+#contact > .container {
+  position: relative;
+  z-index: 10;
+}
+
+/* Enhanced download button with neon glow effect */
+button[type="submit"]:contains("資料"),
+button[type="submit"] {
+  background: linear-gradient(45deg, #f59e0b, #fbbf24) !important;
+  color: #1f2937 !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 
+    0 0 20px rgba(251, 191, 36, 0.5),
+    0 0 40px rgba(245, 158, 11, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.2) !important;
+  animation: neon-pulse 2s ease-in-out infinite;
+  transition: all 0.3s ease !important;
+}
+
+/* Animated gradient overlay on button */
+button[type="submit"]::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(
+    45deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transform: rotate(45deg);
+  animation: button-shine 3s ease-in-out infinite;
+}
+
+/* Button hover state with enhanced glow */
+button[type="submit"]:hover {
+  transform: translateY(-2px) scale(1.05) !important;
+  box-shadow: 
+    0 0 30px rgba(251, 191, 36, 0.8),
+    0 0 60px rgba(245, 158, 11, 0.5),
+    0 10px 30px rgba(0, 0, 0, 0.3),
+    inset 0 0 30px rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Animations */
+@keyframes cyber-shift {
+  0% { transform: translateX(0) translateY(0); }
+  100% { transform: translateX(50px) translateY(50px); }
+}
+
+@keyframes cyber-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.1); }
+}
+
+@keyframes cyber-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes neon-pulse {
+  0%, 100% { 
+    box-shadow: 
+      0 0 20px rgba(251, 191, 36, 0.5),
+      0 0 40px rgba(245, 158, 11, 0.3),
+      inset 0 0 20px rgba(255, 255, 255, 0.2);
+  }
+  50% { 
+    box-shadow: 
+      0 0 30px rgba(251, 191, 36, 0.8),
+      0 0 60px rgba(245, 158, 11, 0.5),
+      inset 0 0 30px rgba(255, 255, 255, 0.3);
+  }
+}
+
+@keyframes button-shine {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  50%, 100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+}
+
+/* Add circuit board pattern for extra cyber effect */
+#contact .circuit-pattern {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0.1;
+  background-image: 
+    linear-gradient(0deg, transparent 24%, rgba(59, 130, 246, 0.5) 25%, rgba(59, 130, 246, 0.5) 26%, transparent 27%, transparent 74%, rgba(59, 130, 246, 0.5) 75%, rgba(59, 130, 246, 0.5) 76%, transparent 77%, transparent),
+    linear-gradient(90deg, transparent 24%, rgba(139, 92, 246, 0.5) 25%, rgba(139, 92, 246, 0.5) 26%, transparent 27%, transparent 74%, rgba(139, 92, 246, 0.5) 75%, rgba(139, 92, 246, 0.5) 76%, transparent 77%, transparent);
+  background-size: 50px 50px;
+  z-index: 2;
+}
+
+/* Glowing dots animation */
+#contact .glow-dots {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: #3b82f6;
+  border-radius: 50%;
+  box-shadow: 
+    0 0 10px #3b82f6,
+    50px 50px 0 #8b5cf6,
+    100px 100px 0 #ec4899,
+    150px 150px 0 #3b82f6,
+    200px 200px 0 #8b5cf6;
+  animation: glow-move 15s linear infinite;
+  z-index: 3;
+}
+
+@keyframes glow-move {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(300px, 300px); }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  #contact::before,
+  #contact::after {
+    background-size: 30px 30px, 50px 50px, 70px 70px;
+  }
+  
+  button[type="submit"] {
+    animation-duration: 3s;
+  }
+}
