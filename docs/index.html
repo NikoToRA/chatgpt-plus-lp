@@ -862,13 +862,146 @@
                 <label for="message" class="block text-sm font-medium text-gray-700 mb-1">お問い合わせ内容</label>
                 <textarea id="message" name="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500"></textarea>
               </div>
-              <button type="submit" class="w-full bg-secondary-500 hover:bg-secondary-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">資料をダウンロード</button>
+              <div class="space-y-3">
+                <button type="submit" class="w-full bg-secondary-500 hover:bg-secondary-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">資料をダウンロード</button>
+                <button type="button" onclick="openEstimateModal()" class="w-full btn-estimate bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-4 rounded-lg transition-all transform hover:scale-105 shadow-lg">
+                  <span class="flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                    お試しお見積もり
+                  </span>
+                </button>
+              </div>
             </form>
           </div>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- お見積もりモーダル -->
+  <div id="estimateModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-bold text-gray-900">お試しお見積もり</h2>
+          <button onclick="closeEstimateModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+        </div>
+        <p class="text-gray-600 mt-2">導入規模と期間を入力して、概算費用を算出いたします。</p>
+      </div>
+      
+      <form id="estimateForm" class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label for="facilityName" class="block text-sm font-medium text-gray-700 mb-2">医療機関名 *</label>
+            <input type="text" id="facilityName" name="facilityName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+          </div>
+          <div>
+            <label for="contactPerson" class="block text-sm font-medium text-gray-700 mb-2">ご担当者様 *</label>
+            <input type="text" id="contactPerson" name="contactPerson" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">メールアドレス *</label>
+            <input type="email" id="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+          </div>
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">電話番号</label>
+            <input type="tel" id="phone" name="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label for="facilityType" class="block text-sm font-medium text-gray-700 mb-2">施設種別 *</label>
+          <select id="facilityType" name="facilityType" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <option value="">選択してください</option>
+            <option value="clinic">クリニック・診療所</option>
+            <option value="hospital">病院</option>
+            <option value="dental">歯科医院</option>
+            <option value="pharmacy">調剤薬局</option>
+            <option value="other">その他</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label for="accountCount" class="block text-sm font-medium text-gray-700 mb-2">導入予定アカウント数 *</label>
+            <select id="accountCount" name="accountCount" required onchange="calculateEstimate()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+              <option value="">選択してください</option>
+              <option value="1">1アカウント</option>
+              <option value="2">2アカウント</option>
+              <option value="3">3アカウント</option>
+              <option value="5">5アカウント</option>
+              <option value="10">10アカウント</option>
+              <option value="20">20アカウント以上</option>
+            </select>
+          </div>
+          <div>
+            <label for="contractPeriod" class="block text-sm font-medium text-gray-700 mb-2">契約期間 *</label>
+            <select id="contractPeriod" name="contractPeriod" required onchange="calculateEstimate()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+              <option value="">選択してください</option>
+              <option value="1">1ヶ月</option>
+              <option value="3">3ヶ月</option>
+              <option value="6">6ヶ月</option>
+              <option value="12">12ヶ月（年間契約）</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">追加サービス</label>
+          <div class="space-y-2">
+            <label class="flex items-center">
+              <input type="checkbox" id="lectureService" name="additionalServices" value="lecture" onchange="calculateEstimate()" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+              <span class="ml-2 text-sm text-gray-700">使用例のレクチャー（+30,000円/回）</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="prioritySupport" name="additionalServices" value="support" onchange="calculateEstimate()" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+              <span class="ml-2 text-sm text-gray-700">優先サポート（+10,000円/月）</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 見積もり結果表示 -->
+        <div id="estimateResult" class="hidden bg-gradient-to-r from-emerald-50 to-teal-50 border-l-4 border-emerald-400 p-4 mb-6">
+          <h3 class="text-lg font-semibold text-emerald-800 mb-2">概算お見積もり</h3>
+          <div class="text-sm text-emerald-700 space-y-1">
+            <div class="flex justify-between">
+              <span>基本料金（<span id="resultAccountCount">-</span>アカウント × <span id="resultPeriod">-</span>ヶ月）</span>
+              <span id="basicCost">¥0</span>
+            </div>
+            <div class="flex justify-between">
+              <span>初期設定費用</span>
+              <span id="setupCost">¥0</span>
+            </div>
+            <div id="additionalCostSection" class="hidden">
+              <div class="flex justify-between">
+                <span>追加サービス</span>
+                <span id="additionalCost">¥0</span>
+              </div>
+            </div>
+            <hr class="border-emerald-200 my-2">
+            <div class="flex justify-between font-semibold text-emerald-800">
+              <span>合計金額（税込）</span>
+              <span id="totalCost">¥0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex space-x-3">
+          <button type="button" onclick="generateInvoice()" id="generateInvoiceBtn" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-4 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            お試し請求書を発行
+          </button>
+          <button type="button" onclick="closeEstimateModal()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+            閉じる
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <!-- フッター -->
   <footer class="bg-primary-900 text-gray-400 py-12">
@@ -943,5 +1076,6 @@
   <!-- Modern Scripts -->
   <script src="js/modern-interactions.js"></script>
   <script src="js/azure-form-handler.js"></script>
+  <script src="js/estimate-calculator.js"></script>
 </body>
 </html>
