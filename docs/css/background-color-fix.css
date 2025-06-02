@@ -1,0 +1,55 @@
+/* Background Color Fix for Annual Plan and Contact Section */
+
+/* Annual Plan (年額プラン) - Change white background to light blue */
+.pricing-card.featured .bg-white.rounded-b-3xl {
+  background: #e6f3ff !important; /* Light blue background instead of white */
+}
+
+/* Annual Plan checkmark list items - Add subtle background */
+.pricing-card.featured .bg-white.rounded-b-3xl li {
+  background: rgba(59, 130, 246, 0.05);
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+/* Contact Section (お問い合わせはこちら) - Change white background to base indigo */
+#contact .bg-white.rounded-xl {
+  background: #1e3a8a !important; /* Base indigo color */
+}
+
+/* Update text colors for better contrast on the new indigo background */
+#contact .bg-white.rounded-xl h3,
+#contact .bg-white.rounded-xl label {
+  color: #ffffff !important;
+}
+
+#contact .bg-white.rounded-xl p {
+  color: #e0e7ff !important;
+}
+
+/* Form fields styling for better visibility */
+#contact .bg-white.rounded-xl input,
+#contact .bg-white.rounded-xl textarea,
+#contact .bg-white.rounded-xl select {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.3) !important;
+}
+
+#contact .bg-white.rounded-xl input:focus,
+#contact .bg-white.rounded-xl textarea:focus,
+#contact .bg-white.rounded-xl select:focus {
+  background: #ffffff !important;
+  border-color: #3b82f6 !important;
+}
+
+/* Submit button styling */
+#contact .bg-white.rounded-xl button[type="submit"] {
+  background: #3b82f6 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+#contact .bg-white.rounded-xl button[type="submit"]:hover {
+  background: #2563eb !important;
+}
