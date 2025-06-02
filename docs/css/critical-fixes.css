@@ -82,10 +82,7 @@
     padding: 0.5rem 1.25rem !important;
   }
   
-  /* Disable animated border on mobile for performance */
-  .pricing-card.featured::before {
-    display: none;
-  }
+  /* No animated border to disable (removed for subtle design) */
 }
 
 /* Fix 6: Enhanced popular badge design - ensure it stays within card bounds */
@@ -98,7 +95,7 @@
   padding-top: 3rem !important;
 }
 
-/* Redesign the popular badge to stay within card bounds */
+/* Redesign the popular badge to stay within card bounds - subtle version */
 .pricing-card.featured .absolute.-top-6 {
   /* Change from external positioning to internal */
   position: absolute !important;
@@ -106,48 +103,32 @@
   left: 50% !important;
   transform: translateX(-50%) !important;
   z-index: 30 !important;
-  /* Enhanced badge styling for maximum impact */
-  background: linear-gradient(135deg, #dc2626, #ea580c, #f59e0b) !important;
+  /* Subtle badge styling */
+  background: linear-gradient(135deg, #dc2626, #ea580c) !important;
   box-shadow: 
-    0 8px 25px rgba(220, 38, 38, 0.4),
-    0 0 0 3px rgba(255, 255, 255, 0.2),
-    inset 0 2px 0 rgba(255, 255, 255, 0.3) !important;
-  animation: badge-glow 2s ease-in-out infinite !important;
+    0 4px 12px rgba(220, 38, 38, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.15) !important;
+  /* Remove animation for subtlety */
 }
 
-/* Enhanced badge animation */
-@keyframes badge-glow {
-  0%, 100% { 
-    box-shadow: 
-      0 8px 25px rgba(220, 38, 38, 0.4),
-      0 0 0 3px rgba(255, 255, 255, 0.2),
-      inset 0 2px 0 rgba(255, 255, 255, 0.3);
-  }
-  50% { 
-    box-shadow: 
-      0 12px 35px rgba(220, 38, 38, 0.6),
-      0 0 0 4px rgba(255, 255, 255, 0.3),
-      inset 0 2px 0 rgba(255, 255, 255, 0.4);
-    transform: translateX(-50%) scale(1.05);
-  }
-}
+/* Remove flashy animations for subtle approach */
 
 /* Ensure the pricing section has adequate spacing */
 #pricing .container {
   padding-top: 1rem !important;
 }
 
-/* Enhanced card styling for maximum appeal */
+/* Enhanced card styling for subtle appeal */
 .pricing-card.featured {
-  /* Stronger elevation effect */
+  /* Moderate elevation effect */
   box-shadow: 
-    0 25px 50px rgba(0, 0, 0, 0.25),
-    0 0 0 1px rgba(255, 255, 255, 0.1) !important;
-  /* Subtle border glow */
-  border: 2px solid transparent !important;
+    0 15px 35px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+  /* Subtle border */
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
   background-clip: padding-box !important;
-  /* Enhanced transform for prominence */
-  transform: scale(1.1) translateY(-10px) !important;
+  /* Moderate transform for prominence */
+  transform: scale(1.05) translateY(-5px) !important;
 }
 
 /* Ensure the featured card content is properly spaced */
@@ -155,37 +136,20 @@
   padding-top: 1rem !important; /* Reduce top padding since we added padding to card */
 }
 
-/* Make the badge text more impactful */
+/* Make the badge text subtle but clear */
 .pricing-card.featured .absolute.-top-6 {
-  /* Enhanced typography */
-  font-size: 1rem !important;
-  font-weight: 900 !important;
-  letter-spacing: 0.5px !important;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
-  /* Better padding */
-  padding: 0.75rem 1.5rem !important;
-  /* More rounded for friendly appeal */
-  border-radius: 2rem !important;
+  /* Moderate typography */
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.25px !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  /* Moderate padding */
+  padding: 0.5rem 1.25rem !important;
+  /* Rounded for friendly appeal */
+  border-radius: 1.5rem !important;
 }
 
-/* Add a subtle animated border */
-.pricing-card.featured::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899, #f59e0b);
-  border-radius: inherit;
-  z-index: -1;
-  animation: border-rotate 4s linear infinite;
-}
-
-@keyframes border-rotate {
-  0% { filter: hue-rotate(0deg); }
-  100% { filter: hue-rotate(360deg); }
-}
+/* Remove animated border for subtle approach */
 
 /* Fix 7: Change "今すぐ始める" card to blue for better visibility */
 /* Target the specific card with bg-primary-800 class */
