@@ -216,9 +216,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // エラー時は静的PDFをダウンロード（フォールバック）
         console.log('Falling back to static PDF download');
+        
+        // まず新しいタブで開いてみる
+        window.open('./ChatGPT_DL.pdf', '_blank');
+        
+        // 同時にダウンロードリンクも作成
         const a = document.createElement('a');
         a.style.display = 'none';
-        a.href = '/ChatGPT_DL.pdf';
+        a.href = './ChatGPT_DL.pdf';
         a.download = 'ChatGPT_DL.pdf';
         document.body.appendChild(a);
         a.click();
