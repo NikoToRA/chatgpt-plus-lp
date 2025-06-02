@@ -162,6 +162,22 @@ document.addEventListener('DOMContentLoaded', function() {
             const responseText = await response.text();
             console.log('Response text preview:', responseText.substring(0, 100));
             
+            // JSONレスポンスの処理を試みる
+            try {
+              const jsonResponse = JSON.parse(responseText);
+              if (jsonResponse.pdfUrl) {
+                console.log('Received PDF URL:', jsonResponse.pdfUrl);
+                // 静的PDFを新しいタブで開く
+                window.open(jsonResponse.pdfUrl, '_blank');
+                
+                // アラート表示
+                alert(jsonResponse.message || '資料のダウンロードリンクを新しいタブで開きました。');
+                return;
+              }
+            } catch (jsonError) {
+              console.log('Not a JSON response, trying other formats...');
+            }
+            
             // PDFの場合（JVBERで始まる）
             if (responseText.startsWith('JVBERi0x') || responseText.startsWith('%PDF')) {
               console.log('Detected PDF in text response, converting to blob');

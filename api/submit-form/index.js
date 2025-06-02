@@ -1,5 +1,7 @@
 const PDFDocument = require('pdfkit');
 const { TableClient } = require('@azure/data-tables');
+const fs = require('fs');
+const path = require('path');
 
 // Azure Table Storage設定
 const getTableClient = () => {
@@ -227,23 +229,23 @@ module.exports = async function (context, req) {
       // Table Storage保存に失敗してもPDF生成は続行
     }
     
-    // PDF生成
-    context.log('Generating PDF...');
-    const pdfBuffer = await generatePDF(formData);
-    context.log('PDF generated successfully, size:', pdfBuffer.length);
+    // 静的PDFのURLを返す
+    context.log('Returning static PDF URL...');
     
-    // レスポンス（デバッグ情報付き）
+    // レスポンス（静的PDFへのリダイレクト）
     context.res = {
       status: 200,
       headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename=ChatGPT_DL.pdf',
+        'Content-Type': 'application/json',
         'X-DB-Test': JSON.stringify(dbTest),
         'X-Save-Result': saveResult ? 'SUCCESS' : 'FAILED',
         'X-Save-Error': saveError ? saveError.message : 'NONE'
       },
-      body: pdfBuffer.toString('base64'),
-      isBase64Encoded: true
+      body: JSON.stringify({
+        success: true,
+        pdfUrl: '/docs/ChatGPT_DL.pdf',
+        message: 'お申し込みありがとうございます。資料をダウンロードしてください。'
+      })
     };
     
     context.log('Response sent successfully with debug headers');
