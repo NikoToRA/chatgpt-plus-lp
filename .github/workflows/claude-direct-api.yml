@@ -21,9 +21,6 @@ jobs:
         run: |
           echo "Event: ${{ github.event_name }}"
           echo "Action: ${{ github.event.action }}"
-          echo "Comment: ${{ github.event.comment.body }}"
-          echo "Issue: ${{ github.event.issue.body }}"
-          echo "Review: ${{ github.event.review.body }}"
           echo "Checking for @claude trigger..."
 
       - name: Checkout repository
