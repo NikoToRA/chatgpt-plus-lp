@@ -22,6 +22,7 @@
   background-size: 50px 50px, 80px 80px, 100px 100px;
   animation: cyber-shift 20s linear infinite;
   z-index: 1;
+  pointer-events: none;
 }
 
 /* Additional geometric elements */
@@ -38,7 +39,8 @@
     radial-gradient(circle at 50% 50%, rgba(236, 72, 153, 0.1) 0%, transparent 50%);
   background-size: 300px 300px, 400px 400px, 500px 500px;
   animation: cyber-pulse 10s ease-in-out infinite;
-  z-index: 1;
+  z-index: 2;
+  pointer-events: none;
 }
 
 /* Animated hexagon grid with horizontal scroll */
@@ -51,7 +53,8 @@
     repeating-linear-gradient(60deg, transparent, transparent 35px, rgba(139, 92, 246, 0.1) 35px, rgba(139, 92, 246, 0.1) 70px),
     repeating-linear-gradient(-60deg, transparent, transparent 35px, rgba(236, 72, 153, 0.1) 35px, rgba(236, 72, 153, 0.1) 70px);
   animation: cyber-slide 40s linear infinite;
-  z-index: 1;
+  z-index: 3;
+  pointer-events: none;
 }
 
 /* Ensure content stays above the pattern */
@@ -118,13 +121,30 @@ button[type="submit"]:hover {
   background-image: 
     radial-gradient(circle at 20% 50%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
     radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
-  z-index: 1;
+  z-index: 0;
+  pointer-events: none;
 }
 
-/* Ensure text stays above pattern */
+/* Ensure all text stays above pattern with highest z-index */
 #contact .bg-primary-800 > * {
   position: relative;
-  z-index: 2;
+  z-index: 10;
+}
+
+/* Force white text color for all contact card text elements */
+#contact .bg-primary-800 h2,
+#contact .bg-primary-800 p,
+#contact .bg-primary-800 span,
+#contact .bg-primary-800 li {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Ensure checkmark icons remain visible */
+#contact .bg-primary-800 svg {
+  position: relative;
+  z-index: 10;
+  color: #60a5fa !important; /* Light blue for checkmarks */
 }
 
 /* Add accent border to contact card */
@@ -166,7 +186,8 @@ button[type="submit"]:hover {
     linear-gradient(90deg, transparent 24%, rgba(139, 92, 246, 0.5) 25%, rgba(139, 92, 246, 0.5) 26%, transparent 27%, transparent 74%, rgba(139, 92, 246, 0.5) 75%, rgba(139, 92, 246, 0.5) 76%, transparent 77%, transparent);
   background-size: 50px 50px;
   animation: cyber-slide-slow 60s linear infinite;
-  z-index: 2;
+  z-index: 4;
+  pointer-events: none;
 }
 
 @keyframes cyber-slide-slow {
