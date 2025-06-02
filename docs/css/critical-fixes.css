@@ -94,33 +94,49 @@
 }
 
 /* Fix 7: Change "今すぐ始める" card to blue for better visibility */
-#service .bg-primary-800:has(h3:contains("今すぐ始める")),
-#service > div > div.grid > div:last-child {
+/* Target the specific card with bg-primary-800 class */
+#service .bg-primary-800 {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border-color: #2563eb !important;
+}
+
+/* Alternative selector for more specificity */
+#service div.bg-primary-800.p-6.rounded-lg {
   background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
   border-color: #2563eb !important;
 }
 
 /* Ensure white text remains visible on blue background */
-#service > div > div.grid > div:last-child h3,
-#service > div > div.grid > div:last-child p {
+#service .bg-primary-800 h3,
+#service .bg-primary-800 p {
   color: #ffffff !important;
 }
 
 /* Make the button stand out more */
-#service > div > div.grid > div:last-child a {
+#service .bg-primary-800 a {
   background-color: #fbbf24 !important; /* Amber/yellow for contrast */
   color: #111827 !important;
   font-weight: 600 !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
 }
 
-#service > div > div.grid > div:last-child a:hover {
+#service .bg-primary-800 a:hover {
   background-color: #f59e0b !important;
   transform: translateY(-1px);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
 }
 
-/* Fix 8: Debug helper - Remove in production */
+/* Fix 8: Additional specificity for the "今すぐ始める" card - ensure it overrides everything */
+/* Using multiple selectors to ensure the style is applied */
+.bg-primary-800.p-6.rounded-lg.shadow-sm.border.border-primary-700,
+div.bg-primary-800[class*="rounded-lg"][class*="shadow-sm"],
+section#service div.bg-primary-800 {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  background-color: #3b82f6 !important; /* Fallback */
+  border-color: #2563eb !important;
+}
+
+/* Fix 9: Debug helper - Remove in production */
 /* This will highlight any remaining white-on-white text issues */
 @media (prefers-reduced-motion: no-preference) and (max-width: 1px) {
   /* Disabled by default - change max-width to 9999px to enable during debugging */
