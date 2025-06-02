@@ -71,26 +71,120 @@
 /* Fix 5: Mobile responsiveness for featured card */
 @media (max-width: 768px) {
   #pricing .pricing-card.featured {
-    transform: scale(1) !important;
+    transform: scale(1) translateY(-5px) !important;
     margin: 1rem 0;
+    padding-top: 2.5rem !important; /* Slightly less padding on mobile */
+  }
+  
+  .pricing-card.featured .absolute.-top-6 {
+    top: 0.25rem !important; /* Closer to top on mobile */
+    font-size: 0.9rem !important;
+    padding: 0.5rem 1.25rem !important;
+  }
+  
+  /* Disable animated border on mobile for performance */
+  .pricing-card.featured::before {
+    display: none;
   }
 }
 
-/* Fix 6: Ensure proper z-index stacking and prevent badge cutoff */
+/* Fix 6: Enhanced popular badge design - ensure it stays within card bounds */
 .pricing-card.featured {
   position: relative;
   z-index: 20 !important;
-  /* Add padding top to prevent badge cutoff */
-  margin-top: 2rem !important;
+  /* Remove external margin, handle spacing internally */
+  margin-top: 0 !important;
+  /* Add top padding inside the card for the badge */
+  padding-top: 3rem !important;
 }
 
+/* Redesign the popular badge to stay within card bounds */
 .pricing-card.featured .absolute.-top-6 {
+  /* Change from external positioning to internal */
+  position: absolute !important;
+  top: 0.5rem !important; /* Inside the card */
+  left: 50% !important;
+  transform: translateX(-50%) !important;
   z-index: 30 !important;
+  /* Enhanced badge styling for maximum impact */
+  background: linear-gradient(135deg, #dc2626, #ea580c, #f59e0b) !important;
+  box-shadow: 
+    0 8px 25px rgba(220, 38, 38, 0.4),
+    0 0 0 3px rgba(255, 255, 255, 0.2),
+    inset 0 2px 0 rgba(255, 255, 255, 0.3) !important;
+  animation: badge-glow 2s ease-in-out infinite !important;
 }
 
-/* Ensure the pricing section has enough padding to show the badge */
+/* Enhanced badge animation */
+@keyframes badge-glow {
+  0%, 100% { 
+    box-shadow: 
+      0 8px 25px rgba(220, 38, 38, 0.4),
+      0 0 0 3px rgba(255, 255, 255, 0.2),
+      inset 0 2px 0 rgba(255, 255, 255, 0.3);
+  }
+  50% { 
+    box-shadow: 
+      0 12px 35px rgba(220, 38, 38, 0.6),
+      0 0 0 4px rgba(255, 255, 255, 0.3),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4);
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+
+/* Ensure the pricing section has adequate spacing */
 #pricing .container {
-  padding-top: 2rem !important;
+  padding-top: 1rem !important;
+}
+
+/* Enhanced card styling for maximum appeal */
+.pricing-card.featured {
+  /* Stronger elevation effect */
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.1) !important;
+  /* Subtle border glow */
+  border: 2px solid transparent !important;
+  background-clip: padding-box !important;
+  /* Enhanced transform for prominence */
+  transform: scale(1.1) translateY(-10px) !important;
+}
+
+/* Ensure the featured card content is properly spaced */
+.pricing-card.featured .p-8 {
+  padding-top: 1rem !important; /* Reduce top padding since we added padding to card */
+}
+
+/* Make the badge text more impactful */
+.pricing-card.featured .absolute.-top-6 {
+  /* Enhanced typography */
+  font-size: 1rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.5px !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+  /* Better padding */
+  padding: 0.75rem 1.5rem !important;
+  /* More rounded for friendly appeal */
+  border-radius: 2rem !important;
+}
+
+/* Add a subtle animated border */
+.pricing-card.featured::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6, #ec4899, #f59e0b);
+  border-radius: inherit;
+  z-index: -1;
+  animation: border-rotate 4s linear infinite;
+}
+
+@keyframes border-rotate {
+  0% { filter: hue-rotate(0deg); }
+  100% { filter: hue-rotate(360deg); }
 }
 
 /* Fix 7: Change "今すぐ始める" card to blue for better visibility */
