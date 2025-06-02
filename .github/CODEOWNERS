@@ -1,0 +1,7 @@
+# このファイルは特定のファイルやディレクトリの変更に承認を必要とします
+
+# Claude ワークフローファイルの保護
+/.github/workflows/claude.yml @NikoToRA
+
+# 重要な設定ファイルの保護
+/.github/CODEOWNERS @NikoToRA 
