@@ -5,6 +5,20 @@
       "allowedRoles": ["anonymous"]
     },
     {
+      "route": "/*.pdf",
+      "headers": {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": "inline"
+      }
+    },
+    {
+      "route": "/docs/*.pdf",
+      "headers": {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": "inline"
+      }
+    },
+    {
       "route": "/*",
       "serve": "/index.html",
       "statusCode": 200
@@ -12,7 +26,7 @@
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/images/*.{png,jpg,gif,svg}", "/css/*", "/js/*", "/api/*"]
+    "exclude": ["/images/*.{png,jpg,gif,svg}", "/css/*", "/js/*", "/api/*", "/*.pdf", "/docs/*.pdf"]
   },
   "mimeTypes": {
     ".json": "application/json",
