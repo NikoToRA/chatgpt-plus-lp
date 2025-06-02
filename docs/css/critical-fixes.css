@@ -1,0 +1,97 @@
+/* Critical Fixes - Must Load Last for Maximum Priority */
+
+/* Fix 1: Annual Plan White Background Issue */
+/* The featured pricing card has white background with gray text that should be visible */
+#pricing .pricing-card.featured div.p-8.bg-white.rounded-b-3xl {
+  background-color: #f9fafb !important; /* Light gray instead of pure white */
+  border: 1px solid #e5e7eb !important; /* Add subtle border */
+}
+
+/* Ensure the red checkmarks remain visible */
+#pricing .pricing-card.featured .bg-gradient-to-r.from-red-500.to-orange-500 {
+  background: linear-gradient(to right, #ef4444, #f97316) !important;
+}
+
+/* Fix 2: Contact Section Missing Background Gradient */
+#contact.bg-gradient-wonder-light {
+  background: linear-gradient(135deg, #ddd6fe 0%, #c7d2fe 50%, #a5b4fc 100%) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add subtle animation to the gradient background */
+#contact.bg-gradient-wonder-light::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.1); opacity: 0.1; }
+}
+
+/* Ensure content stays above the animated background */
+#contact > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Fix 3: Ensure AIDMA colors are properly applied */
+.aidma-interest .pricing-card.featured {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+}
+
+/* Override any conflicting background colors for the featured card top section */
+.aidma-interest .pricing-card.featured > div:first-child {
+  background: transparent !important; /* Let the parent gradient show through */
+}
+
+/* Fix 4: Enhance text contrast in all potential problem areas */
+/* White text on colored backgrounds should always be visible */
+.pricing-card.featured h3,
+.pricing-card.featured .text-white,
+.pricing-card.featured .text-gray-200 {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Gray text on light backgrounds should be darker */
+.bg-white .text-gray-700,
+.bg-gray-50 .text-gray-700,
+#pricing .text-gray-700 {
+  color: #374151 !important; /* Darker gray for better contrast */
+}
+
+/* Fix 5: Mobile responsiveness for featured card */
+@media (max-width: 768px) {
+  #pricing .pricing-card.featured {
+    transform: scale(1) !important;
+    margin: 1rem 0;
+  }
+}
+
+/* Fix 6: Ensure proper z-index stacking */
+.pricing-card.featured {
+  position: relative;
+  z-index: 20 !important;
+}
+
+.pricing-card.featured .absolute.-top-6 {
+  z-index: 30 !important;
+}
+
+/* Fix 7: Debug helper - Remove in production */
+/* This will highlight any remaining white-on-white text issues */
+@media (prefers-reduced-motion: no-preference) and (max-width: 1px) {
+  /* Disabled by default - change max-width to 9999px to enable during debugging */
+  .bg-white .text-white:not(.btn):not(svg) {
+    outline: 3px dashed red !important;
+    outline-offset: 2px;
+  }
+}
