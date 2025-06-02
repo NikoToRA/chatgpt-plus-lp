@@ -1,0 +1,51 @@
+/* 背景色修正 - Issue #34 */
+
+/* 年額プランのチェックマークリストの背景色変更 */
+.pricing-card.featured ul li {
+  background-color: #e6f3ff; /* 薄い青色 */
+  padding: 8px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+/* 年額プランカード全体の背景調整 */
+.pricing-card.featured .bg-white {
+  background-color: #f8fbff !important; /* より薄い青みがかった白 */
+}
+
+/* お問い合わせセクション(CTAセクション)の背景色変更 */
+#contact {
+  background: #1e3a8a !important; /* ベースの藍色 */
+}
+
+/* お問い合わせセクション内のテキスト色調整 */
+#contact .container > div > div {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* フォームフィールドの背景を半透明の白に */
+#contact input,
+#contact textarea,
+#contact select {
+  background-color: rgba(255, 255, 255, 0.95);
+  border-color: #cbd5e1;
+}
+
+#contact input:focus,
+#contact textarea:focus,
+#contact select:focus {
+  background-color: #ffffff;
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+/* ラベルの色を見やすく */
+#contact label {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+/* 年額プランの1ヶ月無料の背景も調整 */
+.pricing-card.featured .bg-white.bg-opacity-20 {
+  background-color: rgba(255, 255, 255, 0.3) !important;
+}
