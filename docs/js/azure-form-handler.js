@@ -95,7 +95,16 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Sending form data:', formData);
         console.log('Purpose value:', `"${formData.purpose}"`, 'Length:', formData.purpose.length);
         
-        // Azure Functions APIを呼び出し
+        // PDFを新しいタブで開く
+        window.open('/PDF_DL.pdf', '_blank');
+        
+        // フォームをリセット
+        estimateForm.reset();
+        
+        // 成功メッセージを表示
+        alert('お問い合わせありがとうございます。資料のダウンロードリンクを新しいタブで開きました。');
+        
+        // Azure Functions APIを呼び出し（バックグラウンドで実行）
         const response = await fetch('/api/submit-form', {
           method: 'POST',
           headers: {
