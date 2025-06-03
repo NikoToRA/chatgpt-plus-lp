@@ -113,11 +113,14 @@ document.addEventListener('DOMContentLoaded', function() {
         const saveResult = response.headers.get('X-Save-Result');
         const saveError = response.headers.get('X-Save-Error');
         
+        console.log('=== DETAILED DEBUG INFO ===');
+        console.log('All response headers:', Object.fromEntries(response.headers.entries()));
         if (dbTest) {
           console.log('DB Test Result:', JSON.parse(dbTest));
         }
         console.log('Save Result:', saveResult);
         console.log('Save Error:', saveError);
+        console.log('=== END DEBUG INFO ===');
         
         if (response.ok) {
           const contentType = response.headers.get('Content-Type');
@@ -167,8 +170,15 @@ document.addEventListener('DOMContentLoaded', function() {
               const jsonResponse = JSON.parse(responseText);
               if (jsonResponse.pdfUrl) {
                 console.log('Received PDF URL:', jsonResponse.pdfUrl);
-                // 静的PDFを新しいタブで開く
-                window.open(jsonResponse.pdfUrl, '_blank');
+                
+                // ポップアップブロック回避: 直接ダウンロードリンクを作成
+                const a = document.createElement('a');
+                a.href = jsonResponse.pdfUrl;
+                a.download = '医療機関向けサービス資料.pdf';
+                a.style.display = 'none';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
                 
                 // ダウンロードリンクコンテナを表示
                 const downloadContainer = document.getElementById('downloadLinkContainer');
@@ -180,13 +190,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 estimateForm.reset();
                 
                 // 成功メッセージを表示
-                let message = 'お問い合わせありがとうございます。';
+                let message = 'お問い合わせありがとうございます。資料のダウンロードが開始されました。';
                 if (saveResult === 'SUCCESS') {
                   message += '\n✅ お問い合わせ内容を保存しました。';
                 } else {
-                  message += '\n⚠️ データ保存に失敗しましたが、資料はダウンロード可能です。';
+                  message += '\n\n※データ保存でエラーが発生しましたが、資料はダウンロード可能です。';
                 }
-                message += '\n\n資料のダウンロードリンクを表示しました。';
                 
                 alert(message);
                 return;
@@ -250,16 +259,22 @@ document.addEventListener('DOMContentLoaded', function() {
         // エラー時は静的PDFをダウンロード（フォールバック）
         console.log('Falling back to static PDF download');
         
+        // ポップアップブロック回避: 直接ダウンロードリンクを作成
+        const a = document.createElement('a');
+        a.href = '/PDF_DL.pdf';
+        a.download = '医療機関向けサービス資料.pdf';
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        
         // ダウンロードリンクコンテナを表示
         const downloadContainer = document.getElementById('downloadLinkContainer');
         if (downloadContainer) {
           downloadContainer.classList.remove('hidden');
         }
         
-        // 新しいタブで開く
-        window.open('/PDF_DL.pdf', '_blank');
-        
-        alert(`データベース保存でエラーが発生しましたが、資料のダウンロードリンクを表示しました。\nエラー詳細: ${error.message}`);
+        alert(`エラーが発生しましたが、資料のダウンロードが開始されました。\nエラー詳細: ${error.message}`);
       } finally {
         submitButton.disabled = false;
         submitButton.textContent = originalButtonText;

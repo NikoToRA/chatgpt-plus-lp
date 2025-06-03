@@ -1,14 +1,30 @@
-const { TableClient } = require('@azure/data-tables');
+const { TableServiceClient, TableClient } = require('@azure/data-tables');
 
-// 接続文字列をテスト
-// 注意: AccountKeyに実際のキーを設定してください
-const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING || "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=YOUR_ACTUAL_KEY_HERE;EndpointSuffix=core.windows.net";
+// local.settings.jsonから環境変数を読み込み
+const path = require('path');
+const fs = require('fs');
+const settingsPath = path.join(__dirname, 'local.settings.json');
+if (fs.existsSync(settingsPath)) {
+  const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+  Object.entries(settings.Values).forEach(([key, value]) => {
+    process.env[key] = value;
+  });
+}
+
+const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
 
 async function testConnection() {
   try {
     console.log('Testing Azure Table Storage connection...');
+    console.log('Connection string:', connectionString ? 'Found' : 'Not found');
+    console.log('Connection string preview:', connectionString ? connectionString.substring(0, 50) + '...' : 'undefined');
     
-    const tableClient = new TableClient(connectionString, 'FormSubmissions');
+    if (!connectionString) {
+      throw new Error('AZURE_STORAGE_CONNECTION_STRING not found');
+    }
+    
+    // 直接TableClientを使用
+    const tableClient = TableClient.fromConnectionString(connectionString, 'FormSubmissions');
     
     // テーブルを作成または既存のテーブルを確認
     try {

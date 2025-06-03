@@ -5,40 +5,71 @@ const path = require('path');
 
 // Azure Table Storage設定
 const getTableClient = () => {
-  const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
-  if (!connectionString) {
-    throw new Error('AZURE_STORAGE_CONNECTION_STRING connection string is not configured');
+  const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING || 
+    "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VM2FzAPdX8d0GunlQX0SfXe17OQrNqDbc/5oAPBGoSs7TBNG4dt/2FiATk9Caibir6uSAPSUlIN2+AStPvEsYg==;EndpointSuffix=core.windows.net";
+  
+  if (!connectionString || connectionString === 'YOUR_STORAGE_CONNECTION_STRING_HERE' || connectionString.includes('***')) {
+    console.error('AZURE_STORAGE_CONNECTION_STRING is not properly configured');
+    return null; // エラーを投げずにnullを返す
   }
-  return new TableClient(connectionString, 'FormSubmissions');
+  return TableClient.fromConnectionString(connectionString, 'FormSubmissions');
 };
 
 // Table Storageにデータを保存
-const saveToTableStorage = async (formData) => {
+const saveToTableStorage = async (formData, context) => {
   try {
+    context.log('=== Starting Table Storage save operation ===');
+    context.log('Form data received:', JSON.stringify(formData));
+    
     const tableClient = getTableClient();
+    if (!tableClient) {
+      const errorMsg = 'Table Storage is not configured, skipping save';
+      context.log('ERROR:', errorMsg);
+      return { error: errorMsg };
+    }
+    context.log('Table client created successfully');
     
     // テーブルが存在しない場合は作成
-    await tableClient.createTable();
+    try {
+      await tableClient.createTable();
+      context.log('Table creation/verification successful');
+    } catch (createError) {
+      if (createError.statusCode !== 409) { // 409 = Already Exists
+        context.log('ERROR: Table creation failed:', createError.message);
+        throw createError;
+      }
+      context.log('Table already exists');
+    }
     
     // エンティティを作成
     const entity = {
       partitionKey: 'FormSubmission',
       rowKey: `${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      organization: formData.organization,
-      name: formData.name,
-      email: formData.email,
-      purpose: formData.purpose,
-      accounts: formData.accounts,
+      organization: formData.organization || 'Unknown',
+      name: formData.name || 'Unknown',
+      email: formData.email || 'Unknown',
+      purpose: formData.purpose || 'Unknown',
+      accounts: formData.accounts || '1-3',
       message: formData.message || '',
       submittedAt: new Date().toISOString(),
       timestamp: new Date()
     };
     
+    context.log('Entity to be saved:', JSON.stringify(entity));
+    
     // エンティティを挿入
     const result = await tableClient.createEntity(entity);
+    context.log('Entity saved successfully:', result);
+    context.log('=== Table Storage save operation completed ===');
     return result;
   } catch (error) {
-    console.error('Error saving to Table Storage:', error);
+    context.log('=== Table Storage save operation FAILED ===');
+    context.log('Error details:', {
+      message: error.message,
+      statusCode: error.statusCode,
+      code: error.code,
+      stack: error.stack
+    });
     throw error;
   }
 };
@@ -53,12 +84,15 @@ const testDatabaseConnection = async (context) => {
     context.log('Connection string exists:', !!connectionString);
     context.log('Connection string preview:', connectionString ? connectionString.substring(0, 50) + '...' : 'NOT SET');
     
-    if (!connectionString) {
-      return { success: false, error: 'AZURE_STORAGE_CONNECTION_STRING not configured' };
+    if (!connectionString || connectionString.includes('***')) {
+      return { success: false, error: 'AZURE_STORAGE_CONNECTION_STRING not properly configured' };
     }
     
     // Table Client作成テスト
     const tableClient = getTableClient();
+    if (!tableClient) {
+      return { success: false, error: 'Table client could not be created' };
+    }
     context.log('Table client created successfully');
     
     // テーブル作成テスト
@@ -179,8 +213,14 @@ module.exports = async function (context, req) {
   
   try {
     // DB接続テストを実行（デバッグ用）
-    const dbTest = await testDatabaseConnection(context);
-    context.log('Database test result:', dbTest);
+    let dbTest = { success: false, error: 'Not tested' };
+    try {
+      dbTest = await testDatabaseConnection(context);
+      context.log('Database test result:', dbTest);
+    } catch (dbTestError) {
+      context.log('Database test failed:', dbTestError.message);
+      dbTest = { success: false, error: dbTestError.message };
+    }
     
     // リクエストボディの処理
     let formData;
@@ -221,11 +261,22 @@ module.exports = async function (context, req) {
     let saveError = null;
     
     try {
-      saveResult = await saveToTableStorage(formData);
-      context.log('Data saved to Table Storage successfully:', saveResult);
+      saveResult = await saveToTableStorage(formData, context);
+      if (saveResult && saveResult.error) {
+        saveError = new Error(saveResult.error);
+        context.log('WARNING: Table Storage configuration issue:', saveResult.error);
+      } else {
+        context.log('Data saved to Table Storage successfully:', saveResult);
+      }
     } catch (error) {
       saveError = error;
-      context.log.error('Failed to save to Table Storage:', error);
+      context.log.error('CRITICAL: Failed to save to Table Storage:', error.message);
+      context.log.error('Error details:', {
+        message: error.message,
+        statusCode: error.statusCode,
+        code: error.code,
+        connectionString: process.env.AZURE_STORAGE_CONNECTION_STRING ? 'EXISTS' : 'MISSING'
+      });
       // Table Storage保存に失敗してもPDF生成は続行
     }
     
