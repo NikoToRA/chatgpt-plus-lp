@@ -170,8 +170,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 静的PDFを新しいタブで開く
                 window.open(jsonResponse.pdfUrl, '_blank');
                 
+                // ダウンロードリンクも作成（ユーザーの利便性のため）
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = jsonResponse.pdfUrl;
+                a.download = 'ChatGPT_DL.pdf';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                
                 // アラート表示
                 alert(jsonResponse.message || '資料のダウンロードリンクを新しいタブで開きました。');
+                
+                // フォームをリセット
+                estimateForm.reset();
                 return;
               }
             } catch (jsonError) {
