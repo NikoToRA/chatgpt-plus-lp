@@ -1,22 +1,24 @@
 {
   "routes": [
     {
+      "route": "/ChatGPT_DL.pdf",
+      "headers": {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": "attachment; filename=\"ChatGPT_DL.pdf\"",
+        "Cache-Control": "public, max-age=3600"
+      }
+    },
+    {
+      "route": "/docs/ChatGPT_DL.pdf",
+      "headers": {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": "attachment; filename=\"ChatGPT_DL.pdf\"",
+        "Cache-Control": "public, max-age=3600"
+      }
+    },
+    {
       "route": "/api/*",
       "allowedRoles": ["anonymous"]
-    },
-    {
-      "route": "/*.pdf",
-      "headers": {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": "inline"
-      }
-    },
-    {
-      "route": "/docs/*.pdf",
-      "headers": {
-        "Content-Type": "application/pdf",
-        "Content-Disposition": "inline"
-      }
     },
     {
       "route": "/*",
@@ -26,28 +28,26 @@
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
-    "exclude": ["/images/*.{png,jpg,gif,svg}", "/css/*", "/js/*", "/api/*", "/*.pdf", "/docs/*.pdf"]
+    "exclude": [
+      "/images/*.{png,jpg,gif,svg}", 
+      "/css/*", 
+      "/js/*", 
+      "/api/*", 
+      "/*.pdf", 
+      "/docs/*.pdf",
+      "/ChatGPT_DL.pdf"
+    ]
   },
   "mimeTypes": {
+    ".pdf": "application/pdf",
     ".json": "application/json",
     ".css": "text/css",
     ".js": "application/javascript",
     ".html": "text/html",
-    ".pdf": "application/pdf",
     ".svg": "image/svg+xml",
     ".png": "image/png",
     ".jpg": "image/jpeg",
     ".jpeg": "image/jpeg",
-    ".gif": "image/gif",
-    ".woff": "font/woff",
-    ".woff2": "font/woff2"
-  },
-  "globalHeaders": {
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
-    "Content-Security-Policy": "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data:",
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, Authorization"
+    ".gif": "image/gif"
   }
-} 
+}
