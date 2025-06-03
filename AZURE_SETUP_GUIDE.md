@@ -14,6 +14,13 @@
 値: DefaultEndpointsProtocol=https;AccountName=YOUR_STORAGE_ACCOUNT;AccountKey=YOUR_KEY;EndpointSuffix=core.windows.net
 ```
 
+**接続文字列の構成要素:**
+- `AccountName`: あなたのストレージアカウント名（例：wonderdrillstorage）
+- `AccountKey`: プライマリまたはセカンダリアクセスキー
+- `EndpointSuffix`: core.windows.net（日本リージョンも同じ）
+
+この接続文字列1つで、すべての接続情報（エンドポイント、認証情報）が含まれています。
+
 ### 3. Storage Accountの作成
 1. Azure Portal → 「リソースの作成」
 2. 「Storage account」を選択
