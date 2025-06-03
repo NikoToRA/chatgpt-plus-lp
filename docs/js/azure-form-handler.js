@@ -170,6 +170,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 静的PDFを新しいタブで開く
                 window.open(jsonResponse.pdfUrl, '_blank');
                 
+                // ダウンロードリンクコンテナを表示
+                const downloadContainer = document.getElementById('downloadLinkContainer');
+                if (downloadContainer) {
+                  downloadContainer.classList.remove('hidden');
+                }
+                
                 // フォームをリセット
                 estimateForm.reset();
                 
@@ -180,7 +186,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 } else {
                   message += '\n⚠️ データ保存に失敗しましたが、資料はダウンロード可能です。';
                 }
-                message += '\n\n資料のダウンロードリンクを新しいタブで開きました。';
+                message += '\n\n資料のダウンロードリンクを表示しました。';
                 
                 alert(message);
                 return;
@@ -244,19 +250,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // エラー時は静的PDFをダウンロード（フォールバック）
         console.log('Falling back to static PDF download');
         
-        // まず新しいタブで開いてみる
+        // ダウンロードリンクコンテナを表示
+        const downloadContainer = document.getElementById('downloadLinkContainer');
+        if (downloadContainer) {
+          downloadContainer.classList.remove('hidden');
+        }
+        
+        // 新しいタブで開く
         window.open('/PDF_DL.pdf', '_blank');
         
-        // 同時にダウンロードリンクも作成
-        const a = document.createElement('a');
-        a.style.display = 'none';
-        a.href = '/PDF_DL.pdf';
-        a.download = 'PDF_DL.pdf';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        
-        alert(`データベース保存でエラーが発生しましたが、資料はダウンロードされました。\nエラー詳細: ${error.message}`);
+        alert(`データベース保存でエラーが発生しましたが、資料のダウンロードリンクを表示しました。\nエラー詳細: ${error.message}`);
       } finally {
         submitButton.disabled = false;
         submitButton.textContent = originalButtonText;
