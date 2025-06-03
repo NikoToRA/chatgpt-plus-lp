@@ -95,16 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Sending form data:', formData);
         console.log('Purpose value:', `"${formData.purpose}"`, 'Length:', formData.purpose.length);
         
-        // PDFを新しいタブで開く
-        window.open('/PDF_DL.pdf', '_blank');
-        
-        // フォームをリセット
-        estimateForm.reset();
-        
-        // 成功メッセージを表示
-        alert('お問い合わせありがとうございます。資料のダウンロードリンクを新しいタブで開きました。');
-        
-        // Azure Functions APIを呼び出し（バックグラウンドで実行）
+        // Azure Functions APIを呼び出し
         const response = await fetch('/api/submit-form', {
           method: 'POST',
           headers: {
@@ -179,8 +170,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 // 静的PDFを新しいタブで開く
                 window.open(jsonResponse.pdfUrl, '_blank');
                 
-                // アラート表示
-                alert(jsonResponse.message || '資料のダウンロードリンクを新しいタブで開きました。');
+                // フォームをリセット
+                estimateForm.reset();
+                
+                // 成功メッセージを表示
+                let message = 'お問い合わせありがとうございます。';
+                if (saveResult === 'SUCCESS') {
+                  message += '\n✅ お問い合わせ内容を保存しました。';
+                } else {
+                  message += '\n⚠️ データ保存に失敗しましたが、資料はダウンロード可能です。';
+                }
+                message += '\n\n資料のダウンロードリンクを新しいタブで開きました。';
+                
+                alert(message);
                 return;
               }
             } catch (jsonError) {
