@@ -243,7 +243,7 @@ module.exports = async function (context, req) {
       },
       body: JSON.stringify({
         success: true,
-        pdfUrl: '/ChatGPT_DL.pdf',
+        pdfUrl: '/PDF_DL.pdf',
         message: 'お申し込みありがとうございます。資料をダウンロードしてください。'
       })
     };
