@@ -1,18 +1,18 @@
 {
   "routes": [
     {
-      "route": "/ChatGPT_DL.pdf",
+      "route": "/docs/PDF_DL.pdf",
       "headers": {
         "Content-Type": "application/pdf",
-        "Content-Disposition": "attachment; filename=\"ChatGPT_DL.pdf\"",
+        "Content-Disposition": "attachment; filename=\"PDF_DL.pdf\"",
         "Cache-Control": "public, max-age=3600"
       }
     },
     {
-      "route": "/docs/ChatGPT_DL.pdf",
+      "route": "/PDF_DL.pdf",
       "headers": {
         "Content-Type": "application/pdf",
-        "Content-Disposition": "attachment; filename=\"ChatGPT_DL.pdf\"",
+        "Content-Disposition": "attachment; filename=\"PDF_DL.pdf\"",
         "Cache-Control": "public, max-age=3600"
       }
     },
@@ -35,7 +35,8 @@
       "/api/*", 
       "/*.pdf", 
       "/docs/*.pdf",
-      "/ChatGPT_DL.pdf"
+      "/docs/PDF_DL.pdf",
+      "/PDF_DL.pdf"
     ]
   },
   "mimeTypes": {
