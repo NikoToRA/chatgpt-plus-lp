@@ -1,0 +1,264 @@
+name: '🚀 Issue 4: メール通知機能自動実装'
+
+on:
+  workflow_dispatch:
+    inputs:
+      email_service:
+        description: 'メール送信サービス選択'
+        required: true
+        default: 'sendgrid'
+        type: choice
+        options:
+        - sendgrid
+        - azure_communication_services
+      admin_email:
+        description: '管理者通知メールアドレス'
+        required: true
+        type: string
+
+jobs:
+  implement-email-feature:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🔧 Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: 'api/package-lock.json'
+        
+    - name: 📦 Install Dependencies
+      run: |
+        cd api
+        npm ci
+        
+    - name: 🔧 Install Email Service Package
+      run: |
+        cd api
+        if [ "${{ github.event.inputs.email_service }}" = "sendgrid" ]; then
+          npm install @sendgrid/mail
+        else
+          npm install @azure/communication-email
+        fi
+        
+    - name: 📝 Generate Email Service Code
+      run: |
+        cd api
+        cat > emailService.js << 'EOF'
+        const emailService = '${{ github.event.inputs.email_service }}';
+        
+        const sendEmail = async (to, subject, htmlContent) => {
+          try {
+            if (emailService === 'sendgrid') {
+              const sgMail = require('@sendgrid/mail');
+              sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+              
+              const msg = {
+                to: to,
+                from: process.env.FROM_EMAIL || 'noreply@wonder-drill.com',
+                subject: subject,
+                html: htmlContent,
+              };
+              
+              await sgMail.send(msg);
+              console.log('SendGrid email sent successfully');
+            } else {
+              // Azure Communication Services実装
+              const { EmailClient } = require('@azure/communication-email');
+              const client = new EmailClient(process.env.AZURE_COMMUNICATION_CONNECTION_STRING);
+              
+              const emailMessage = {
+                senderAddress: process.env.FROM_EMAIL || 'noreply@wonder-drill.com',
+                content: {
+                  subject: subject,
+                  html: htmlContent,
+                },
+                recipients: {
+                  to: [{ address: to }],
+                },
+              };
+              
+              await client.beginSend(emailMessage);
+              console.log('Azure Communication Services email sent successfully');
+            }
+          } catch (error) {
+            console.error('Email sending failed:', error);
+            throw error;
+          }
+        };
+        
+        const sendAdminNotification = async (formData) => {
+          const subject = '🏥 新しいお問い合わせがありました - ChatGPT Plus医療機関向け';
+          const htmlContent = `
+            <h2>新しいお問い合わせ</h2>
+            <p><strong>医療機関名:</strong> ${formData.organization}</p>
+            <p><strong>担当者名:</strong> ${formData.name}</p>
+            <p><strong>メールアドレス:</strong> ${formData.email}</p>
+            <p><strong>お問い合わせ目的:</strong> ${formData.purpose}</p>
+            <p><strong>希望アカウント数:</strong> ${formData.accounts}</p>
+            <p><strong>お問い合わせ内容:</strong></p>
+            <p>${formData.message || 'なし'}</p>
+            <hr>
+            <p><small>送信日時: ${new Date().toLocaleString('ja-JP')}</small></p>
+          `;
+          
+          await sendEmail('${{ github.event.inputs.admin_email }}', subject, htmlContent);
+        };
+        
+        const sendAutoReply = async (formData) => {
+          const subject = 'お問い合わせありがとうございます - ChatGPT Plus医療機関向けサービス';
+          const htmlContent = `
+            <h2>${formData.name} 様</h2>
+            <p>この度は、ChatGPT Plus医療機関向けサービスにお問い合わせいただき、誠にありがとうございます。</p>
+            
+            <h3>お問い合わせ内容の確認</h3>
+            <p><strong>医療機関名:</strong> ${formData.organization}</p>
+            <p><strong>お問い合わせ目的:</strong> ${formData.purpose}</p>
+            <p><strong>希望アカウント数:</strong> ${formData.accounts}</p>
+            
+            <p>内容を確認次第、担当者よりご連絡させていただきます。<br>
+            通常、1-2営業日以内にご回答いたします。</p>
+            
+            <h3>サービス資料について</h3>
+            <p>サービス資料のダウンロードは完了されましたでしょうか？<br>
+            もしまだの場合は、以下のリンクからダウンロードいただけます。</p>
+            
+            <hr>
+            <p>お急ぎの場合は、以下までお電話ください：<br>
+            <strong>Tel:</strong> 03-XXXX-XXXX（平日 9:00-18:00）</p>
+            
+            <p>今後ともよろしくお願いいたします。</p>
+            
+            <p><strong>株式会社ワンダードリル</strong><br>
+            ChatGPT Plus医療機関向けサービス担当</p>
+          `;
+          
+          await sendEmail(formData.email, subject, htmlContent);
+        };
+        
+        module.exports = { sendAdminNotification, sendAutoReply };
+        EOF
+        
+    - name: 🔧 Update Azure Function Code
+      run: |
+        cd api/submit-form
+        # index.jsの末尾近くに追加
+        sed -i.bak '/saveToTableStorage(formData, context);/a\
+        \
+        // メール通知の送信\
+        try {\
+          const { sendAdminNotification, sendAutoReply } = require("../emailService");\
+          \
+          // 管理者への通知\
+          await sendAdminNotification(formData);\
+          context.log("Admin notification email sent successfully");\
+          \
+          // 自動返信メール\
+          await sendAutoReply(formData);\
+          context.log("Auto-reply email sent successfully");\
+        } catch (emailError) {\
+          context.log.error("Email sending failed:", emailError.message);\
+          // メール送信失敗でもフォーム処理は続行\
+        }' index.js
+        
+    - name: 📝 Update Package.json
+      run: |
+        cd api
+        if [ "${{ github.event.inputs.email_service }}" = "sendgrid" ]; then
+          npm install --save @sendgrid/mail
+        else
+          npm install --save @azure/communication-email
+        fi
+        
+    - name: 📋 Create Environment Variables Documentation
+      run: |
+        cat > EMAIL_SETUP.md << 'EOF'
+        # メール通知機能セットアップ
+        
+        ## 必要な環境変数
+        
+        Azure Static Web Apps の設定で以下の環境変数を追加してください：
+        
+        ### SendGrid を使用する場合
+        ```
+        SENDGRID_API_KEY=your_sendgrid_api_key_here
+        FROM_EMAIL=noreply@your-domain.com
+        ```
+        
+        ### Azure Communication Services を使用する場合
+        ```
+        AZURE_COMMUNICATION_CONNECTION_STRING=your_acs_connection_string
+        FROM_EMAIL=noreply@your-domain.com
+        ```
+        
+        ## セットアップ手順
+        
+        1. Azure Portal → Static Web Apps → chatgpt-plus-lp
+        2. 設定 → 構成 → アプリケーション設定
+        3. 上記の環境変数を追加
+        4. 保存してデプロイ完了を待つ
+        
+        ## 使用されているメールサービス
+        **選択済み:** ${{ github.event.inputs.email_service }}
+        **管理者メール:** ${{ github.event.inputs.admin_email }}
+        EOF
+        
+    - name: 🚀 Commit and Push Changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "🚀 Issue 4: メール通知機能を自動実装
+
+        ✅ 実装内容:
+        - ${{ github.event.inputs.email_service }} を使用したメール送信機能
+        - 管理者通知メール (${{ github.event.inputs.admin_email }})
+        - お客様への自動返信メール
+        - Azure Function への統合完了
+        
+        📝 次のステップ:
+        1. EMAIL_SETUP.md の手順に従って環境変数を設定
+        2. メール送信テストを実行
+        
+        🤖 Generated with GitHub Actions"
+        git push
+        
+    - name: 📧 Create GitHub Issue for Next Steps
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const issueBody = `## ✅ メール通知機能の実装が完了しました！
+
+          ### 🎯 実装された機能
+          - **メールサービス**: ${{ github.event.inputs.email_service }}
+          - **管理者通知**: ${{ github.event.inputs.admin_email }}
+          - **自動返信機能**: お客様への確認メール
+
+          ### 📝 次に必要な作業
+          1. **環境変数の設定** (Azure Portal)
+             - \`SENDGRID_API_KEY\` または \`AZURE_COMMUNICATION_CONNECTION_STRING\`
+             - \`FROM_EMAIL\`
+          
+          2. **メール送信テスト**
+             - フォームからテスト送信
+             - メール受信確認
+
+          ### 📖 詳細手順
+          リポジトリに \`EMAIL_SETUP.md\` ファイルが作成されました。
+
+          ### 🔗 関連ファイル
+          - \`api/emailService.js\` - メール送信ロジック
+          - \`api/submit-form/index.js\` - フォーム処理への統合
+          
+          /close #4`;
+          
+          await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: '🎯 メール通知機能実装完了 - 環境変数設定が必要',
+            body: issueBody,
+            labels: ['enhancement', 'ready-for-testing']
+          });

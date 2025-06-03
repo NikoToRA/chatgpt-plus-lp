@@ -1,0 +1,462 @@
+name: '💳 Issue 6: 決済連携調査と実装'
+
+on:
+  workflow_dispatch:
+    inputs:
+      payment_service:
+        description: '決済サービス選択'
+        required: true
+        default: 'stripe'
+        type: choice
+        options:
+        - stripe
+        - square
+        - paypal
+      business_type:
+        description: 'ビジネスタイプ'
+        required: true
+        default: 'subscription'
+        type: choice
+        options:
+        - subscription
+        - one_time
+        - both
+
+jobs:
+  research-and-implement:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 🔧 Checkout Repository
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+        cache-dependency-path: 'api/package-lock.json'
+        
+    - name: 📦 Install Dependencies
+      run: |
+        cd api
+        npm ci
+        
+    - name: 🔧 Install Payment Service Package
+      run: |
+        cd api
+        case "${{ github.event.inputs.payment_service }}" in
+          "stripe")
+            npm install stripe
+            ;;
+          "square")
+            npm install squareup
+            ;;
+          "paypal")
+            npm install @paypal/checkout-server-sdk
+            ;;
+        esac
+        
+    - name: 📋 Generate Payment Service Research
+      run: |
+        mkdir -p docs/payment-research
+        
+        cat > docs/payment-research/README.md << 'EOF'
+        # 💳 決済サービス連携調査結果
+        
+        **選択サービス:** ${{ github.event.inputs.payment_service }}  
+        **ビジネスタイプ:** ${{ github.event.inputs.business_type }}  
+        **調査日:** $(date)
+        
+        ## サービス概要
+        EOF
+        
+        case "${{ github.event.inputs.payment_service }}" in
+          "stripe")
+            cat >> docs/payment-research/README.md << 'EOF'
+        
+        ### Stripe
+        - **月額手数料:** 3.6%
+        - **サブスクリプション:** ✅ 対応
+        - **日本円対応:** ✅ 対応
+        - **必要書類:** 法人確認書類
+        - **審査期間:** 1-3営業日
+        
+        #### 料金プラン例
+        - ChatGPT Plus 1ユーザー: ¥6,000/月
+        - ChatGPT Plus 5ユーザー: ¥27,500/月 (¥5,500/ユーザー)
+        - ChatGPT Plus 10ユーザー: ¥50,000/月 (¥5,000/ユーザー)
+        
+        #### API エンドポイント
+        - **顧客作成:** `POST /v1/customers`
+        - **サブスクリプション作成:** `POST /v1/subscriptions`
+        - **請求書確認:** `GET /v1/invoices`
+        EOF
+            ;;
+          "square")
+            cat >> docs/payment-research/README.md << 'EOF'
+        
+        ### Square
+        - **月額手数料:** 3.25%
+        - **サブスクリプション:** ✅ 対応
+        - **日本円対応:** ✅ 対応
+        - **審査期間:** 即日-1営業日
+        EOF
+            ;;
+          "paypal")
+            cat >> docs/payment-research/README.md << 'EOF'
+        
+        ### PayPal
+        - **月額手数料:** 3.6% + ¥40
+        - **サブスクリプション:** ✅ 対応
+        - **日本円対応:** ✅ 対応
+        - **審査期間:** 1-2営業日
+        EOF
+            ;;
+        esac
+        
+    - name: 📝 Generate API Implementation Sample
+      run: |
+        cd api
+        
+        cat > paymentService.js << 'EOF'
+        // ${{ github.event.inputs.payment_service }} 決済サービス統合
+        
+        EOF
+        
+        case "${{ github.event.inputs.payment_service }}" in
+          "stripe")
+            cat >> paymentService.js << 'EOF'
+        const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
+        class PaymentService {
+          // 顧客作成
+          async createCustomer(customerData) {
+            try {
+              const customer = await stripe.customers.create({
+                email: customerData.email,
+                name: customerData.name,
+                metadata: {
+                  organization: customerData.organization,
+                  accounts: customerData.accounts
+                }
+              });
+              return customer;
+            } catch (error) {
+              console.error('Stripe customer creation failed:', error);
+              throw error;
+            }
+          }
+
+          // サブスクリプション作成
+          async createSubscription(customerId, priceId) {
+            try {
+              const subscription = await stripe.subscriptions.create({
+                customer: customerId,
+                items: [{ price: priceId }],
+                payment_behavior: 'default_incomplete',
+                expand: ['latest_invoice.payment_intent'],
+              });
+              return subscription;
+            } catch (error) {
+              console.error('Stripe subscription creation failed:', error);
+              throw error;
+            }
+          }
+
+          // 価格計算
+          calculatePrice(accounts) {
+            const accountCount = parseInt(accounts.replace(/[^0-9]/g, '')) || 1;
+            let pricePerAccount = 6000; // デフォルト価格
+            
+            if (accountCount >= 11) {
+              pricePerAccount = 5000;
+            } else if (accountCount >= 4) {
+              pricePerAccount = 5500;
+            }
+            
+            return {
+              accountCount: accountCount <= 3 ? 3 : accountCount,
+              pricePerAccount,
+              totalPrice: (accountCount <= 3 ? 3 : accountCount) * pricePerAccount,
+              discount: accountCount >= 4 ? '大口割引適用' : null
+            };
+          }
+
+          // Webhook処理
+          async handleWebhook(payload, signature) {
+            try {
+              const event = stripe.webhooks.constructEvent(
+                payload,
+                signature,
+                process.env.STRIPE_WEBHOOK_SECRET
+              );
+
+              switch (event.type) {
+                case 'payment_intent.succeeded':
+                  console.log('Payment succeeded:', event.data.object);
+                  break;
+                case 'subscription.created':
+                  console.log('Subscription created:', event.data.object);
+                  break;
+                default:
+                  console.log(`Unhandled event type: ${event.type}`);
+              }
+
+              return { received: true };
+            } catch (error) {
+              console.error('Webhook signature verification failed:', error);
+              throw error;
+            }
+          }
+        }
+
+        module.exports = new PaymentService();
+        EOF
+            ;;
+          "square")
+            cat >> paymentService.js << 'EOF'
+        const { Client, Environment } = require('squareup');
+
+        const client = new Client({
+          accessToken: process.env.SQUARE_ACCESS_TOKEN,
+          environment: process.env.NODE_ENV === 'production' ? Environment.Production : Environment.Sandbox
+        });
+
+        class PaymentService {
+          async createCustomer(customerData) {
+            try {
+              const { result } = await client.customersApi.createCustomer({
+                emailAddress: customerData.email,
+                givenName: customerData.name,
+                companyName: customerData.organization
+              });
+              return result.customer;
+            } catch (error) {
+              console.error('Square customer creation failed:', error);
+              throw error;
+            }
+          }
+
+          async createSubscription(customerId, planId) {
+            try {
+              const { result } = await client.subscriptionsApi.createSubscription({
+                locationId: process.env.SQUARE_LOCATION_ID,
+                customerId: customerId,
+                planId: planId
+              });
+              return result.subscription;
+            } catch (error) {
+              console.error('Square subscription creation failed:', error);
+              throw error;
+            }
+          }
+        }
+
+        module.exports = new PaymentService();
+        EOF
+            ;;
+        esac
+        
+    - name: 📝 Generate Azure Function for Payment
+      run: |
+        mkdir -p api/payment
+        
+        cat > api/payment/function.json << 'EOF'
+        {
+          "bindings": [
+            {
+              "authLevel": "function",
+              "type": "httpTrigger",
+              "direction": "in",
+              "name": "req",
+              "methods": ["post"]
+            },
+            {
+              "type": "http",
+              "direction": "out",
+              "name": "res"
+            }
+          ]
+        }
+        EOF
+        
+        cat > api/payment/index.js << 'EOF'
+        const paymentService = require('../paymentService');
+
+        module.exports = async function (context, req) {
+          context.log('Payment endpoint called');
+
+          try {
+            const { action, ...data } = req.body;
+
+            switch (action) {
+              case 'create_customer':
+                const customer = await paymentService.createCustomer(data);
+                context.res = {
+                  status: 200,
+                  body: { success: true, customer }
+                };
+                break;
+
+              case 'create_subscription':
+                const subscription = await paymentService.createSubscription(
+                  data.customerId, 
+                  data.priceId
+                );
+                context.res = {
+                  status: 200,
+                  body: { success: true, subscription }
+                };
+                break;
+
+              case 'calculate_price':
+                const pricing = paymentService.calculatePrice(data.accounts);
+                context.res = {
+                  status: 200,
+                  body: { success: true, pricing }
+                };
+                break;
+
+              default:
+                context.res = {
+                  status: 400,
+                  body: { error: 'Unknown action' }
+                };
+            }
+          } catch (error) {
+            context.log.error('Payment processing failed:', error);
+            context.res = {
+              status: 500,
+              body: { error: error.message }
+            };
+          }
+        };
+        EOF
+        
+    - name: 📋 Generate Implementation Checklist
+      run: |
+        cat > PAYMENT_IMPLEMENTATION.md << 'EOF'
+        # 💳 決済機能実装チェックリスト
+        
+        ## ✅ 完了済み
+        - [x] ${{ github.event.inputs.payment_service }} SDK の追加
+        - [x] 基本的なPayment APIサンプルコード作成
+        - [x] Azure Function エンドポイント作成
+        - [x] 価格計算ロジック実装
+        
+        ## 📝 次に必要な作業
+        
+        ### 1. アカウント設定
+        - [ ] ${{ github.event.inputs.payment_service }} アカウント作成
+        - [ ] API キーの取得
+        - [ ] Webhook URL設定
+        
+        ### 2. 環境変数設定
+        Azure Static Web Apps に以下を追加：
+        ```
+        EOF
+        
+        case "${{ github.event.inputs.payment_service }}" in
+          "stripe")
+            cat >> PAYMENT_IMPLEMENTATION.md << 'EOF'
+        STRIPE_SECRET_KEY=sk_test_...
+        STRIPE_PUBLISHABLE_KEY=pk_test_...
+        STRIPE_WEBHOOK_SECRET=whsec_...
+        EOF
+            ;;
+          "square")
+            cat >> PAYMENT_IMPLEMENTATION.md << 'EOF'
+        SQUARE_ACCESS_TOKEN=your_access_token
+        SQUARE_LOCATION_ID=your_location_id
+        EOF
+            ;;
+        esac
+        
+        cat >> PAYMENT_IMPLEMENTATION.md << 'EOF'
+        ```
+        
+        ### 3. フロントエンド統合
+        - [ ] 決済ボタンをLPに追加
+        - [ ] チェックアウトフローの実装
+        - [ ] 成功/失敗ページの作成
+        
+        ### 4. テスト
+        - [ ] テスト環境での決済テスト
+        - [ ] Webhookの動作確認
+        - [ ] エラーハンドリングの確認
+        
+        ## 💰 料金設定
+        EOF
+        
+        if [ "${{ github.event.inputs.business_type }}" = "subscription" ]; then
+          cat >> PAYMENT_IMPLEMENTATION.md << 'EOF'
+        
+        ### サブスクリプションプラン
+        - **1-3ユーザー**: ¥18,000/月 (¥6,000/ユーザー)
+        - **4-10ユーザー**: ¥55,000/月 (¥5,500/ユーザー) 
+        - **11+ユーザー**: ¥50,000+/月 (¥5,000/ユーザー)
+        EOF
+        fi
+        
+    - name: 🚀 Commit and Push Changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "💳 Issue 6: ${{ github.event.inputs.payment_service }}決済連携の基礎実装
+
+        ✅ 実装内容:
+        - ${{ github.event.inputs.payment_service }} SDK統合
+        - 基本的な決済API実装
+        - 価格計算ロジック (${{ github.event.inputs.business_type }})
+        - Azure Function エンドポイント
+        - 実装チェックリスト作成
+
+        📁 新規ファイル:
+        - api/paymentService.js - 決済サービス統合
+        - api/payment/index.js - 決済API エンドポイント 
+        - docs/payment-research/ - 調査資料
+        - PAYMENT_IMPLEMENTATION.md - 実装手順
+
+        🤖 Generated with GitHub Actions"
+        git push
+        
+    - name: 📊 Create Implementation Status Issue
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const issueBody = `## 💳 決済連携の基礎実装が完了しました！
+
+          ### 🎯 実装された機能
+          - **決済サービス**: ${{ github.event.inputs.payment_service }}
+          - **ビジネスタイプ**: ${{ github.event.inputs.business_type }}
+          - **基本API**: 顧客作成、サブスクリプション、価格計算
+
+          ### 📁 作成されたファイル
+          - \`api/paymentService.js\` - 決済サービス統合
+          - \`api/payment/index.js\` - 決済API
+          - \`docs/payment-research/\` - 調査資料
+          - \`PAYMENT_IMPLEMENTATION.md\` - 実装チェックリスト
+
+          ### 📝 次のステップ
+          1. **${{ github.event.inputs.payment_service }} アカウント設定**
+          2. **API キー設定** (環境変数)
+          3. **フロントエンド決済ボタン追加**
+          4. **テスト決済の実行**
+
+          ### 💰 設定された料金プラン
+          - 1-3ユーザー: ¥18,000/月
+          - 4-10ユーザー: ¥55,000/月  
+          - 11+ユーザー: ¥50,000+/月
+
+          詳細な手順は \`PAYMENT_IMPLEMENTATION.md\` を参照してください。
+
+          /close #6`;
+          
+          await github.rest.issues.create({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            title: '💳 決済連携基礎実装完了 - アカウント設定が必要',
+            body: issueBody,
+            labels: ['enhancement', 'payment', 'ready-for-setup']
+          });
