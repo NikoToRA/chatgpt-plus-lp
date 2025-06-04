@@ -1,9 +1,7 @@
 const { TableClient, TableEntity } = require("@azure/data-tables");
+const { createTableClient } = require("../utils/localDevelopment");
 
-const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING || 
-  "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VNH3n0IhjyW2mM6xOtJqCuOL8l3/iHjJP1kxvGCVLdD4O7Z4+vN6M2vuQ1GKjz4S3WP7dZjBAJJM+AStGFbhmg==;EndpointSuffix=core.windows.net";
-
-const tableClient = TableClient.fromConnectionString(connectionString, "Customers");
+const tableClient = createTableClient("customers");
 
 module.exports = async function (context, req) {
     context.log('Customers function processed a request.');

@@ -1,10 +1,8 @@
 const { TableClient } = require("@azure/data-tables");
+const { createTableClient, isDevelopment, getMockDashboardStats, getMockRecentApplications } = require("../utils/localDevelopment");
 
-const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING || 
-  "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VNH3n0IhjyW2mM6xOtJqCuOL8l3/iHjJP1kxvGCVLdD4O7Z4+vN6M2vuQ1GKjz4S3WP7dZjBAJJM+AStGFbhmg==;EndpointSuffix=core.windows.net";
-
-const customerTableClient = TableClient.fromConnectionString(connectionString, "Customers");
-const submissionTableClient = TableClient.fromConnectionString(connectionString, "FormSubmissions");
+const customerTableClient = createTableClient("customers");
+const submissionTableClient = createTableClient("formSubmissions");
 
 module.exports = async function (context, req) {
     context.log('Dashboard function processed a request.');
@@ -14,6 +12,13 @@ module.exports = async function (context, req) {
     try {
         switch (action) {
             case 'stats':
+                // Use mock data in development
+                if (isDevelopment()) {
+                    context.res = {
+                        body: getMockDashboardStats()
+                    };
+                    return;
+                }
                 // Calculate statistics
                 let totalApplications = 0;
                 let pendingApplications = 0;
@@ -62,6 +67,13 @@ module.exports = async function (context, req) {
                 break;
 
             case 'recent':
+                // Use mock data in development
+                if (isDevelopment()) {
+                    context.res = {
+                        body: getMockRecentApplications()
+                    };
+                    return;
+                }
                 // Get recent applications (last 10)
                 const recentCustomers = [];
                 const recentEntities = customerTableClient.listEntities({
