@@ -1,6 +1,15 @@
 {
   "routes": [
     {
+      "route": "/admin/*",
+      "serve": "/admin/index.html",
+      "statusCode": 200
+    },
+    {
+      "route": "/admin",
+      "redirect": "/admin/"
+    },
+    {
       "route": "/docs/PDF_DL.pdf",
       "headers": {
         "Content-Type": "application/pdf",
@@ -29,6 +38,7 @@
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": [
+      "/admin/*",
       "/images/*.{png,jpg,gif,svg}", 
       "/css/*", 
       "/js/*", 
