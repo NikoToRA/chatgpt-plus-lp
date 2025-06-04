@@ -1,50 +1,46 @@
-name: Claude PR Assistant
+  name: Claude PR Assistant
 
-on:
-  issue_comment:
-    types: [created]
-  pull_request_review_comment:
-    types: [created]
-  issues:
-    types: [opened, assigned]
-  pull_request_review:
-    types: [submitted]
+  on:
+    issue_comment:
+      types: [created]
+    pull_request_review_comment:
+      types: [created]
+    issues:
+      types: [opened, assigned]
+    pull_request_review:
+      types: [submitted]
 
-permissions:
-  contents: write
-  issues: write
-  pull-requests: write
-  id-token: write
+  permissions:
+    contents: write
+    issues: write
+    pull-requests: write
+    id-token: write
 
-jobs:
-  claude-code-action:
-    if: |
-      (github.event.comment.body && contains(github.event.comment.body, '@claude')) ||
-      (github.event.issue.body && contains(github.event.issue.body, '@claude')) ||
-      (github.event.review.body && contains(github.event.review.body, '@claude'))
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug Info
-        run: |
-          echo "Event: ${{ github.event_name }}"
-          echo "Action: ${{ github.event.action }}"
-          echo "Comment: ${{ github.event.comment.body }}"
-          echo "Issue: ${{ github.event.issue.body }}"
-          echo "Review: ${{ github.event.review.body }}"
-          echo "Checking for @claude trigger..."
+  jobs:
+    claude-code-action:
+      if: |
+        (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+        (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+        (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+        (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
+      runs-on: ubuntu-latest
+      steps:
+        - name: Debug Info
+          run: |
+            echo "Event: ${{ github.event_name }}"
+            echo "Action: ${{ github.event.action }}"
 
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+        - name: Checkout repository
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+            token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run Claude PR Action
-        uses: grll/claude-code-action@beta
-        with:
-          use_oauth: true
-          claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
-          claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
-          claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
-          timeout_minutes: "60"
-          allowed_tools: "mcp__github__get_issue,Bash"
+        - name: Run Claude PR Action
+          uses: grll/claude-code-action@beta
+          with:
+            use_oauth: true
+            claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+            claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+            claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
+            timeout_minutes: "60"
