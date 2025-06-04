@@ -1,46 +1,63 @@
-  name: Claude PR Assistant
+name: Claude PR Assistant
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned]
+  pull_request_review:
+    types: [submitted]
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+jobs:
+  debug-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug All Info
+        run: |
+          echo "=== Event Info ==="
+          echo "Event: ${{ github.event_name }}"
+          echo "Action: ${{ github.event.action }}"
+          echo "Actor: ${{ github.actor }}"
+          echo ""
+          echo "=== Issue Info ==="
+          echo "Issue body raw: '${{ github.event.issue.body }}'"
+          echo "Issue body length: ${{ length(github.event.issue.body) }}"
+          echo ""
+          echo "=== Contains Check ==="
+          echo "Contains @claude: ${{ contains(github.event.issue.body, '@claude') }}"
+          echo "Contains claude: ${{ contains(github.event.issue.body, 'claude') }}"
+          echo ""
+          echo "=== Condition Results ==="
+          echo "issues + @claude: ${{ github.event_name == 'issues' && contains(github.event.issue.body, '@claude') }}"
+          echo "Final condition: ${{ (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) || (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) || (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) || (github.event_name == 'issues' && contains(github.event.issue.body, '@claude')) }}"
 
-  on:
-    issue_comment:
-      types: [created]
-    pull_request_review_comment:
-      types: [created]
-    issues:
-      types: [opened, assigned]
-    pull_request_review:
-      types: [submitted]
-
-  permissions:
-    contents: write
-    issues: write
-    pull-requests: write
-    id-token: write
-
-  jobs:
-    claude-code-action:
-      if: |
-        (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
-        (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
-        (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
-        (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
-      runs-on: ubuntu-latest
-      steps:
-        - name: Debug Info
-          run: |
-            echo "Event: ${{ github.event_name }}"
-            echo "Action: ${{ github.event.action }}"
-
-        - name: Checkout repository
-          uses: actions/checkout@v4
-          with:
-            fetch-depth: 0
-            token: ${{ secrets.GITHUB_TOKEN }}
-
-        - name: Run Claude PR Action
-          uses: grll/claude-code-action@beta
-          with:
-            use_oauth: true
-            claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
-            claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
-            claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
-            timeout_minutes: "60"
+  claude-code-action:
+    # 一時的に条件を緩くして実行させる
+    if: github.event_name == 'issues'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Debug Info
+        run: |
+          echo "Event: ${{ github.event_name }}"
+          echo "Action: ${{ github.event.action }}"
+          echo "Issue body: ${{ github.event.issue.body }}"
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run Claude PR Action
+        # 条件をここで再チェック
+        if: contains(github.event.issue.body, '@claude')
+        uses: grll/claude-code-action@beta
+        with:
+          use_oauth: true
+          claude_access_token: ${{ secrets.CLAUDE_ACCESS_TOKEN }}
+          claude_refresh_token: ${{ secrets.CLAUDE_REFRESH_TOKEN }}
+          claude_expires_at: ${{ secrets.CLAUDE_EXPIRES_AT }}
+          timeout_minutes: "60"
