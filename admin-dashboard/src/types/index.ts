@@ -15,6 +15,12 @@ export interface Customer {
   email: string;
   organization: string;
   name: string;
+  phoneNumber?: string;
+  postalCode?: string;
+  address?: string;
+  facilityType?: 'hospital' | 'clinic' | 'dental_clinic' | 'pharmacy' | 'nursing_home' | 'other';
+  requestedAccountCount?: number;
+  applicationDate?: Date;
   chatGptAccounts: ChatGptAccount[];
   status: 'trial' | 'active' | 'suspended' | 'cancelled';
   plan: 'basic' | 'plus' | 'enterprise';
@@ -85,6 +91,17 @@ export interface CompanyInfo {
     paymentTermDays: number;
     notes?: string;
   };
+  emailSettings: {
+    sendgridApiKey: string;
+    fromEmail: string;
+    fromName: string;
+    isConfigured: boolean;
+  };
+  invoiceTemplate: {
+    emailSubjectTemplate: string;
+    emailBodyTemplate: string;
+    invoiceFooterNotes: string;
+  };
 }
 
 export interface ProductInfo {
@@ -94,4 +111,22 @@ export interface ProductInfo {
   unitPrice: number;
   taxRate: number;
   isActive: boolean;
+}
+
+export interface InvoicePDF {
+  id: string;
+  customerId: string;
+  customerName: string;
+  invoiceNumber: string;
+  billingType: 'monthly' | 'yearly';
+  totalAmount: number;
+  monthlyFee: number;
+  billingMonths: number;
+  issueDate: Date;
+  dueDate: Date;
+  status: 'draft' | 'sent' | 'paid' | 'overdue';
+  pdfUrl?: string;
+  emailSentAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

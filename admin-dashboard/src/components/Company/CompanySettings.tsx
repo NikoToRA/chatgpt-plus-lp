@@ -67,7 +67,72 @@ export default function CompanySettings() {
       // ローカルストレージから会社情報を取得
       const localCompanyInfo = localStorage.getItem('companyInfo');
       if (localCompanyInfo) {
-        setCompanyInfo(JSON.parse(localCompanyInfo));
+        const parsedInfo = JSON.parse(localCompanyInfo);
+        // 新しいフィールドが存在しない場合はデフォルト値を追加
+        if (!parsedInfo.emailSettings) {
+          parsedInfo.emailSettings = {
+            sendgridApiKey: '',
+            fromEmail: parsedInfo.email || 'info@wonderdrill.com',
+            fromName: parsedInfo.companyName || '株式会社WonderDrill',
+            isConfigured: false,
+          };
+        }
+        if (!parsedInfo.invoiceTemplate) {
+          parsedInfo.invoiceTemplate = {
+            emailSubjectTemplate: '【{{companyName}}】{{billingType}}請求書のご送付 - {{invoiceNumber}}',
+            emailBodyTemplate: `{{customerOrganization}}
+{{customerName}} 様
+
+いつもお世話になっております。
+{{companyName}}の{{representativeName}}です。
+
+{{billingType}}の請求書をお送りいたします。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+【請求内容】
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+請求書番号: {{invoiceNumber}}
+請求金額: ¥{{totalAmount}}
+お支払い期限: {{dueDate}}
+
+【サービス内容】
+ChatGPT Plus 医療機関向けプラン（チームプラン・アカウント共有）
+アクティブアカウント数: {{activeAccountCount}}アカウント
+月額料金: ¥{{monthlyFee}}
+{{billingPeriodDescription}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+【お振込先】
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+銀行名: {{bankName}}
+支店名: {{branchName}}
+口座種別: {{accountType}}
+口座番号: {{accountNumber}}
+口座名義: {{accountHolder}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+添付ファイルに詳細な請求書を添付いたします。
+ご不明な点がございましたら、お気軽にお問い合わせください。
+
+今後ともよろしくお願いいたします。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{{companyName}}
+{{representativeName}}
+〒{{postalCode}} {{address}}
+TEL: {{phoneNumber}}
+Email: {{email}}
+{{#if website}}Website: {{website}}{{/if}}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+            invoiceFooterNotes: '※チームプラン・アカウント共有サービスのため、使用量による追加料金は発生いたしません。',
+          };
+        }
+        setCompanyInfo(parsedInfo);
+        // 更新されたデータを保存
+        localStorage.setItem('companyInfo', JSON.stringify(parsedInfo));
       } else {
         // デフォルトの会社情報
         const defaultCompanyInfo: CompanyInfo = {
@@ -109,6 +174,65 @@ export default function CompanySettings() {
             invoicePrefix: 'INV',
             paymentTermDays: 30,
             notes: 'お支払いは請求書発行日より30日以内にお願いいたします。',
+          },
+          emailSettings: {
+            sendgridApiKey: '',
+            fromEmail: 'info@wonderdrill.com',
+            fromName: '株式会社WonderDrill',
+            isConfigured: false,
+          },
+          invoiceTemplate: {
+            emailSubjectTemplate: '【{{companyName}}】{{billingType}}請求書のご送付 - {{invoiceNumber}}',
+            emailBodyTemplate: `{{customerOrganization}}
+{{#if customerAddress}}〒{{customerPostalCode}}
+{{customerAddress}}{{/if}}
+{{customerName}} 様
+
+いつもお世話になっております。
+{{companyName}}の{{representativeName}}です。
+
+{{billingType}}の請求書をお送りいたします。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+【請求内容】
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+請求書番号: {{invoiceNumber}}
+請求金額: ¥{{totalAmount}}
+お支払い期限: {{dueDate}}
+
+【サービス内容】
+ChatGPT Plus 医療機関向けプラン（チームプラン・アカウント共有）
+アクティブアカウント数: {{activeAccountCount}}アカウント
+月額料金: ¥{{monthlyFee}}
+{{billingPeriodDescription}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+【お振込先】
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+銀行名: {{bankName}}
+支店名: {{branchName}}
+口座種別: {{accountType}}
+口座番号: {{accountNumber}}
+口座名義: {{accountHolder}}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+添付ファイルに詳細な請求書を添付いたします。
+ご不明な点がございましたら、お気軽にお問い合わせください。
+
+今後ともよろしくお願いいたします。
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{{companyName}}
+{{representativeName}}
+〒{{postalCode}} {{address}}
+TEL: {{phoneNumber}}
+Email: {{email}}
+{{#if website}}Website: {{website}}{{/if}}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`,
+            invoiceFooterNotes: '※チームプラン・アカウント共有サービスのため、使用量による追加料金は発生いたしません。',
           },
         };
         localStorage.setItem('companyInfo', JSON.stringify(defaultCompanyInfo));
@@ -439,6 +563,112 @@ export default function CompanySettings() {
                 製品が登録されていません
               </Typography>
             )}
+          </Paper>
+
+          {/* メール設定 */}
+          <Paper sx={{ p: 3, mt: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              メール設定（SendGrid）
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="SendGrid APIキー"
+                  type="password"
+                  value={companyInfo?.emailSettings?.sendgridApiKey || ''}
+                  onChange={(e) => setCompanyInfo(prev => prev ? {
+                    ...prev,
+                    emailSettings: { ...(prev.emailSettings || {}), sendgridApiKey: e.target.value, isConfigured: e.target.value.length > 0 }
+                  } : null)}
+                  placeholder="SG.xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+                  helperText="SendGridのAPIキーを入力してください。取得方法は SENDGRID_SETUP.md を参照"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="送信者メールアドレス"
+                  type="email"
+                  value={companyInfo?.emailSettings?.fromEmail || ''}
+                  onChange={(e) => setCompanyInfo(prev => prev ? {
+                    ...prev,
+                    emailSettings: { ...(prev.emailSettings || {}), fromEmail: e.target.value }
+                  } : null)}
+                  helperText="SendGridで認証済みのメールアドレス"
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <TextField
+                  fullWidth
+                  label="送信者名"
+                  value={companyInfo?.emailSettings?.fromName || ''}
+                  onChange={(e) => setCompanyInfo(prev => prev ? {
+                    ...prev,
+                    emailSettings: { ...(prev.emailSettings || {}), fromName: e.target.value }
+                  } : null)}
+                  helperText="メールに表示される送信者名"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Box sx={{ p: 2, border: '1px solid #ddd', borderRadius: 1, bgcolor: companyInfo?.emailSettings?.isConfigured ? '#e8f5e8' : '#fff3e0' }}>
+                  <Typography variant="body2" color={companyInfo?.emailSettings?.isConfigured ? 'success.main' : 'warning.main'}>
+                    {companyInfo?.emailSettings?.isConfigured ? '✅ メール送信設定完了' : '⚠️ SendGrid APIキーを設定してください'}
+                  </Typography>
+                  <Typography variant="caption" color="textSecondary">
+                    無料プラン: 月100通まで送信可能
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+          </Paper>
+
+          {/* 請求書テンプレート設定 */}
+          <Paper sx={{ p: 3, mt: 3 }}>
+            <Typography variant="h6" gutterBottom>
+              請求書メールテンプレート
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="メール件名テンプレート"
+                  value={companyInfo?.invoiceTemplate?.emailSubjectTemplate || ''}
+                  onChange={(e) => setCompanyInfo(prev => prev ? {
+                    ...prev,
+                    invoiceTemplate: { ...(prev.invoiceTemplate || {}), emailSubjectTemplate: e.target.value }
+                  } : null)}
+                  helperText="変数: {{companyName}}, {{billingType}}, {{invoiceNumber}}"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="メール本文テンプレート"
+                  multiline
+                  rows={15}
+                  value={companyInfo?.invoiceTemplate?.emailBodyTemplate || ''}
+                  onChange={(e) => setCompanyInfo(prev => prev ? {
+                    ...prev,
+                    invoiceTemplate: { ...(prev.invoiceTemplate || {}), emailBodyTemplate: e.target.value }
+                  } : null)}
+                  sx={{ fontFamily: 'monospace' }}
+                  helperText="使用可能な変数: {{customerOrganization}}, {{customerName}}, {{customerPostalCode}}, {{customerAddress}}, {{companyName}}, {{representativeName}}, {{billingType}}, {{invoiceNumber}}, {{totalAmount}}, {{dueDate}}, {{activeAccountCount}}, {{monthlyFee}}, {{billingPeriodDescription}}, {{bankName}}, {{branchName}}, {{accountType}}, {{accountNumber}}, {{accountHolder}}, {{postalCode}}, {{address}}, {{phoneNumber}}, {{email}}, {{website}}. 条件分岐: {{#if customerAddress}}...{{/if}}"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="請求書フッター注記"
+                  value={companyInfo?.invoiceTemplate?.invoiceFooterNotes || ''}
+                  onChange={(e) => setCompanyInfo(prev => prev ? {
+                    ...prev,
+                    invoiceTemplate: { ...(prev.invoiceTemplate || {}), invoiceFooterNotes: e.target.value }
+                  } : null)}
+                  helperText="請求書の最後に表示される注記"
+                />
+              </Grid>
+            </Grid>
           </Paper>
 
           <Box sx={{ mt: 3 }}>

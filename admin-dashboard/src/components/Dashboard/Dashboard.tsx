@@ -20,9 +20,9 @@ import {
   Assignment as AssignmentIcon,
   AttachMoney as AttachMoneyIcon,
 } from '@mui/icons-material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { dashboardApi } from '../../services/api';
 import { DashboardStats, Customer, CompanyInfo } from '../../types';
+import RevenueChart from './RevenueChart';
 
 export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -60,7 +60,9 @@ export default function Dashboard() {
             name: '山田太郎',
             chatGptAccounts: [
               { id: 'gpt-1', email: 'yamada@chatgpt.com', isActive: true, createdAt: new Date('2025-05-01') },
-              { id: 'gpt-5', email: 'yamada2@chatgpt.com', isActive: true, createdAt: new Date('2025-05-10') }
+              { id: 'gpt-5', email: 'yamada2@chatgpt.com', isActive: true, createdAt: new Date('2025-05-10') },
+              { id: 'gpt-6', email: 'yamada3@chatgpt.com', isActive: true, createdAt: new Date('2025-05-15') },
+              { id: 'gpt-7', email: 'yamada4@chatgpt.com', isActive: true, createdAt: new Date('2025-05-20') }
             ],
             status: 'active',
             plan: 'plus',
@@ -118,10 +120,16 @@ export default function Dashboard() {
       const monthlyRevenue = customers
         .filter(c => c.status === 'active')
         .reduce((total, customer) => {
-          const selectedProduct = companyInfo?.products.find((p: any) => p.id === customer.productId);
-          const unitPrice = selectedProduct?.unitPrice || 20000;
-          const activeAccounts = customer.chatGptAccounts.filter(acc => acc.isActive).length;
-          return total + (unitPrice * activeAccounts);
+          // 顧客詳細のチームプラン状況と同じ計算ロジック
+          const customerRevenue = customer.chatGptAccounts
+            .filter(acc => acc.isActive || acc.status === 'active')
+            .reduce((customerTotal, acc) => {
+              const product = companyInfo?.products.find((p: any) => p.id === acc.productId) ||
+                             companyInfo?.products.find((p: any) => p.id === customer.productId) ||
+                             companyInfo?.products.find((p: any) => p.isActive);
+              return customerTotal + (product?.unitPrice || 20000);
+            }, 0);
+          return total + customerRevenue;
         }, 0);
       
       const conversionRate = totalApplications > 0 ? (activeAccounts / totalApplications) * 100 : 0;
@@ -173,16 +181,6 @@ export default function Dashboard() {
     },
   ];
 
-  // ダミーの売上データ
-  const salesData = [
-    { name: '1週前', value: 320000 },
-    { name: '6日前', value: 350000 },
-    { name: '5日前', value: 380000 },
-    { name: '4日前', value: 390000 },
-    { name: '3日前', value: 420000 },
-    { name: '2日前', value: 440000 },
-    { name: '昨日', value: 445000 },
-  ];
 
   const getStatusChip = (status: string) => {
     const statusConfig: Record<string, { label: string; color: 'default' | 'primary' | 'success' | 'warning' | 'error' }> = {
@@ -231,20 +229,7 @@ export default function Dashboard() {
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="h6" gutterBottom>
-              売上推移
-            </Typography>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={salesData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip formatter={(value: number) => `¥${value.toLocaleString()}`} />
-                <Line type="monotone" dataKey="value" stroke="#8884d8" />
-              </LineChart>
-            </ResponsiveContainer>
-          </Paper>
+          <RevenueChart />
         </Grid>
 
         <Grid item xs={12} md={4}>
@@ -259,6 +244,12 @@ export default function Dashboard() {
                 </Typography>
                 <Typography color="textSecondary">
                   申込 → アクティブ
+                </Typography>
+                <Typography variant="caption" color="textSecondary" sx={{ mt: 1, display: 'block' }}>
+                  ※申込み＝契約のため、現在は参考値
+                </Typography>
+                <Typography variant="caption" color="textSecondary">
+                  LP資料申込数との比較用項目として維持
                 </Typography>
               </Box>
             </Box>

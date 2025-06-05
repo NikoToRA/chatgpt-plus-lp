@@ -82,6 +82,24 @@ export default function CustomerList() {
               email: 'yamada@chatgpt.com',
               isActive: true,
               createdAt: new Date('2025-05-01')
+            },
+            {
+              id: 'gpt-5',
+              email: 'yamada2@chatgpt.com',
+              isActive: true,
+              createdAt: new Date('2025-05-10')
+            },
+            {
+              id: 'gpt-6',
+              email: 'yamada3@chatgpt.com',
+              isActive: true,
+              createdAt: new Date('2025-05-15')
+            },
+            {
+              id: 'gpt-7',
+              email: 'yamada4@chatgpt.com',
+              isActive: true,
+              createdAt: new Date('2025-05-20')
             }
           ],
           status: 'active',
@@ -166,11 +184,26 @@ export default function CustomerList() {
     setPage(0);
   };
 
+  // チームプラン状況の月額料金計算（CustomerDetailと共通ロジック）
+  const calculateTeamPlanMonthlyFee = (customer: Customer, companyInfo: CompanyInfo | null) => {
+    if (!customer || !companyInfo) return 0;
+    return customer.chatGptAccounts
+      .filter(acc => acc.isActive || acc.status === 'active')
+      .reduce((total, acc) => {
+        const product = companyInfo.products.find(p => p.id === acc.productId) ||
+                       companyInfo.products.find(p => p.id === customer.productId) ||
+                       companyInfo.products.find(p => p.isActive);
+        return total + (product?.unitPrice || 20000);
+      }, 0);
+  };
+
   const calculateMonthlyRevenue = (customer: Customer) => {
-    const selectedProduct = companyInfo?.products.find(p => p.id === customer.productId);
-    const unitPrice = selectedProduct?.unitPrice || 20000;
-    const activeAccounts = customer.chatGptAccounts.filter(acc => acc.isActive).length;
-    return unitPrice * activeAccounts;
+    // trialステータスの顧客は収益を0とする
+    if (customer.status !== 'active') {
+      return 0;
+    }
+    // チームプラン状況の月額料金をそのまま使用
+    return calculateTeamPlanMonthlyFee(customer, companyInfo);
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {

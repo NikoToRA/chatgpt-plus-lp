@@ -1,0 +1,13 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "SENDGRID_API_KEY": "YOUR_SENDGRID_API_KEY_HERE",
+    "FROM_EMAIL": "info@wonderdrill.com",
+    "FROM_NAME": "株式会社WonderDrill"
+  },
+  "Host": {
+    "CORS": "*"
+  }
+}
