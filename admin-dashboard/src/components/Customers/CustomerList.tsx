@@ -23,7 +23,7 @@ import {
   Link as LinkIcon,
 } from '@mui/icons-material';
 import { customerApi } from '../../services/api';
-import { Customer } from '../../types';
+import { Customer, CompanyInfo } from '../../types';
 
 export default function CustomerList() {
   const navigate = useNavigate();
@@ -33,9 +33,20 @@ export default function CustomerList() {
   const [searchTerm, setSearchTerm] = useState('');
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
 
   useEffect(() => {
     loadCustomers();
+    loadCompanyInfo();
+    
+    // ウィンドウフォーカス時にデータを再読み込み
+    const handleFocus = () => {
+      loadCustomers();
+      loadCompanyInfo();
+    };
+    
+    window.addEventListener('focus', handleFocus);
+    return () => window.removeEventListener('focus', handleFocus);
   }, []);
 
   useEffect(() => {
@@ -44,6 +55,15 @@ export default function CustomerList() {
 
   const loadCustomers = async () => {
     try {
+      // まずローカルストレージから確認
+      const localCustomers = localStorage.getItem('customers');
+      if (localCustomers) {
+        const parsedCustomers = JSON.parse(localCustomers);
+        setCustomers(parsedCustomers);
+        setFilteredCustomers(parsedCustomers);
+        return;
+      }
+      
       const data = await customerApi.getAll();
       setCustomers(data);
       setFilteredCustomers(data);
@@ -56,11 +76,20 @@ export default function CustomerList() {
           email: 'yamada@example.com',
           organization: '株式会社山田商事',
           name: '山田太郎',
-          chatGptEmail: 'yamada@chatgpt.com',
+          chatGptAccounts: [
+            {
+              id: 'gpt-1',
+              email: 'yamada@chatgpt.com',
+              isActive: true,
+              createdAt: new Date('2025-05-01')
+            }
+          ],
           status: 'active',
           plan: 'plus',
           paymentMethod: 'card',
-          createdAt: new Date('2025-05-01'),
+          registeredAt: new Date('2025-05-01'),
+          subscriptionMonths: 12,
+          expiresAt: new Date('2026-05-01'),
           lastActivityAt: new Date(),
         },
         {
@@ -68,10 +97,13 @@ export default function CustomerList() {
           email: 'suzuki@example.com',
           organization: '鈴木工業株式会社',
           name: '鈴木花子',
+          chatGptAccounts: [],
           status: 'trial',
-          plan: 'basic',
+          plan: 'plus',
           paymentMethod: 'invoice',
-          createdAt: new Date('2025-05-15'),
+          registeredAt: new Date('2025-05-15'),
+          subscriptionMonths: 3,
+          expiresAt: new Date('2025-08-15'),
           lastActivityAt: new Date(),
         },
         {
@@ -79,18 +111,48 @@ export default function CustomerList() {
           email: 'tanaka@example.com',
           organization: '田中システム',
           name: '田中次郎',
-          chatGptEmail: 'tanaka@chatgpt.com',
+          chatGptAccounts: [
+            {
+              id: 'gpt-2',
+              email: 'tanaka@chatgpt.com',
+              isActive: true,
+              createdAt: new Date('2025-04-20')
+            },
+            {
+              id: 'gpt-3',
+              email: 'tanaka2@chatgpt.com',
+              isActive: true,
+              createdAt: new Date('2025-04-25')
+            },
+            {
+              id: 'gpt-4',
+              email: 'tanaka3@chatgpt.com',
+              isActive: false,
+              createdAt: new Date('2025-04-30')
+            }
+          ],
           status: 'active',
-          plan: 'enterprise',
+          plan: 'plus',
           paymentMethod: 'invoice',
-          createdAt: new Date('2025-04-20'),
+          registeredAt: new Date('2025-04-20'),
+          subscriptionMonths: 6,
+          expiresAt: new Date('2025-10-20'),
           lastActivityAt: new Date(),
         },
       ];
+      // ダミーデータをローカルストレージに保存
+      localStorage.setItem('customers', JSON.stringify(dummyCustomers));
       setCustomers(dummyCustomers);
       setFilteredCustomers(dummyCustomers);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const loadCompanyInfo = () => {
+    const companyInfoStr = localStorage.getItem('companyInfo');
+    if (companyInfoStr) {
+      setCompanyInfo(JSON.parse(companyInfoStr));
     }
   };
 
@@ -102,6 +164,13 @@ export default function CustomerList() {
     );
     setFilteredCustomers(filtered);
     setPage(0);
+  };
+
+  const calculateMonthlyRevenue = (customer: Customer) => {
+    const selectedProduct = companyInfo?.products.find(p => p.id === customer.productId);
+    const unitPrice = selectedProduct?.unitPrice || 20000;
+    const activeAccounts = customer.chatGptAccounts.filter(acc => acc.isActive).length;
+    return unitPrice * activeAccounts;
   };
 
   const handleChangePage = (event: unknown, newPage: number) => {
@@ -179,9 +248,10 @@ export default function CustomerList() {
                 <TableCell>組織</TableCell>
                 <TableCell>メールアドレス</TableCell>
                 <TableCell>ChatGPTアカウント</TableCell>
-                <TableCell>プラン</TableCell>
+                <TableCell>月額収益</TableCell>
                 <TableCell>ステータス</TableCell>
                 <TableCell>登録日</TableCell>
+                <TableCell>更新期限</TableCell>
                 <TableCell align="center">操作</TableCell>
               </TableRow>
             </TableHead>
@@ -194,14 +264,27 @@ export default function CustomerList() {
                     <TableCell>{customer.organization}</TableCell>
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>
-                      {customer.chatGptEmail || (
+                      {customer.chatGptAccounts.length > 0 ? (
+                        <Chip 
+                          label={`${customer.chatGptAccounts.filter(acc => acc.isActive).length}/${customer.chatGptAccounts.length}アカウント`} 
+                          size="small" 
+                          color="primary" 
+                        />
+                      ) : (
                         <Chip label="未紐付け" size="small" color="warning" />
                       )}
                     </TableCell>
-                    <TableCell>{getPlanChip(customer.plan)}</TableCell>
+                    <TableCell>
+                      <Typography variant="body2" color="primary" fontWeight="bold">
+                        ¥{calculateMonthlyRevenue(customer).toLocaleString()}
+                      </Typography>
+                    </TableCell>
                     <TableCell>{getStatusChip(customer.status)}</TableCell>
                     <TableCell>
-                      {new Date(customer.createdAt).toLocaleDateString('ja-JP')}
+                      {new Date(customer.registeredAt).toLocaleDateString('ja-JP')}
+                    </TableCell>
+                    <TableCell>
+                      {new Date(customer.expiresAt).toLocaleDateString('ja-JP')}
                     </TableCell>
                     <TableCell align="center">
                       <IconButton

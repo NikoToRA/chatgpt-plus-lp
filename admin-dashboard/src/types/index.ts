@@ -1,13 +1,28 @@
+export interface ChatGptAccount {
+  id: string;
+  email: string;
+  isActive: boolean;
+  createdAt: Date;
+  startDate?: Date;
+  productId?: string;
+  expiresAt?: Date;
+  subscriptionMonths?: number;
+  status?: 'active' | 'suspended' | 'expired';
+}
+
 export interface Customer {
   id: string;
   email: string;
   organization: string;
   name: string;
-  chatGptEmail?: string;
+  chatGptAccounts: ChatGptAccount[];
   status: 'trial' | 'active' | 'suspended' | 'cancelled';
   plan: 'basic' | 'plus' | 'enterprise';
+  productId?: string;
   paymentMethod: 'card' | 'invoice';
-  createdAt: Date;
+  registeredAt: Date;
+  subscriptionMonths: number;
+  expiresAt: Date;
   lastActivityAt: Date;
   stripeCustomerId?: string;
 }
@@ -45,4 +60,38 @@ export interface UsageData {
   messagesCount: number;
   tokensUsed: number;
   cost: number;
+}
+
+export interface CompanyInfo {
+  id: string;
+  companyName: string;
+  representativeName: string;
+  postalCode: string;
+  address: string;
+  phoneNumber: string;
+  email: string;
+  website?: string;
+  taxId?: string;
+  bankInfo: {
+    bankName: string;
+    branchName: string;
+    accountType: 'savings' | 'checking';
+    accountNumber: string;
+    accountHolder: string;
+  };
+  products: ProductInfo[];
+  invoiceSettings: {
+    invoicePrefix: string;
+    paymentTermDays: number;
+    notes?: string;
+  };
+}
+
+export interface ProductInfo {
+  id: string;
+  name: string;
+  description: string;
+  unitPrice: number;
+  taxRate: number;
+  isActive: boolean;
 }

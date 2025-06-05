@@ -42,7 +42,7 @@ export default function AccountLinkingComponent() {
       const customers = await customerApi.getAll();
       const results = customers.filter(c => 
         c.email.toLowerCase().includes(searchEmail.toLowerCase()) &&
-        !c.chatGptEmail
+        c.chatGptAccounts.length === 0
       );
       setSearchResults(results);
       
@@ -57,10 +57,13 @@ export default function AccountLinkingComponent() {
           email: 'sato@example.com',
           organization: '佐藤製作所',
           name: '佐藤三郎',
+          chatGptAccounts: [],
           status: 'active',
           plan: 'plus',
           paymentMethod: 'card',
-          createdAt: new Date(),
+          registeredAt: new Date(),
+          subscriptionMonths: 12,
+          expiresAt: new Date(),
           lastActivityAt: new Date(),
         },
         {
@@ -68,10 +71,13 @@ export default function AccountLinkingComponent() {
           email: 'ito@example.com',
           organization: '伊藤コンサルティング',
           name: '伊藤四郎',
+          chatGptAccounts: [],
           status: 'trial',
-          plan: 'basic',
+          plan: 'plus',
           paymentMethod: 'invoice',
-          createdAt: new Date(),
+          registeredAt: new Date(),
+          subscriptionMonths: 3,
+          expiresAt: new Date(),
           lastActivityAt: new Date(),
         },
       ];

@@ -9,6 +9,7 @@ import Dashboard from './components/Dashboard/Dashboard';
 import CustomerList from './components/Customers/CustomerList';
 import CustomerDetail from './components/Customers/CustomerDetail';
 import AccountLinking from './components/Accounts/AccountLinking';
+import CompanySettings from './components/Company/CompanySettings';
 
 const theme = createTheme({
   palette: {
@@ -60,6 +61,7 @@ function App() {
             <Route path="customers" element={<CustomerList />} />
             <Route path="customers/:id" element={<CustomerDetail />} />
             <Route path="accounts/link" element={<AccountLinking />} />
+            <Route path="company" element={<CompanySettings />} />
           </Route>
         </Routes>
       </Router>

@@ -19,6 +19,7 @@ import {
   Dashboard as DashboardIcon,
   People as PeopleIcon,
   Link as LinkIcon,
+  Business as BusinessIcon,
   Logout as LogoutIcon,
 } from '@mui/icons-material';
 import { authService } from '../../services/auth';
@@ -29,6 +30,7 @@ const menuItems = [
   { text: 'ダッシュボード', icon: <DashboardIcon />, path: '/' },
   { text: '顧客管理', icon: <PeopleIcon />, path: '/customers' },
   { text: 'アカウント紐付け', icon: <LinkIcon />, path: '/accounts/link' },
+  { text: '会社情報設定', icon: <BusinessIcon />, path: '/company' },
 ];
 
 export default function Layout() {
