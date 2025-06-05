@@ -1,15 +1,23 @@
 const { TableClient } = require("@azure/data-tables");
+const StorageService = require('../services/storage-service');
 
-const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING || 
-  "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VNH3n0IhjyW2mM6xOtJqCuOL8l3/iHjJP1kxvGCVLdD4O7Z4+vN6M2vuQ1GKjz4S3WP7dZjBAJJM+AStGFbhmg==;EndpointSuffix=core.windows.net";
-
-const customerTableClient = TableClient.fromConnectionString(connectionString, "Customers");
-const submissionTableClient = TableClient.fromConnectionString(connectionString, "FormSubmissions");
+// Storage Service設定
+const getStorageService = () => {
+  const useMockData = process.env.USE_MOCK_DATA === 'true';
+  const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+  
+  return new StorageService(useMockData, connectionString);
+};
 
 module.exports = async function (context, req) {
     context.log('Dashboard function processed a request.');
 
     const action = context.bindingData.action;
+    
+    // Get table clients
+    const storageService = getStorageService();
+    const customerTableClient = await storageService.getTableClient("Customers");
+    const submissionTableClient = await storageService.getTableClient("FormSubmissions");
 
     try {
         switch (action) {

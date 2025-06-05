@@ -1,45 +1,163 @@
-# Azure Functions API for ChatGPT Plus LP
+# ChatGPT Plus LP Backend API
 
-このディレクトリには、ChatGPT Plus医療機関向けランディングページのAzure Functions APIが含まれています。
+医療機関向けChatGPT Plus代理購入サービスのバックエンドAPI
 
-## 機能
+## 🚀 ローカル開発環境のセットアップ
 
-- フォーム送信処理
-- PDFの動的生成
-- Azure Table Storageへのデータ保存
+### 1. 依存関係のインストール
 
-## ローカル開発
+```bash
+cd api
+npm install
+```
 
-1. Azure Functions Core Toolsをインストール:
-   ```
-   npm install -g azure-functions-core-tools@4 --unsafe-perm true
-   ```
+### 2. ローカルサーバーの起動
 
-2. 依存関係をインストール:
-   ```
-   npm install
-   ```
+```bash
+# Express開発サーバーを起動（推奨）
+npm run dev
 
-3. ローカル設定ファイル（local.settings.json）を更新:
-   ```json
-   {
-     "IsEncrypted": false,
-     "Values": {
-       "AzureWebJobsStorage": "接続文字列を入力",
-       "FUNCTIONS_WORKER_RUNTIME": "node"
-     }
-   }
-   ```
+# または、Node.jsで直接実行
+node local-server.js
+```
 
-4. ローカルでFunctionsを実行:
-   ```
-   func start
-   ```
+### 3. アクセスURL
 
-## デプロイ
+サーバーが起動すると、以下のURLでアクセスできます：
 
-GitHub Actionsを使用して、mainブランチへのプッシュ時に自動的にAzure Functionsにデプロイされます。詳細は、`.github/workflows/azure-deploy.yml`を参照してください。
+**http://localhost:7071**
 
-## Azure環境のセットアップ
+## 📌 APIエンドポイント
 
-Azure環境のセットアップ方法については、プロジェクトルートの[AZURE_SETUP.md](../AZURE_SETUP.md)を参照してください。
+### フォーム送信
+```
+POST /api/submit-form
+Content-Type: application/json
+
+{
+  "organization": "医療機関名",
+  "name": "担当者名",
+  "email": "email@example.com",
+  "purpose": "research",
+  "accounts": "1-3",
+  "message": "お問い合わせ内容"
+}
+```
+
+### 顧客管理
+```
+# 一覧取得
+GET /api/customers
+
+# 詳細取得
+GET /api/customers/{id}
+
+# 更新
+PUT /api/customers/{id}
+
+# アカウント紐付け
+POST /api/customers/link
+{
+  "customerId": "CUST001",
+  "chatGptEmail": "example@chatgpt-proxy.jp",
+  "linkedBy": "admin@example.com"
+}
+```
+
+### ダッシュボード
+```
+# 統計情報
+GET /api/dashboard/stats
+
+# 最近の申込み
+GET /api/dashboard/recent
+```
+
+## 🔧 設定
+
+### モックデータモード（デフォルト）
+
+`local.settings.json`:
+```json
+{
+  "Values": {
+    "USE_MOCK_DATA": "true"
+  }
+}
+```
+
+### Azure Storage接続モード
+
+`local.settings.json`:
+```json
+{
+  "Values": {
+    "USE_MOCK_DATA": "false",
+    "AZURE_STORAGE_CONNECTION_STRING": "your-azure-connection-string"
+  }
+}
+```
+
+## 📊 モックデータ
+
+モックデータには以下が含まれています：
+
+- **FormSubmissions**: 2件のサンプル申込み
+- **Customers**: 3件のサンプル顧客（active, trial, pending）
+- **AccountMapping**: 2件のアカウント紐付け情報
+
+## 🧪 テスト方法
+
+### cURLを使用したテスト
+
+```bash
+# フォーム送信テスト
+curl -X POST http://localhost:7071/api/submit-form \
+  -H "Content-Type: application/json" \
+  -d '{
+    "organization": "テスト病院",
+    "name": "テスト太郎",
+    "email": "test@example.com",
+    "purpose": "clinical",
+    "accounts": "4-10"
+  }'
+
+# 顧客一覧取得
+curl http://localhost:7071/api/customers
+
+# 統計情報取得
+curl http://localhost:7071/api/dashboard/stats
+```
+
+### Postmanコレクション
+
+`api-tests.postman_collection.json`をPostmanにインポートして使用できます。
+
+## 🚨 トラブルシューティング
+
+### ポート7071が使用中の場合
+
+`local-server.js`の`port`変数を変更してください：
+
+```javascript
+const port = 8080; // 別のポートに変更
+```
+
+### CORSエラーが発生する場合
+
+フロントエンドからアクセスする際は、`cors`設定が有効になっていることを確認してください。
+
+### モックデータが表示されない場合
+
+1. `USE_MOCK_DATA`が`"true"`に設定されているか確認
+2. `storage-service.js`が正しく読み込まれているか確認
+
+## 📝 Azure Functions Core Toolsでの実行（オプション）
+
+Azure Functions Core Toolsがインストールされている場合：
+
+```bash
+func start
+```
+
+ただし、Express開発サーバー（`local-server.js`）の方が開発には便利です。

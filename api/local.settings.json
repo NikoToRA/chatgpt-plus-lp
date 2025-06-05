@@ -1,0 +1,14 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "AzureWebJobsStorage": "",
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "USE_MOCK_DATA": "true",
+    "AZURE_STORAGE_CONNECTION_STRING": "",
+    "CORS": "*",
+    "AzureWebJobsDisableHomepage": "true"
+  },
+  "Host": {
+    "CORS": "*"
+  }
+}

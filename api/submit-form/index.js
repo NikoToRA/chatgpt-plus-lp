@@ -2,17 +2,14 @@ const PDFDocument = require('pdfkit');
 const { TableClient } = require('@azure/data-tables');
 const fs = require('fs');
 const path = require('path');
+const StorageService = require('../services/storage-service');
 
-// Azure Table Storage設定
-const getTableClient = () => {
-  const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING || 
-    "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VM2FzAPdX8d0GunlQX0SfXe17OQrNqDbc/5oAPBGoSs7TBNG4dt/2FiATk9Caibir6uSAPSUlIN2+AStPvEsYg==;EndpointSuffix=core.windows.net";
+// Storage Service設定
+const getStorageService = () => {
+  const useMockData = process.env.USE_MOCK_DATA === 'true';
+  const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
   
-  if (!connectionString || connectionString === 'YOUR_STORAGE_CONNECTION_STRING_HERE' || connectionString.includes('***')) {
-    console.error('AZURE_STORAGE_CONNECTION_STRING is not properly configured');
-    return null; // エラーを投げずにnullを返す
-  }
-  return TableClient.fromConnectionString(connectionString, 'FormSubmissions');
+  return new StorageService(useMockData, connectionString);
 };
 
 // Table Storageにデータを保存
@@ -20,26 +17,17 @@ const saveToTableStorage = async (formData, context) => {
   try {
     context.log('=== Starting Table Storage save operation ===');
     context.log('Form data received:', JSON.stringify(formData));
+    context.log('Using mock data:', process.env.USE_MOCK_DATA === 'true');
     
-    const tableClient = getTableClient();
+    const storageService = getStorageService();
+    const tableClient = await storageService.getTableClient('FormSubmissions');
+    
     if (!tableClient) {
       const errorMsg = 'Table Storage is not configured, skipping save';
       context.log('ERROR:', errorMsg);
       return { error: errorMsg };
     }
     context.log('Table client created successfully');
-    
-    // テーブルが存在しない場合は作成
-    try {
-      await tableClient.createTable();
-      context.log('Table creation/verification successful');
-    } catch (createError) {
-      if (createError.statusCode !== 409) { // 409 = Already Exists
-        context.log('ERROR: Table creation failed:', createError.message);
-        throw createError;
-      }
-      context.log('Table already exists');
-    }
     
     // エンティティを作成
     const entity = {
@@ -80,24 +68,23 @@ const testDatabaseConnection = async (context) => {
     context.log('Testing database connection...');
     
     // 環境変数チェック
+    const useMockData = process.env.USE_MOCK_DATA === 'true';
     const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+    context.log('Using mock data:', useMockData);
     context.log('Connection string exists:', !!connectionString);
-    context.log('Connection string preview:', connectionString ? connectionString.substring(0, 50) + '...' : 'NOT SET');
     
-    if (!connectionString || connectionString.includes('***')) {
+    if (!useMockData && (!connectionString || connectionString.includes('***'))) {
       return { success: false, error: 'AZURE_STORAGE_CONNECTION_STRING not properly configured' };
     }
     
-    // Table Client作成テスト
-    const tableClient = getTableClient();
+    // Storage Service作成テスト
+    const storageService = getStorageService();
+    const tableClient = await storageService.getTableClient('FormSubmissions');
+    
     if (!tableClient) {
       return { success: false, error: 'Table client could not be created' };
     }
     context.log('Table client created successfully');
-    
-    // テーブル作成テスト
-    await tableClient.createTable();
-    context.log('Table creation/verification successful');
     
     // テストエンティティ作成
     const testEntity = {
