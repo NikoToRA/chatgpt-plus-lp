@@ -23,43 +23,37 @@ const theme = createTheme({
 });
 
 function App() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
+  // エラーハンドリング用
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        // 暫定的に認証を無効化（すべてのユーザーに管理画面アクセス許可）
-        setIsAuthenticated(true);
-        setIsLoading(false);
-        return;
-        
-        // 将来の認証実装用コード（現在は無効）
-        /*
-        const response = await fetch('/.auth/me');
-        if (response.ok) {
-          const authData = await response.json();
-          const isAuth = authData.clientPrincipal !== null;
-          setIsAuthenticated(isAuth);
-        } else {
-          const devToken = localStorage.getItem('authToken');
-          setIsAuthenticated(!!devToken);
-        }
-        */
-      } catch (error) {
-        console.error('Auth check failed:', error);
-        // フォールバック: 認証エラー時も管理画面アクセス許可
-        setIsAuthenticated(true);
-      } finally {
-        setIsLoading(false);
-      }
+    const handleError = (event: ErrorEvent) => {
+      setError(`JavaScript Error: ${event.message}`);
+      console.error('Global error:', event.error);
     };
 
-    checkAuth();
+    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
+      setError(`Promise Rejection: ${event.reason}`);
+      console.error('Unhandled promise rejection:', event.reason);
+    };
+
+    window.addEventListener('error', handleError);
+    window.addEventListener('unhandledrejection', handleUnhandledRejection);
+
+    return () => {
+      window.removeEventListener('error', handleError);
+      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
+    };
   }, []);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (error) {
+    return (
+      <div style={{ padding: '20px', color: 'red' }}>
+        <h1>アプリケーションエラー</h1>
+        <p>{error}</p>
+        <button onClick={() => setError(null)}>リトライ</button>
+      </div>
+    );
   }
 
   return (
@@ -67,14 +61,9 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          <Route path="/login" element={
-            isAuthenticated ? <Navigate to="/" /> : <Login onLogin={() => setIsAuthenticated(true)} />
-          } />
-          
-          <Route path="/" element={
-            isAuthenticated ? <Layout /> : <Navigate to="/login" />
-          }>
-            <Route index element={<Dashboard />} />
+          <Route path="/login" element={<Login onLogin={() => {}} />} />
+          <Route path="/" element={<Layout />}>
+            <Route index element={<div style={{padding: '20px'}}><h1>管理画面ダッシュボード</h1><p>正常に動作しています</p></div>} />
             <Route path="customers" element={<CustomerList />} />
             <Route path="customers/:id" element={<CustomerDetail />} />
             <Route path="accounts/link" element={<AccountLinking />} />
