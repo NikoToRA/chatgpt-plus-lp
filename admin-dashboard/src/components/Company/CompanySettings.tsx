@@ -54,7 +54,7 @@ export default function CompanySettings() {
     try {
       // First try to get from Azure API
       try {
-        const response = await fetch('/api/company-settings');
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://chatgpt-plus-api.azurewebsites.net/api'}/company-settings`);
         if (response.ok) {
           const data = await response.json();
           if (data.success && data.data) {
@@ -259,7 +259,7 @@ Email: {{email}}
     try {
       // First try to save to Azure API
       try {
-        const response = await fetch('/api/company-settings', {
+        const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://chatgpt-plus-api.azurewebsites.net/api'}/company-settings`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -272,16 +272,16 @@ Email: {{email}}
           if (data.success) {
             // Also save to localStorage as backup
             localStorage.setItem('companyInfo', JSON.stringify(companyInfo));
-            setMessage({ type: 'success', text: '会社情報をAzure DBに保存しました。' });
+            setMessage({ type: 'success', text: '会社情報をAzure API (in-memory) に保存しました。' });
             return;
           }
         }
         throw new Error('Azure API save failed');
       } catch (apiError) {
-        console.warn('Azure API save failed, saving to localStorage only:', apiError);
+        console.error('Azure API save failed:', apiError);
         // Fallback to localStorage only
         localStorage.setItem('companyInfo', JSON.stringify(companyInfo));
-        setMessage({ type: 'success', text: '会社情報をローカルに保存しました（Azure DBは利用できません）。' });
+        setMessage({ type: 'error', text: `Azure API接続失敗: ${apiError.message}。ローカル保存のみ実行されました。` });
       }
     } catch (error) {
       console.error('Failed to save company info:', error);
@@ -311,7 +311,7 @@ Email: {{email}}
     }
   };
 
-  const addProduct = () => {
+  const addProduct = async () => {
     if (!companyInfo || !newProduct.name) return;
 
     const product: ProductInfo = {
@@ -323,10 +323,39 @@ Email: {{email}}
       isActive: newProduct.isActive ?? true,
     };
 
-    setCompanyInfo({
+    const updatedCompanyInfo = {
       ...companyInfo,
       products: [...companyInfo.products, product],
-    });
+    };
+
+    setCompanyInfo(updatedCompanyInfo);
+
+    // 製品追加後に自動保存
+    try {
+      const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://chatgpt-plus-api.azurewebsites.net/api'}/company-settings`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedCompanyInfo),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          localStorage.setItem('companyInfo', JSON.stringify(updatedCompanyInfo));
+          setMessage({ type: 'success', text: '製品が追加され、Azure API (in-memory) に保存されました。' });
+        } else {
+          throw new Error('API response indicates failure');
+        }
+      } else {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.warn('Azure API save failed, saving to localStorage only:', error);
+      localStorage.setItem('companyInfo', JSON.stringify(updatedCompanyInfo));
+      setMessage({ type: 'success', text: '製品が追加されました（ローカル保存のみ、Azure DBエラー）。' });
+    }
 
     setNewProduct({
       name: '',
