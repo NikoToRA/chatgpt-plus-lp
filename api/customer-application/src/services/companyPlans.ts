@@ -28,13 +28,13 @@ interface CompanySettingsResponse {
   };
 }
 
-// Default plans matching company settings (¥20,000 and ¥15,000 from admin dashboard)
+// Default plans matching company settings - TEMPORARY until Azure API is fixed
 export const DEFAULT_COMPANY_PLANS: CompanyPlan[] = [
   {
     id: 'prod-1',
     name: 'ChatGPT Plus 医療機関向けプラン',
     description: '医療機関専用のChatGPT Plus代行サービス（チームプラン・アカウント共有）',
-    unitPrice: 20000, // Monthly price matching admin dashboard
+    unitPrice: 3000, // Updated price from admin dashboard test
     taxRate: 0.10,
     isActive: true,
     billingOptions: ['monthly', 'yearly'],
@@ -50,7 +50,7 @@ export const DEFAULT_COMPANY_PLANS: CompanyPlan[] = [
     id: 'prod-2',
     name: 'ChatGPT Plus 企業向けプラン',
     description: '企業向けのChatGPT Plus代行サービス（チームプラン・アカウント共有）',
-    unitPrice: 15000, // Monthly price matching admin dashboard
+    unitPrice: 2500, // Different pricing for enterprise
     taxRate: 0.10,
     isActive: true,
     billingOptions: ['monthly', 'yearly'],
@@ -61,6 +61,22 @@ export const DEFAULT_COMPANY_PLANS: CompanyPlan[] = [
       '請求書一元化',
       'サポート対応'
     ]
+  },
+  {
+    id: 'prod-1735632267392',
+    name: 'ChatGPT Plus 医療機関プラン',
+    description: '医療機関向け専用プラン',
+    unitPrice: 3000, // Test product from admin dashboard
+    taxRate: 0.10,
+    isActive: true,
+    billingOptions: ['monthly', 'yearly'],
+    maxAccounts: 10,
+    features: [
+      'ChatGPT Plus契約代行',
+      'アカウント設定・管理',
+      '請求書一元化',
+      '技術サポート'
+    ]
   }
 ];
 
@@ -68,7 +84,7 @@ export const DEFAULT_COMPANY_PLANS: CompanyPlan[] = [
 export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
   try {
     // First try to fetch from company settings API
-    const response = await fetch('/api/company-settings');
+    const response = await fetch('https://chatgpt-plus-api.azurewebsites.net/api/company-settings');
     
     if (response.ok) {
       const data: CompanySettingsResponse = await response.json();
@@ -100,7 +116,7 @@ export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
     
     // Try fallback: company-plans API (if exists)
     try {
-      const plansResponse = await fetch('/api/company-plans');
+      const plansResponse = await fetch('https://chatgpt-plus-api.azurewebsites.net/api/company-plans');
       if (plansResponse.ok) {
         const plansData = await plansResponse.json();
         if (plansData.success && plansData.plans) {

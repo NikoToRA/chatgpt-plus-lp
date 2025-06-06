@@ -147,6 +147,8 @@ module.exports = async function (context, req) {
 
     } catch (error) {
         context.log.error('Error in company settings API:', error);
+        context.log.error('Error stack:', error.stack);
+        context.log.error('Connection string exists:', !!process.env.AzureWebJobsStorage);
         
         context.res = {
             status: 500,
@@ -157,6 +159,8 @@ module.exports = async function (context, req) {
             body: {
                 success: false,
                 error: error.message,
+                stack: error.stack,
+                hasConnectionString: !!process.env.AzureWebJobsStorage,
                 message: "Failed to process company settings"
             }
         };
