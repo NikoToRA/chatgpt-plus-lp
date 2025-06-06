@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 // import { authService } from './services/auth';
 import Layout from './components/Common/Layout';
 import Login from './components/Auth/Login';
-import Dashboard from './components/Dashboard/Dashboard';
+// import Dashboard from './components/Dashboard/Dashboard';
 import CustomerList from './components/Customers/CustomerList';
 import CustomerDetail from './components/Customers/CustomerDetail';
 import AccountLinking from './components/Accounts/AccountLinking';
