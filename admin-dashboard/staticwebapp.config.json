@@ -10,17 +10,11 @@
     },
     {
       "route": "/*",
-      "allowedRoles": ["authenticated"]
+      "allowedRoles": ["anonymous", "authenticated"]
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": ["/static/*", "/*.{css,scss,js,png,gif,ico,jpg,svg}"]
-  },
-  "responseOverrides": {
-    "401": {
-      "redirect": "/.auth/login/aad",
-      "statusCode": 302
-    }
   }
 }

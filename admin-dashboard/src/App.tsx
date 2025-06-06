@@ -29,22 +29,27 @@ function App() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // Azure Static Web Apps認証状態チェック
+        // 暫定的に認証を無効化（すべてのユーザーに管理画面アクセス許可）
+        setIsAuthenticated(true);
+        setIsLoading(false);
+        return;
+        
+        // 将来の認証実装用コード（現在は無効）
+        /*
         const response = await fetch('/.auth/me');
         if (response.ok) {
           const authData = await response.json();
           const isAuth = authData.clientPrincipal !== null;
           setIsAuthenticated(isAuth);
         } else {
-          // 開発環境の場合はローカルストレージもチェック
           const devToken = localStorage.getItem('authToken');
           setIsAuthenticated(!!devToken);
         }
+        */
       } catch (error) {
         console.error('Auth check failed:', error);
-        // 開発環境の場合はローカルストレージもチェック
-        const devToken = localStorage.getItem('authToken');
-        setIsAuthenticated(!!devToken);
+        // フォールバック: 認証エラー時も管理画面アクセス許可
+        setIsAuthenticated(true);
       } finally {
         setIsLoading(false);
       }
