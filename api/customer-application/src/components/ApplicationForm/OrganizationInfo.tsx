@@ -14,7 +14,7 @@ import { Controller, Control } from 'react-hook-form';
 import { OrganizationInfo } from '../../types/application';
 
 interface OrganizationInfoStepProps {
-  control: Control<OrganizationInfo>;
+  control: Control<OrganizationInfo, any>;
   errors: any;
 }
 

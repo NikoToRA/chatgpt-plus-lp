@@ -10,7 +10,7 @@ import { Controller, Control } from 'react-hook-form';
 import { ContactInfo } from '../../types/application';
 
 interface ContactInfoStepProps {
-  control: Control<ContactInfo>;
+  control: Control<ContactInfo, any>;
   errors: any;
 }
 

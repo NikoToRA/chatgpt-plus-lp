@@ -2,7 +2,7 @@ import React from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Layout from './components/Layout/Layout';
-import ApplicationForm from './components/ApplicationForm/ApplicationForm';
+import SimpleForm from './components/ApplicationForm/SimpleForm';
 
 // Material-UI テーマ設定
 const theme = createTheme({
@@ -33,7 +33,7 @@ function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Layout>
-        <ApplicationForm />
+        <SimpleForm />
       </Layout>
     </ThemeProvider>
   );

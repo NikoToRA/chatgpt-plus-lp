@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 import {
   Box,
   Button,
@@ -26,57 +24,13 @@ import {
 } from '../../types/application';
 import { calculatePricing } from '../../utils/pricing';
 
-// バリデーションスキーマ
-const organizationSchema = yup.object({
-  organizationName: yup.string()
-    .required('医療機関名は必須です')
-    .max(200, '医療機関名は200文字以内で入力してください'),
-  facilityType: yup.string()
-    .required('施設種別を選択してください'),
-  postalCode: yup.string()
-    .required('郵便番号は必須です')
-    .matches(/^\d{7}$/, '郵便番号は7桁の数字で入力してください'),
-  address: yup.string()
-    .required('住所は必須です')
-    .max(500, '住所は500文字以内で入力してください'),
-  representativeName: yup.string()
-    .required('代表者名は必須です')
-    .max(100, '代表者名は100文字以内で入力してください')
-});
-
-const contactSchema = yup.object({
-  contactPerson: yup.string()
-    .required('担当者名は必須です')
-    .max(100, '担当者名は100文字以内で入力してください'),
-  email: yup.string()
-    .required('メールアドレスは必須です')
-    .email('正しいメールアドレスを入力してください'),
-  phoneNumber: yup.string()
-    .required('電話番号は必須です')
-    .matches(/^[\d-]+$/, '電話番号は数字とハイフンで入力してください'),
-  department: yup.string().max(100, '部署名は100文字以内で入力してください')
-});
-
-const serviceSchema = yup.object({
-  requestedAccountCount: yup.number()
-    .required('アカウント数は必須です')
-    .min(1, '最低1アカウント必要です')
-    .max(100, '最大100アカウントまでです'),
-  billingCycle: yup.string()
-    .required('お支払いサイクルを選択してください'),
-  startDate: yup.date()
-    .required('利用開始希望日を入力してください')
-    .min(new Date(), '利用開始日は今日以降の日付を選択してください')
-});
-
 const ApplicationForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<FormStep>(1);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
-  // フォーム管理
+  // フォーム管理（バリデーションなし）
   const organizationForm = useForm<OrganizationInfo>({
-    resolver: yupResolver(organizationSchema),
     defaultValues: {
       organizationName: '',
       facilityType: 'hospital',
@@ -87,7 +41,6 @@ const ApplicationForm: React.FC = () => {
   });
 
   const contactForm = useForm<ContactInfo>({
-    resolver: yupResolver(contactSchema),
     defaultValues: {
       contactPerson: '',
       email: '',
@@ -97,7 +50,6 @@ const ApplicationForm: React.FC = () => {
   });
 
   const serviceForm = useForm<ServiceSelection>({
-    resolver: yupResolver(serviceSchema),
     defaultValues: {
       requestedAccountCount: 1,
       billingCycle: 'monthly',
@@ -112,27 +64,9 @@ const ApplicationForm: React.FC = () => {
   // 見積計算
   const pricing = calculatePricing(watchAccountCount, watchBillingCycle);
 
-  // ステップ進行
-  const handleNext = async () => {
-    let isValid = false;
-
-    switch (currentStep) {
-      case 1:
-        isValid = await organizationForm.trigger();
-        break;
-      case 2:
-        isValid = await contactForm.trigger();
-        break;
-      case 3:
-        isValid = await serviceForm.trigger();
-        break;
-      case 4:
-      case 5:
-        isValid = true;
-        break;
-    }
-
-    if (isValid && currentStep < 6) {
+  // ステップ進行（バリデーションなし）
+  const handleNext = () => {
+    if (currentStep < 6) {
       setCurrentStep((prev) => (prev + 1) as FormStep);
     }
   };

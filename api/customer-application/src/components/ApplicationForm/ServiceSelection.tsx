@@ -17,7 +17,7 @@ import { Controller, Control } from 'react-hook-form';
 import { ServiceSelection } from '../../types/application';
 
 interface ServiceSelectionStepProps {
-  control: Control<ServiceSelection>;
+  control: Control<ServiceSelection, any>;
   errors: any;
   watchAccountCount: number;
 }
@@ -34,7 +34,7 @@ const ServiceSelectionStep: React.FC<ServiceSelectionStepProps> = ({
       </Typography>
       
       <Grid container spacing={4}>
-        <Grid item xs={12}>
+        <Grid xs={12}>
           <FormControl component="fieldset">
             <FormLabel component="legend" sx={{ mb: 2 }}>
               必要なアカウント数 *
