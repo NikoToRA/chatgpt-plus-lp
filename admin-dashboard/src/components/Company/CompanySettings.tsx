@@ -281,7 +281,7 @@ Email: {{email}}
         console.error('Azure API save failed:', apiError);
         // Fallback to localStorage only
         localStorage.setItem('companyInfo', JSON.stringify(companyInfo));
-        setMessage({ type: 'error', text: `Azure API接続失敗: ${apiError.message}。ローカル保存のみ実行されました。` });
+        setMessage({ type: 'error', text: `Azure API接続失敗: ${(apiError as Error).message || 'Unknown error'}。ローカル保存のみ実行されました。` });
       }
     } catch (error) {
       console.error('Failed to save company info:', error);
