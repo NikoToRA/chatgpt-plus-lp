@@ -1,6 +1,7 @@
 // 行動心理学最適化版申込フォーム型定義
 
 export interface ServiceSelection {
+  planId: string;
   requestedAccountCount: number;
   billingCycle: 'monthly' | 'yearly';
   startDate: Date;
@@ -46,6 +47,7 @@ export interface PricingCalculation {
   totalAmount: number;
   billingCycle: 'monthly' | 'yearly';
   accountCount: number;
+  planId?: string;
 }
 
 export interface OptimizedApplicationSubmission {

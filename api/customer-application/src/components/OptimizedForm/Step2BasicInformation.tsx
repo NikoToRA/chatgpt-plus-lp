@@ -9,7 +9,6 @@ import {
   MenuItem,
   Box,
   Divider,
-  Grid,
   Alert,
   Autocomplete
 } from '@mui/material';
@@ -66,8 +65,8 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
           🏥 医療機関情報
         </Typography>
         
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Box>
             <Controller
               name="organizationName"
               control={control}
@@ -83,9 +82,9 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
                 />
               )}
             />
-          </Grid>
+          </Box>
           
-          <Grid item xs={12} sm={6}>
+          <Box>
             <FormControl fullWidth error={!!errors.facilityType}>
               <InputLabel>施設種別 *</InputLabel>
               <Controller
@@ -103,9 +102,9 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
                 )}
               />
             </FormControl>
-          </Grid>
+          </Box>
           
-          <Grid item xs={12} sm={6}>
+          <Box>
             <Controller
               name="phoneNumber"
               control={control}
@@ -121,9 +120,9 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
                 />
               )}
             />
-          </Grid>
+          </Box>
           
-          <Grid item xs={12} sm={4}>
+          <Box>
             <Controller
               name="postalCode"
               control={control}
@@ -145,9 +144,9 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
                 />
               )}
             />
-          </Grid>
+          </Box>
           
-          <Grid item xs={12} sm={4}>
+          <Box>
             <Controller
               name="prefecture"
               control={control}
@@ -169,9 +168,9 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
                 />
               )}
             />
-          </Grid>
+          </Box>
           
-          <Grid item xs={12} sm={4}>
+          <Box>
             <Controller
               name="city"
               control={control}
@@ -187,9 +186,9 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
                 />
               )}
             />
-          </Grid>
+          </Box>
           
-          <Grid item xs={12}>
+          <Box>
             <Controller
               name="address"
               control={control}
@@ -205,8 +204,8 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
                 />
               )}
             />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Box>
 
       <Divider sx={{ my: 4 }} />
@@ -217,8 +216,8 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
           👤 ご担当者情報
         </Typography>
         
-        <Grid container spacing={3}>
-          <Grid item xs={12} sm={6}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Box>
             <Controller
               name="contactPerson"
               control={control}
@@ -234,9 +233,9 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
                 />
               )}
             />
-          </Grid>
+          </Box>
           
-          <Grid item xs={12} sm={6}>
+          <Box>
             <Controller
               name="department"
               control={control}
@@ -249,9 +248,9 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
                 />
               )}
             />
-          </Grid>
+          </Box>
           
-          <Grid item xs={12}>
+          <Box>
             <Controller
               name="email"
               control={control}
@@ -268,9 +267,9 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
                 />
               )}
             />
-          </Grid>
+          </Box>
           
-          <Grid item xs={12}>
+          <Box>
             <Controller
               name="contactPhone"
               control={control}
@@ -284,8 +283,8 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
                 />
               )}
             />
-          </Grid>
-        </Grid>
+          </Box>
+        </Box>
       </Box>
 
       <Alert severity="info" sx={{ mt: 3 }}>

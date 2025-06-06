@@ -1,0 +1,68 @@
+name: Azure Static Web Apps CI/CD - Admin Dashboard
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'admin-dashboard/**'
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+    paths:
+      - 'admin-dashboard/**'
+
+jobs:
+  build_and_deploy_job:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+          lfs: false
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'admin-dashboard/package-lock.json'
+      
+      - name: Install dependencies
+        run: |
+          cd admin-dashboard
+          npm ci
+      
+      - name: Build application
+        run: |
+          cd admin-dashboard
+          npm run build
+        env:
+          REACT_APP_API_URL: https://koereqq.azurewebsites.net/api
+          REACT_APP_ENVIRONMENT: production
+      
+      - name: Build And Deploy
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: 26b6f06e7b0bba28e049e6baf990439ed047ecd60611a9ac2d5ca30eb11d3ce706-108ac8f6-b0bc-49b2-a9fe-97b018ac0aa300017000a5e9df00
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "/admin-dashboard"
+          api_location: ""
+          output_location: "build"
+
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: 26b6f06e7b0bba28e049e6baf990439ed047ecd60611a9ac2d5ca30eb11d3ce706-108ac8f6-b0bc-49b2-a9fe-97b018ac0aa300017000a5e9df00
+          action: "close"

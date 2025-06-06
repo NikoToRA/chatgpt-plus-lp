@@ -1,11 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Paper,
   Typography,
   Box,
   Card,
   CardContent,
-  CardActions,
   Button,
   Slider,
   Alert,
@@ -19,7 +18,7 @@ import {
 } from '@mui/material';
 import { Controller, Control } from 'react-hook-form';
 import { ServiceSelection, PricingCalculation } from '../../types/optimizedApplication';
-import { calculatePricing } from '../../utils/pricing';
+import { fetchCompanyPlans, calculatePlanPricing, CompanyPlan } from '../../services/companyPlans';
 
 interface Step1ServiceSelectionProps {
   control: Control<ServiceSelection, any>;
@@ -32,40 +31,144 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
   watch,
   onPricingUpdate 
 }) => {
+  const [companyPlans, setCompanyPlans] = useState<CompanyPlan[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  const watchPlanId = watch('planId', '');
   const watchAccountCount = watch('requestedAccountCount', 1);
   const watchBillingCycle = watch('billingCycle', 'monthly');
   
+  // Load company plans
+  useEffect(() => {
+    const loadPlans = async () => {
+      try {
+        const plans = await fetchCompanyPlans();
+        setCompanyPlans(plans);
+      } catch (error) {
+        console.error('Failed to load company plans:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadPlans();
+  }, []);
+  
   // 見積計算と更新
-  React.useEffect(() => {
-    const pricing = calculatePricing(watchAccountCount, watchBillingCycle);
-    onPricingUpdate({
-      ...pricing,
-      billingCycle: watchBillingCycle,
-      accountCount: watchAccountCount
-    });
-  }, [watchAccountCount, watchBillingCycle, onPricingUpdate]);
+  useEffect(() => {
+    const selectedPlan = companyPlans.find(plan => plan.id === watchPlanId);
+    if (selectedPlan) {
+      const pricing = calculatePlanPricing(selectedPlan, watchAccountCount, watchBillingCycle);
+      onPricingUpdate({
+        ...pricing,
+        billingCycle: watchBillingCycle,
+        accountCount: watchAccountCount,
+        planId: selectedPlan.id
+      });
+    }
+  }, [watchPlanId, watchAccountCount, watchBillingCycle, onPricingUpdate, companyPlans]);
 
-  const monthlyTotal = watchAccountCount * 3000;
-  const yearlyTotal = Math.floor(watchAccountCount * 3000 * 10); // 2ヶ月分割引
-  const savings = (watchAccountCount * 3000 * 12) - yearlyTotal;
+  const selectedPlan = companyPlans.find(plan => plan.id === watchPlanId);
+  const monthlyTotal = selectedPlan ? selectedPlan.unitPrice : 0; // Fixed service fee
+  const yearlyTotal = selectedPlan ? Math.floor(selectedPlan.unitPrice * 12 * 0.9) : 0; // 10% yearly discount
+  const savings = selectedPlan ? (selectedPlan.unitPrice * 12) - yearlyTotal : 0;
+  
+  const maxAccountsForPlan = selectedPlan?.maxAccounts || 10;
 
   return (
     <Paper elevation={3} sx={{ p: 4 }}>
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <Typography variant="h4" gutterBottom color="primary">
-          ChatGPT Plus 医療機関向けプラン
+          ChatGPT Plus 契約管理代行サービス
         </Typography>
         <Typography variant="h6" color="text.secondary">
-          🏥 医療現場に特化した高性能AIアシスタント
+          🏥 ChatGPT Plusの契約・運用・管理をまるごと代行
         </Typography>
+        <Alert severity="info" sx={{ mt: 2, textAlign: 'left' }}>
+          <Typography variant="body2">
+            <strong>💡 代行サービス内容</strong><br />
+            OpenAI ChatGPT Plusの契約・設定・管理を代行いたします
+          </Typography>
+        </Alert>
       </Box>
+
+      {loading && (
+        <Alert severity="info" sx={{ mb: 4 }}>
+          プラン情報を読み込み中...
+        </Alert>
+      )}
+
+      {/* プラン選択 */}
+      {!loading && companyPlans.length > 0 && (
+        <Box sx={{ mb: 4 }}>
+          <FormControl component="fieldset" fullWidth>
+            <FormLabel component="legend" sx={{ mb: 3, fontSize: '1.1rem', fontWeight: 'bold' }}>
+              📋 ご希望のプランを選択してください
+            </FormLabel>
+            <Controller
+              name="planId"
+              control={control}
+              render={({ field }) => (
+                <RadioGroup {...field} sx={{ gap: 2 }}>
+                  {companyPlans.map((plan) => (
+                    <Card 
+                      key={plan.id}
+                      variant={field.value === plan.id ? 'outlined' : 'elevation'}
+                      sx={{ 
+                        border: field.value === plan.id ? 2 : 0,
+                        borderColor: 'primary.main',
+                        cursor: 'pointer',
+                        '&:hover': { boxShadow: 4 }
+                      }}
+                      onClick={() => field.onChange(plan.id)}
+                    >
+                      <CardContent>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
+                          <FormControlLabel 
+                            value={plan.id} 
+                            control={<Radio />} 
+                            label=""
+                            sx={{ margin: 0 }}
+                          />
+                          <Box sx={{ flex: 1 }}>
+                            <Typography variant="h6" color="primary">
+                              {plan.name}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                              {plan.description}
+                            </Typography>
+                            <Typography variant="h6" color="text.primary">
+                              ¥{plan.unitPrice.toLocaleString()}/月（固定料金）
+                            </Typography>
+                            {plan.maxAccounts && (
+                              <Typography variant="body2" color="text.secondary">
+                                最大{plan.maxAccounts}アカウント
+                              </Typography>
+                            )}
+                            
+                          </Box>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </RadioGroup>
+              )}
+            />
+          </FormControl>
+        </Box>
+      )}
 
       {/* アカウント数選択 */}
       <Box sx={{ mb: 4 }}>
         <FormControl component="fieldset" fullWidth>
           <FormLabel component="legend" sx={{ mb: 2, fontSize: '1.1rem', fontWeight: 'bold' }}>
-            必要なアカウント数を選択してください
+            🔢 管理を希望するChatGPTアカウント数を選択してください
           </FormLabel>
+          <Alert severity="warning" sx={{ mb: 2 }}>
+            <Typography variant="body2">
+              <strong>📝 重要</strong><br />
+              代行サービス料金（固定）とは別に、ChatGPT Plus利用料金（OpenAI社）が発生します
+            </Typography>
+          </Alert>
           <Controller
             name="requestedAccountCount"
             control={control}
@@ -76,13 +179,12 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
                   value={field.value}
                   onChange={(_, value) => field.onChange(value)}
                   min={1}
-                  max={50}
+                  max={maxAccountsForPlan}
                   step={1}
                   marks={[
                     { value: 1, label: '1' },
-                    { value: 10, label: '10' },
-                    { value: 25, label: '25' },
-                    { value: 50, label: '50+' }
+                    { value: Math.floor(maxAccountsForPlan / 2), label: Math.floor(maxAccountsForPlan / 2).toString() },
+                    { value: maxAccountsForPlan, label: maxAccountsForPlan.toString() }
                   ]}
                   valueLabelDisplay="on"
                   sx={{ mt: 3, mb: 4 }}
@@ -94,12 +196,31 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
             )}
           />
         </FormControl>
+        
+        {/* 大規模導入のお問い合わせ */}
+        {selectedPlan?.maxAccounts && (
+          <Alert severity="info" sx={{ mt: 2 }}>
+            <Typography variant="body2">
+              <strong>💼 {selectedPlan.maxAccounts}アカウント以上をご希望の場合</strong><br />
+              大規模導入や特別プランをご検討の場合は、お気軽にお問い合わせください。<br />
+              専任担当者が最適なプランをご提案いたします。
+            </Typography>
+            <Button 
+              variant="outlined" 
+              size="small" 
+              sx={{ mt: 2 }}
+              href={`mailto:sales@chatgpt-medical.com?subject=大規模導入のお問い合わせ(${selectedPlan.name})`}
+            >
+              📧 大規模導入のお問い合わせ
+            </Button>
+          </Alert>
+        )}
       </Box>
 
       {/* プラン選択 */}
       <Box sx={{ mb: 4 }}>
         <FormLabel component="legend" sx={{ mb: 3, fontSize: '1.1rem', fontWeight: 'bold' }}>
-          お支払いプランを選択してください
+          💳 お支払いサイクルを選択してください
         </FormLabel>
         <Controller
           name="billingCycle"
@@ -126,9 +247,9 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
                       sx={{ margin: 0 }}
                     />
                     <Box sx={{ flex: 1, ml: 2 }}>
-                      <Typography variant="h6">月額プラン</Typography>
+                      <Typography variant="h6">月額払い</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        柔軟性重視・短期利用に最適
+                        毎月のお支払い・月単位で柔軟に対応
                       </Typography>
                     </Box>
                     <Box sx={{ textAlign: 'right' }}>
@@ -178,9 +299,9 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
                       sx={{ margin: 0 }}
                     />
                     <Box sx={{ flex: 1, ml: 2 }}>
-                      <Typography variant="h6">年額プラン（おすすめ）</Typography>
+                      <Typography variant="h6">年額払い</Typography>
                       <Typography variant="body2" color="text.secondary">
-                        2ヶ月分お得・長期利用に最適
+                        年1回のお支払い・10%割引が適用されます
                       </Typography>
                     </Box>
                     <Box sx={{ textAlign: 'right' }}>
@@ -221,14 +342,6 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
         />
       </Box>
 
-      {/* サービス特徴 */}
-      <Alert severity="info" sx={{ mb: 3 }}>
-        <Typography variant="body2">
-          <strong>🎯 医療機関向け特別機能</strong><br />
-          • 医療専門用語対応 • カルテ作成支援 • 診断補助プロンプト<br />
-          • データプライバシー保護 • 24時間専用サポート
-        </Typography>
-      </Alert>
 
       <Box sx={{ textAlign: 'center', mt: 4 }}>
         <Typography variant="body2" color="text.secondary">

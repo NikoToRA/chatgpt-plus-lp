@@ -28,7 +28,6 @@ import {
   PricingCalculation,
   FORM_STEPS
 } from '../../types/optimizedApplication';
-import { calculatePricing } from '../../utils/pricing';
 
 const OptimizedApplicationForm: React.FC = () => {
   const [currentStep, setCurrentStep] = useState<OptimizedFormStep>(1);
@@ -48,6 +47,7 @@ const OptimizedApplicationForm: React.FC = () => {
   // フォーム管理
   const serviceForm = useForm<ServiceSelection>({
     defaultValues: {
+      planId: 'prod-1',
       requestedAccountCount: 1,
       billingCycle: 'monthly',
       startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 1週間後
@@ -122,11 +122,29 @@ const OptimizedApplicationForm: React.FC = () => {
       const newApplicationId = `APP-${Date.now()}-${Math.random().toString(36).substr(2, 8).toUpperCase()}`;
       setApplicationId(newApplicationId);
       
-      // TODO: Azure Functions APIへの送信実装
+      // Azure Functions APIへの送信実装
       console.log('申込データ:', submission);
       
-      // TODO: Azure Storage/SQL Databaseへの保存
-      // await saveToAzureStorage(submission);
+      const response = await fetch('/api/customer-application-submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(submission),
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      
+      if (!result.success) {
+        throw new Error(result.message || 'API request failed');
+      }
+
+      // 実際のAPIから返されたapplicationIdを使用
+      setApplicationId(result.applicationId);
       
       // TODO: メール送信
       // await sendConfirmationEmail(submission);

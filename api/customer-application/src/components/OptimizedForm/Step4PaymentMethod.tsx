@@ -33,7 +33,6 @@ const Step4PaymentMethod: React.FC<Step4PaymentMethodProps> = ({
   errors,
   pricing 
 }) => {
-  const watchPaymentMethod = watch('paymentMethod', 'card');
 
   return (
     <Paper elevation={3} sx={{ p: 4 }}>
@@ -82,14 +81,12 @@ const Step4PaymentMethod: React.FC<Step4PaymentMethodProps> = ({
                         sx={{ margin: 0 }}
                       />
                       <Box sx={{ flex: 1 }}>
-                        <Typography variant="h6" color="primary">
-                          クレジットカード決済（推奨）
+                        <Typography variant="h6">
+                          クレジットカード決済
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                          • 即時開通（最短当日利用開始）<br />
-                          • 自動更新で手間なし<br />
-                          • VISA, MasterCard, JCB, AMEX対応<br />
-                          • SSL暗号化で安全決済
+                          • 自動更新<br />
+                          • VISA, MasterCard, JCB, AMEX対応
                         </Typography>
                         
                         {field.value === 'card' && (
@@ -142,10 +139,8 @@ const Step4PaymentMethod: React.FC<Step4PaymentMethodProps> = ({
                           請求書払い
                         </Typography>
                         <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                          • 銀行振込・口座振替対応<br />
                           • 月末締め・翌月5日請求書発行<br />
-                          • 支払期限：請求書発行日から30日<br />
-                          • 審査完了後のサービス開始（3-5営業日）
+                          • 支払期限：請求書発行日から30日
                         </Typography>
                         
                         {field.value === 'invoice' && (
@@ -262,16 +257,6 @@ const Step4PaymentMethod: React.FC<Step4PaymentMethodProps> = ({
         </Box>
       </Box>
 
-      {/* セキュリティ情報 */}
-      <Alert severity="success" sx={{ mb: 3 }}>
-        <Typography variant="body2">
-          <strong>🔒 セキュリティについて</strong><br />
-          • 全ての通信はSSL暗号化で保護<br />
-          • カード情報は当社サーバーに保存されません<br />
-          • 医療機関向けデータ保護基準に準拠<br />
-          • 第三者認証取得済みの決済システムを使用
-        </Typography>
-      </Alert>
 
       <Box sx={{ textAlign: 'center', mt: 4 }}>
         <Typography variant="body2" color="text.secondary">

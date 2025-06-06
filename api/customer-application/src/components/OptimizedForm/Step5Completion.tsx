@@ -8,11 +8,7 @@ import {
   Card,
   CardContent,
   Divider,
-  Chip,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText
+  Chip
 } from '@mui/material';
 import {
   Timeline,
@@ -27,8 +23,7 @@ import {
   Download, 
   Email, 
   Schedule,
-  Assignment,
-  Support
+  Assignment
 } from '@mui/icons-material';
 import { OptimizedApplicationSubmission, PricingCalculation } from '../../types/optimizedApplication';
 
@@ -56,7 +51,7 @@ const Step5Completion: React.FC<Step5CompletionProps> = ({
           お申込み完了
         </Typography>
         <Typography variant="h6" color="text.secondary">
-          ChatGPT Plus 医療機関向けプランへのお申込みありがとうございます
+          ChatGPT Plus 契約管理代行サービスへのお申込みありがとうございます
         </Typography>
       </Box>
 
@@ -94,7 +89,7 @@ const Step5Completion: React.FC<Step5CompletionProps> = ({
       <Card variant="outlined" sx={{ mb: 4 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            📅 今後の流れ
+            📅 手続きの流れ
           </Typography>
           
           <Timeline>
@@ -208,41 +203,14 @@ const Step5Completion: React.FC<Step5CompletionProps> = ({
 
       <Divider sx={{ my: 4 }} />
 
-      {/* サポート情報 */}
-      <Alert severity="success" sx={{ mb: 4 }}>
-        <Typography variant="body2">
-          <strong>💬 サポートについて</strong><br />
-          • 専用サポートチャット: 平日9:00-18:00<br />
-          • メールサポート: support@chatgpt-medical.com<br />
-          • 緊急時連絡先: 03-XXXX-XXXX（24時間対応）<br />
-          • オンライン活用セミナー: 毎月第2・4金曜日開催
-        </Typography>
-      </Alert>
 
-      {/* 追加アクション */}
-      <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
-        <Button
-          variant="outlined"
-          startIcon={<Support />}
-          href="mailto:support@chatgpt-medical.com"
-        >
-          サポートに連絡
-        </Button>
-        <Button
-          variant="outlined"
-          startIcon={<Schedule />}
-          href="#"
-        >
-          活用セミナー予約
-        </Button>
-      </Box>
 
       <Box sx={{ textAlign: 'center', mt: 4 }}>
         <Typography variant="body2" color="text.secondary">
           🎉 お申込み完了 | 📋 進捗: 5/5
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-          この度はChatGPT Plus 医療機関向けプランをお選びいただき、誠にありがとうございます
+          この度はChatGPT Plus 契約管理代行サービスをお選びいただき、誠にありがとうございます
         </Typography>
       </Box>
     </Paper>

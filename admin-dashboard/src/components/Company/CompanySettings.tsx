@@ -64,7 +64,24 @@ export default function CompanySettings() {
 
   const loadCompanyInfo = async () => {
     try {
-      // ローカルストレージから会社情報を取得
+      // First try to get from Azure API
+      try {
+        const response = await fetch('/api/company-settings');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success && data.data) {
+            setCompanyInfo(data.data);
+            // Also save to localStorage as backup
+            localStorage.setItem('companyInfo', JSON.stringify(data.data));
+            setIsLoading(false);
+            return;
+          }
+        }
+      } catch (apiError) {
+        console.warn('Azure API not available, falling back to localStorage:', apiError);
+      }
+
+      // Fallback to localStorage
       const localCompanyInfo = localStorage.getItem('companyInfo');
       if (localCompanyInfo) {
         const parsedInfo = JSON.parse(localCompanyInfo);
@@ -252,8 +269,32 @@ Email: {{email}}
     setMessage(null);
 
     try {
-      localStorage.setItem('companyInfo', JSON.stringify(companyInfo));
-      setMessage({ type: 'success', text: '会社情報を保存しました。' });
+      // First try to save to Azure API
+      try {
+        const response = await fetch('/api/company-settings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(companyInfo),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            // Also save to localStorage as backup
+            localStorage.setItem('companyInfo', JSON.stringify(companyInfo));
+            setMessage({ type: 'success', text: '会社情報をAzure DBに保存しました。' });
+            return;
+          }
+        }
+        throw new Error('Azure API save failed');
+      } catch (apiError) {
+        console.warn('Azure API save failed, saving to localStorage only:', apiError);
+        // Fallback to localStorage only
+        localStorage.setItem('companyInfo', JSON.stringify(companyInfo));
+        setMessage({ type: 'success', text: '会社情報をローカルに保存しました（Azure DBは利用できません）。' });
+      }
     } catch (error) {
       console.error('Failed to save company info:', error);
       setMessage({ type: 'error', text: '保存に失敗しました。' });

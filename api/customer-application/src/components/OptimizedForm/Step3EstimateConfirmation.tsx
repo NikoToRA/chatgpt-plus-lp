@@ -16,6 +16,7 @@ import {
   Grid
 } from '@mui/material';
 import { PricingCalculation, ServiceSelection, BasicInformation } from '../../types/optimizedApplication';
+import { DEFAULT_COMPANY_PLANS } from '../../services/companyPlans';
 
 interface Step3EstimateConfirmationProps {
   pricing: PricingCalculation;
@@ -37,6 +38,9 @@ const Step3EstimateConfirmation: React.FC<Step3EstimateConfirmationProps> = ({
     other: 'その他'
   };
 
+  const selectedPlan = DEFAULT_COMPANY_PLANS.find(plan => plan.id === serviceData.planId);
+  const planName = selectedPlan ? selectedPlan.name : 'ChatGPT Plus 医療機関向けプラン';
+
   return (
     <Paper elevation={3} sx={{ p: 4 }}>
       <Typography variant="h5" gutterBottom color="primary" sx={{ mb: 4 }}>
@@ -49,24 +53,24 @@ const Step3EstimateConfirmation: React.FC<Step3EstimateConfirmationProps> = ({
           <Typography variant="h6" gutterBottom>
             📋 ご契約情報
           </Typography>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
+          <Box sx={{ display: 'grid', gridTemplateColumns: { xs: '1fr', sm: '1fr 1fr' }, gap: 2 }}>
+            <Box>
               <Typography variant="body2" color="text.secondary">医療機関名</Typography>
               <Typography variant="body1" fontWeight="bold">{basicData.organizationName}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            </Box>
+            <Box>
               <Typography variant="body2" color="text.secondary">施設種別</Typography>
               <Typography variant="body1">{facilityTypeNames[basicData.facilityType]}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            </Box>
+            <Box>
               <Typography variant="body2" color="text.secondary">担当者</Typography>
               <Typography variant="body1">{basicData.contactPerson}</Typography>
-            </Grid>
-            <Grid item xs={12} sm={6}>
+            </Box>
+            <Box>
               <Typography variant="body2" color="text.secondary">メールアドレス</Typography>
               <Typography variant="body1">{basicData.email}</Typography>
-            </Grid>
-          </Grid>
+            </Box>
+          </Box>
         </CardContent>
       </Card>
 
@@ -80,12 +84,12 @@ const Step3EstimateConfirmation: React.FC<Step3EstimateConfirmationProps> = ({
             <Chip 
               label={`${serviceData.requestedAccountCount}アカウント`} 
               color="primary" 
-              size="large"
+              size="medium"
             />
             <Chip 
               label={serviceData.billingCycle === 'monthly' ? '月額プラン' : '年額プラン'} 
               color="secondary" 
-              size="large"
+              size="medium"
             />
             {serviceData.billingCycle === 'yearly' && (
               <Chip label="2ヶ月分お得" color="success" size="small" />
@@ -109,11 +113,11 @@ const Step3EstimateConfirmation: React.FC<Step3EstimateConfirmationProps> = ({
                 <TableRow>
                   <TableCell>
                     <Typography variant="body1">
-                      ChatGPT Plus 医療機関向けプラン
+                      {planName}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {serviceData.requestedAccountCount}アカウント × ¥3,000 
-                      {serviceData.billingCycle === 'yearly' && ' × 12ヶ月'}
+                      {serviceData.requestedAccountCount}アカウント管理代行サービス・固定料金
+                      {serviceData.billingCycle === 'yearly' && '（年額・10%割引適用）'}
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
@@ -127,7 +131,7 @@ const Step3EstimateConfirmation: React.FC<Step3EstimateConfirmationProps> = ({
                   <TableRow>
                     <TableCell>
                       <Typography variant="body1" color="success.main">
-                        🎉 年額プラン割引（2ヶ月分）
+                        🎉 年額プラン割引（10%オフ）
                       </Typography>
                     </TableCell>
                     <TableCell align="right">
@@ -195,16 +199,6 @@ const Step3EstimateConfirmation: React.FC<Step3EstimateConfirmationProps> = ({
         </Typography>
       </Alert>
 
-      {/* サービス特典 */}
-      <Alert severity="success" sx={{ mb: 3 }}>
-        <Typography variant="body2">
-          <strong>🎁 ご契約特典</strong><br />
-          • 医療専門プロンプト集（100種類以上）<br />
-          • 専用サポートチャット（平日9:00-18:00）<br />
-          • オンライン活用セミナー参加権<br />
-          • データセキュリティ保証書の発行
-        </Typography>
-      </Alert>
 
       <Box sx={{ textAlign: 'center', mt: 4 }}>
         <Typography variant="body2" color="text.secondary">
