@@ -27,18 +27,30 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const initAuth = async () => {
+    const checkAuth = async () => {
       try {
-        await authService.initialize();
-        setIsAuthenticated(authService.isAuthenticated());
+        // Azure Static Web Apps認証状態チェック
+        const response = await fetch('/.auth/me');
+        if (response.ok) {
+          const authData = await response.json();
+          const isAuth = authData.clientPrincipal !== null;
+          setIsAuthenticated(isAuth);
+        } else {
+          // 開発環境の場合はローカルストレージもチェック
+          const devToken = localStorage.getItem('authToken');
+          setIsAuthenticated(!!devToken);
+        }
       } catch (error) {
-        console.error('Auth initialization failed:', error);
+        console.error('Auth check failed:', error);
+        // 開発環境の場合はローカルストレージもチェック
+        const devToken = localStorage.getItem('authToken');
+        setIsAuthenticated(!!devToken);
       } finally {
         setIsLoading(false);
       }
     };
 
-    initAuth();
+    checkAuth();
   }, []);
 
   if (isLoading) {

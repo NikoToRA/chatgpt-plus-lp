@@ -23,11 +23,10 @@ export default function Login({ onLogin }: LoginProps) {
     setError(null);
 
     try {
-      await authService.login();
-      onLogin();
+      // Azure Static Web Apps認証を使用
+      window.location.href = '/.auth/login/aad';
     } catch (error: any) {
       setError(error.message || 'ログインに失敗しました。');
-    } finally {
       setIsLoading(false);
     }
   };

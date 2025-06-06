@@ -1,24 +1,25 @@
 {
   "routes": [
     {
+      "route": "/login",
+      "redirect": "/.auth/login/aad"
+    },
+    {
+      "route": "/logout", 
+      "redirect": "/.auth/logout"
+    },
+    {
       "route": "/*",
-      "serve": "/index.html",
-      "statusCode": 200
+      "allowedRoles": ["authenticated"]
     }
   ],
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": ["/static/*", "/*.{css,scss,js,png,gif,ico,jpg,svg}"]
   },
-  "mimeTypes": {
-    ".json": "application/json"
-  },
-  "globalHeaders": {
-    "Cache-Control": "no-cache"
-  },
   "responseOverrides": {
     "401": {
-      "redirect": "/login.html",
+      "redirect": "/.auth/login/aad",
       "statusCode": 302
     }
   }
