@@ -21,7 +21,7 @@ import {
   AttachMoney as AttachMoneyIcon,
 } from '@mui/icons-material';
 import { dashboardApi } from '../../services/api';
-import { DashboardStats, Customer, CompanyInfo } from '../../types';
+import { DashboardStats, Customer } from '../../types';
 import RevenueChart from './RevenueChart';
 
 export default function Dashboard() {

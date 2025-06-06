@@ -51,6 +51,7 @@ export default function CustomerList() {
 
   useEffect(() => {
     filterCustomers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, customers]);
 
   const loadCustomers = async () => {
@@ -226,6 +227,7 @@ export default function CustomerList() {
     return <Chip label={config.label} color={config.color} size="small" />;
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const getPlanChip = (plan: string) => {
     const planConfig: Record<string, { label: string; color: 'default' | 'primary' | 'secondary' }> = {
       basic: { label: 'Basic', color: 'default' },

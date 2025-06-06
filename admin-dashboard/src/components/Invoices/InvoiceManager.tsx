@@ -50,6 +50,7 @@ export default function InvoiceManager({ customer, companyInfo, onInvoiceGenerat
 
   useEffect(() => {
     loadInvoices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customer.id]);
 
   const loadInvoices = () => {
