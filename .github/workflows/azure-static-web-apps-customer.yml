@@ -1,0 +1,68 @@
+name: Azure Static Web Apps CI/CD - Customer Application
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'api/customer-application/**'
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+    paths:
+      - 'api/customer-application/**'
+
+jobs:
+  build_and_deploy_job:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+          lfs: false
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'api/customer-application/package-lock.json'
+      
+      - name: Install dependencies
+        run: |
+          cd api/customer-application
+          npm ci
+      
+      - name: Build application
+        run: |
+          cd api/customer-application
+          npm run build
+        env:
+          REACT_APP_API_URL: https://koereqq.azurewebsites.net/api
+          REACT_APP_ENVIRONMENT: production
+      
+      - name: Build And Deploy
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: c998c2f305ec02b5b2ae7a7635e69a07f89a9eb10e876d16b83f2c2fa2b8741106-4f1998e4-27d7-4737-900b-11b667f337390001408046254d00
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "/api/customer-application"
+          api_location: ""
+          output_location: "build"
+
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: c998c2f305ec02b5b2ae7a7635e69a07f89a9eb10e876d16b83f2c2fa2b8741106-4f1998e4-27d7-4737-900b-11b667f337390001408046254d00
+          action: "close"
