@@ -19,8 +19,17 @@ module.exports = async function (context, req) {
 
     try {
         const connectionString = process.env.AzureWebJobsStorage || "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VM2FzAPdX8d0GunlQX0SfXe17OQrNqDbc/5oAPBGoSs7TBNG4dt/2FiATk9Caibir6uSAPSUlIN2+AStPvEsYg==;EndpointSuffix=core.windows.net";
+        
+        context.log('Initializing TableClient with connection string present:', !!connectionString);
         const tableClient = new TableClient(connectionString, "CompanySettings");
-        await tableClient.createTable();
+        
+        context.log('Creating table if not exists...');
+        try {
+            await tableClient.createTable();
+            context.log('Table creation completed');
+        } catch (tableError) {
+            context.log('Table creation error (may already exist):', tableError.message);
+        }
 
         if (req.method === 'GET') {
             // Retrieve company settings
@@ -81,9 +90,12 @@ module.exports = async function (context, req) {
 
         } else if (req.method === 'POST') {
             // Save company settings
+            context.log('Processing POST request for company settings');
             const companyInfo = req.body;
+            context.log('Received company info:', JSON.stringify(companyInfo, null, 2));
             
             if (!companyInfo) {
+                context.log('Error: No company information provided');
                 context.res = {
                     status: 400,
                     headers: {
