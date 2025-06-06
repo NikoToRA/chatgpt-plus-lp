@@ -10,23 +10,13 @@ import {
   MenuItem,
   FormControl,
   InputLabel,
-  Divider,
   Alert,
-  SelectChangeEvent,
-  Card,
-  CardContent,
   IconButton,
   List,
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
   Chip,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -38,7 +28,6 @@ import {
   AccountBalance as BankIcon,
   Receipt as ReceiptIcon,
   Add as AddIcon,
-  Edit as EditIcon,
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 import { CompanyInfo, ProductInfo } from '../../types';
@@ -49,7 +38,6 @@ export default function CompanySettings() {
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [productDialogOpen, setProductDialogOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<ProductInfo | null>(null);
   const [newProduct, setNewProduct] = useState<Partial<ProductInfo>>({
     name: '',
     description: '',

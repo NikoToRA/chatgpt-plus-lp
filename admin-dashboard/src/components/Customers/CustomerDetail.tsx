@@ -28,7 +28,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  LinearProgress,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -45,7 +44,7 @@ import {
   Analytics as AnalyticsIcon,
   Download as DownloadIcon
 } from '@mui/icons-material';
-import { customerApi, accountApi } from '../../services/api';
+import { customerApi } from '../../services/api';
 import { Customer, ChatGptAccount, CompanyInfo } from '../../types';
 import InvoiceManager from '../Invoices/InvoiceManager';
 
