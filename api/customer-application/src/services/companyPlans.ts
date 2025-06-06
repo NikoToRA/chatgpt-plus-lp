@@ -160,7 +160,7 @@ export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
     }
     
     // Final fallback to default plans
-    console.warn('Using default fallback plans');
+    console.warn('Using default fallback plans - API data not available');
     return DEFAULT_COMPANY_PLANS.filter(plan => plan.isActive);
   } catch (error) {
     console.error('Error fetching company plans:', error);
