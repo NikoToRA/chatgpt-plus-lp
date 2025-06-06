@@ -12,8 +12,7 @@ import {
   Chip,
   Alert,
   Card,
-  CardContent,
-  Grid
+  CardContent
 } from '@mui/material';
 import { PricingCalculation, ServiceSelection, BasicInformation } from '../../types/optimizedApplication';
 import { DEFAULT_COMPANY_PLANS } from '../../services/companyPlans';
