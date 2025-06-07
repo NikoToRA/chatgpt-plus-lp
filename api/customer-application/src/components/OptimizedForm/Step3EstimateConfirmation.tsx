@@ -119,8 +119,7 @@ const Step3EstimateConfirmation: React.FC<Step3EstimateConfirmationProps> = ({
                       {planName}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {serviceData.requestedAccountCount}アカウント管理代行サービス・固定料金
-                      {serviceData.billingCycle === 'yearly' && '（年額・10%割引適用）'}
+                      {serviceData.requestedAccountCount}アカウント管理代行サービス・月額固定料金
                     </Typography>
                   </TableCell>
                   <TableCell align="right">
