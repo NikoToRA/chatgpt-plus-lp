@@ -8,7 +8,7 @@ export interface CompanyPlan {
   unitPrice: number;
   taxRate: number;
   isActive: boolean;
-  billingOptions: Array<'monthly' | 'yearly'>;
+  billingOptions: Array<'monthly'>;
   maxAccounts?: number;
   features: string[];
 }
@@ -176,7 +176,7 @@ export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
 export const calculatePlanPricing = (
   plan: CompanyPlan, 
   accountCount: number, 
-  billingCycle: 'monthly'
+  billingCycle: 'monthly' = 'monthly'
 ) => {
   // Fixed monthly service fee regardless of account count (service management fee)
   const basePrice = plan.unitPrice;
