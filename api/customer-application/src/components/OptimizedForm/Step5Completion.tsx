@@ -48,11 +48,17 @@ const Step5Completion: React.FC<Step5CompletionProps> = ({
       <Box sx={{ textAlign: 'center', mb: 4 }}>
         <CheckCircle sx={{ fontSize: 64, color: 'success.main', mb: 2 }} />
         <Typography variant="h4" gutterBottom color="success.main">
-          お申込み完了
+          お申込みありがとうございました
         </Typography>
-        <Typography variant="h6" color="text.secondary">
-          ChatGPT Plus 契約管理代行サービスへのお申込みありがとうございます
+        <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+          ChatGPT Plus 契約管理代行サービスへのお申込みを受け付けました
         </Typography>
+        <Alert severity="success" sx={{ maxWidth: 600, mx: 'auto', mt: 3 }}>
+          <Typography variant="body1">
+            <strong>ご連絡をお待ちください</strong><br />
+            2営業日以内に担当者よりご連絡させていただきます
+          </Typography>
+        </Alert>
       </Box>
 
       {/* 申込ID */}
@@ -203,9 +209,17 @@ const Step5Completion: React.FC<Step5CompletionProps> = ({
 
       <Divider sx={{ my: 4 }} />
 
-
-
+      {/* LPに戻るボタン */}
       <Box sx={{ textAlign: 'center', mt: 4 }}>
+        <Button
+          variant="contained"
+          size="large"
+          color="primary"
+          href="https://wonderful-flower-0f6517b00.6.azurestaticapps.net"
+          sx={{ px: 4, py: 1.5, mb: 3 }}
+        >
+          トップページに戻る
+        </Button>
         <Typography variant="body2" color="text.secondary">
           🎉 お申込み完了 | 📋 進捗: 5/5
         </Typography>

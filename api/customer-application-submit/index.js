@@ -95,19 +95,23 @@ module.exports = async function (context, req) {
         const customerEntity = {
             partitionKey: "Customer",
             rowKey: `customer-${Date.now()}`,
-            customerId: `customer-${Date.now()}`,
-            organizationName: submissionData.basicInformation.organizationName,
-            contactPerson: submissionData.basicInformation.contactPerson,
+            // 管理画面のAPIが期待するフィールド名に合わせる
             email: submissionData.basicInformation.email,
+            organization: submissionData.basicInformation.organizationName,
+            name: submissionData.basicInformation.contactPerson,
+            chatGptEmail: null, // 後でアカウント連携時に設定
+            status: 'trial',
+            plan: submissionData.serviceSelection.planId === 'prod-1' ? 'plus' : 'enterprise',
+            paymentMethod: submissionData.paymentInformation.paymentMethod,
+            stripeCustomerId: null, // 後で決済時に設定
+            timestamp: new Date().toISOString(),
+            lastActivityAt: new Date().toISOString(),
+            // 追加のメタデータ
             phoneNumber: submissionData.basicInformation.phoneNumber,
             address: `${submissionData.basicInformation.prefecture} ${submissionData.basicInformation.city} ${submissionData.basicInformation.address}`,
-            planType: submissionData.serviceSelection.planId === 'prod-1' ? 'plus' : 'enterprise',
-            status: 'trial',
             accountCount: submissionData.serviceSelection.requestedAccountCount,
             billingCycle: submissionData.serviceSelection.billingCycle,
-            applicationId: applicationId,
-            createdAt: new Date().toISOString(),
-            lastActiveAt: new Date().toISOString()
+            applicationId: applicationId
         };
 
         await customerTableClient.createEntity(customerEntity);
