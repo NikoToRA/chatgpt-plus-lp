@@ -57,15 +57,23 @@ jobs:
           ESLINT_NO_DEV_ERRORS: true
           GENERATE_SOURCEMAP: false
       
-      # 不要なファイルを削除してデプロイサイズを削減
-      - name: Clean up large directories
+      # デプロイ専用ディレクトリを作成
+      - name: Create deployment directory
         run: |
-          rm -rf admin-dashboard/node_modules
-          rm -rf api/customer-application/node_modules
-          rm -rf api/node_modules
-          find . -name "node_modules" -type d -exec rm -rf {} +
-          find . -name "*.log" -delete
-          find . -name ".DS_Store" -delete
+          mkdir -p deploy
+          # 必要なファイルのみをコピー
+          cp index.html deploy/
+          cp -r admin deploy/
+          cp -r application deploy/
+          cp -r css deploy/
+          cp -r js deploy/
+          cp -r images deploy/
+          cp staticwebapp.config.json deploy/
+          cp favicon.ico deploy/ || true
+          cp manifest.json deploy/ || true
+          cp robots.txt deploy/ || true
+          # サイズチェック
+          du -sh deploy/
       
       - name: Build And Deploy
         id: builddeploy
@@ -74,7 +82,7 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WONDERFUL_FLOWER_0F6517B00 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "/" # App source code path
+          app_location: "deploy" # デプロイ専用ディレクトリを指定
           api_location: "" # Api source code path - optional (空にしてAPI無効化)
           output_location: "" # Built app content directory - optional
           skip_app_build: true
