@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Customer, DashboardStats, AccountLinking, InvoiceRequest } from '../types';
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:7071/api';
+const API_URL = process.env.REACT_APP_API_URL || 'https://chatgpt-plus-api.azurewebsites.net/api';
 
 const api = axios.create({
   baseURL: API_URL,

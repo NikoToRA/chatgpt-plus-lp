@@ -56,7 +56,39 @@ export default function CustomerList() {
 
   const loadCustomers = async () => {
     try {
-      // まずローカルストレージから確認
+      // まずAzure APIから最新データを取得
+      try {
+        const data = await customerApi.getAll();
+        if (data && data.length > 0) {
+          // Azure APIからデータを取得できた場合
+          const transformedData = data.map((customer: any) => ({
+            id: customer.id || customer.customerId || customer.rowKey,
+            email: customer.email,
+            organization: customer.organizationName || customer.organization,
+            name: customer.contactPerson || customer.name,
+            chatGptAccounts: customer.chatGptAccounts || [],
+            status: customer.status || 'trial',
+            plan: customer.planType || customer.plan || 'plus',
+            paymentMethod: customer.paymentMethod || 'card',
+            registeredAt: new Date(customer.createdAt || customer.timestamp || Date.now()),
+            subscriptionMonths: customer.billingCycle === 'monthly' ? 1 : 12,
+            expiresAt: new Date(Date.now() + (customer.billingCycle === 'monthly' ? 30 : 365) * 24 * 60 * 60 * 1000),
+            lastActivityAt: new Date(customer.lastActiveAt || customer.lastActivityAt || customer.createdAt || Date.now()),
+            accountCount: customer.accountCount || 1,
+            applicationId: customer.applicationId
+          }));
+          
+          setCustomers(transformedData);
+          setFilteredCustomers(transformedData);
+          // 取得したデータをローカルストレージにも保存
+          localStorage.setItem('customers', JSON.stringify(transformedData));
+          return;
+        }
+      } catch (apiError) {
+        console.warn('Azure API接続失敗、ローカルストレージから読み込み:', apiError);
+      }
+      
+      // Azure APIから取得できない場合、ローカルストレージから確認
       const localCustomers = localStorage.getItem('customers');
       if (localCustomers) {
         const parsedCustomers = JSON.parse(localCustomers);
@@ -65,9 +97,7 @@ export default function CustomerList() {
         return;
       }
       
-      const data = await customerApi.getAll();
-      setCustomers(data);
-      setFilteredCustomers(data);
+      throw new Error('No data available from API or localStorage');
     } catch (error) {
       console.error('Failed to load customers:', error);
       // 開発用のダミーデータ
