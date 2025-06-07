@@ -41,7 +41,7 @@ module.exports = async function (context, req) {
         const applicationId = `APP-${Date.now()}-${Math.random().toString(36).substr(2, 8).toUpperCase()}`;
         
         // Initialize Azure Table Storage client
-        const connectionString = process.env.AzureWebJobsStorage || "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VM2FzAPdX8d0GunlQX0SfXe17OQrNqDbc/5oAPBGoSs7TBNG4dt/2FiATk9Caibir6uSAPSUlIN2+AStPvEsYg==;EndpointSuffix=core.windows.net";
+        const connectionString = process.env.AzureWebJobsStorage || process.env.AZURE_STORAGE_CONNECTION_STRING || "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VNH3n0IhjyW2mM6xOtJqCuOL8l3/iHjJP1kxvGCVLdD4O7Z4+vN6M2vuQ1GKjz4S3WP7dZjBAJJM+AStGFbhmg==;EndpointSuffix=core.windows.net";
         
         // Store in CustomerApplications table
         const tableClient = new TableClient(connectionString, "CustomerApplications");
@@ -177,6 +177,7 @@ module.exports = async function (context, req) {
 
     } catch (error) {
         context.log.error('Error processing customer application:', error);
+        context.log.error('Error details:', JSON.stringify(error, null, 2));
         
         context.res = {
             status: 500,
@@ -187,6 +188,7 @@ module.exports = async function (context, req) {
             body: {
                 success: false,
                 error: error.message,
+                errorDetails: error.stack,
                 message: "Failed to process customer application"
             }
         };

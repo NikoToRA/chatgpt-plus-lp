@@ -128,10 +128,8 @@ const OptimizedApplicationForm: React.FC = () => {
       // Azure Functions APIへの送信実装
       console.log('申込データ:', submission);
       
-      // 環境変数からAPI URLを取得（本番環境ではlocationベースのAPI URLを使用）
-      const apiBaseUrl = process.env.NODE_ENV === 'production' 
-        ? `${window.location.protocol}//${window.location.host}/api`
-        : process.env.REACT_APP_API_URL || 'https://chatgpt-plus-api.azurewebsites.net/api';
+      // Azure Static Web AppsのAPI URLを設定
+      const apiBaseUrl = '/api';
       
       const response = await fetch(`${apiBaseUrl}/customer-application-submit`, {
         method: 'POST',
@@ -142,13 +140,17 @@ const OptimizedApplicationForm: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error(`API request failed: ${response.statusText}`);
+        const errorText = await response.text();
+        console.error('API response error:', errorText);
+        throw new Error(`API request failed: ${response.status} ${response.statusText} - ${errorText}`);
       }
 
       const result = await response.json();
+      console.log('API response:', result);
       
       if (!result.success) {
-        throw new Error(result.message || 'API request failed');
+        console.error('API error details:', result);
+        throw new Error(result.message || result.error || 'API request failed');
       }
 
       // 実際のAPIから返されたapplicationIdを使用

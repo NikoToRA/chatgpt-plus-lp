@@ -83,7 +83,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "deploy" # デプロイ専用ディレクトリを指定
-          api_location: "" # Api source code path - optional (空にしてAPI無効化)
+          api_location: "api" # Azure Functions API ディレクトリを指定
           output_location: "" # Built app content directory - optional
           skip_app_build: true
 
