@@ -3,7 +3,7 @@
 export interface ServiceSelection {
   planId: string;
   requestedAccountCount: number;
-  billingCycle: 'monthly' | 'yearly';
+  billingCycle: 'monthly';
   startDate: Date;
 }
 
@@ -41,7 +41,7 @@ export interface PricingCalculation {
   subtotal: number;
   taxAmount: number;
   totalAmount: number;
-  billingCycle: 'monthly' | 'yearly';
+  billingCycle: 'monthly';
   accountCount: number;
   planId?: string;
 }

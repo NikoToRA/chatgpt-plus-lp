@@ -37,7 +37,7 @@ export const DEFAULT_COMPANY_PLANS: CompanyPlan[] = [
     unitPrice: 3000, // Updated price from admin dashboard test
     taxRate: 0.10,
     isActive: true,
-    billingOptions: ['monthly', 'yearly'],
+    billingOptions: ['monthly'],
     maxAccounts: 10,
     features: [
       'ChatGPT Plus契約代行',
@@ -53,7 +53,7 @@ export const DEFAULT_COMPANY_PLANS: CompanyPlan[] = [
     unitPrice: 2500, // Different pricing for enterprise
     taxRate: 0.10,
     isActive: true,
-    billingOptions: ['monthly', 'yearly'],
+    billingOptions: ['monthly'],
     maxAccounts: 10,
     features: [
       'ChatGPT Plus契約代行',
@@ -69,7 +69,7 @@ export const DEFAULT_COMPANY_PLANS: CompanyPlan[] = [
     unitPrice: 3000, // Test product from admin dashboard
     taxRate: 0.10,
     isActive: true,
-    billingOptions: ['monthly', 'yearly'],
+    billingOptions: ['monthly'],
     maxAccounts: 10,
     features: [
       'ChatGPT Plus契約代行',
@@ -176,18 +176,17 @@ export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
 export const calculatePlanPricing = (
   plan: CompanyPlan, 
   accountCount: number, 
-  billingCycle: 'monthly' | 'yearly'
+  billingCycle: 'monthly'
 ) => {
   // Fixed monthly service fee regardless of account count (service management fee)
   const basePrice = plan.unitPrice;
-  const yearlyBasePrice = basePrice * 12;
-  const subtotal = billingCycle === 'yearly' ? yearlyBasePrice * 0.9 : basePrice; // 10% discount for yearly
-  const discountAmount = billingCycle === 'yearly' ? yearlyBasePrice * 0.1 : 0;
+  const subtotal = basePrice; // Monthly only
+  const discountAmount = 0; // No discount for monthly
   const taxAmount = Math.floor(subtotal * plan.taxRate);
   const totalAmount = subtotal + taxAmount;
 
   return {
-    basePrice: yearlyBasePrice,
+    basePrice,
     discountAmount,
     subtotal,
     taxAmount,

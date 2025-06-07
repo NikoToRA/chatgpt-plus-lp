@@ -36,6 +36,7 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
   
   const watchPlanId = watch('planId', '');
   const watchAccountCount = watch('requestedAccountCount', 1);
+  const watchBillingCycle = watch('billingCycle', 'monthly');
   
   // Load company plans
   useEffect(() => {
@@ -52,16 +53,25 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
     loadPlans();
   }, []);
   
-  // Update pricing when plan or account count changes
+  // 見積計算と更新
   useEffect(() => {
     const selectedPlan = companyPlans.find(plan => plan.id === watchPlanId);
     if (selectedPlan) {
-      const pricing = calculatePlanPricing(selectedPlan, watchAccountCount, 'monthly');
-      onPricingUpdate(pricing);
+      const pricing = calculatePlanPricing(selectedPlan, watchAccountCount, watchBillingCycle);
+      onPricingUpdate({
+        ...pricing,
+        billingCycle: watchBillingCycle,
+        accountCount: watchAccountCount,
+        planId: selectedPlan.id
+      });
     }
-  }, [watchPlanId, watchAccountCount, companyPlans, onPricingUpdate]);
-  
+  }, [watchPlanId, watchAccountCount, watchBillingCycle, onPricingUpdate, companyPlans]);
+
   const selectedPlan = companyPlans.find(plan => plan.id === watchPlanId);
+  const monthlyTotal = selectedPlan ? selectedPlan.unitPrice : 0; // Fixed service fee
+  const yearlyTotal = selectedPlan ? Math.floor(selectedPlan.unitPrice * 12 * 0.9) : 0; // 10% yearly discount
+  const savings = selectedPlan ? (selectedPlan.unitPrice * 12) - yearlyTotal : 0;
+  
   const maxAccountsForPlan = selectedPlan?.maxAccounts || 10;
 
   return (
@@ -114,36 +124,22 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
                       onClick={() => field.onChange(plan.id)}
                     >
                       <CardContent>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 2 }}>
                           <FormControlLabel 
                             value={plan.id} 
                             control={<Radio />} 
                             label=""
                             sx={{ margin: 0 }}
                           />
-                          <Box sx={{ flex: 1, ml: 2 }}>
-                            <Typography variant="h6">{plan.name}</Typography>
-                            <Typography variant="body2" color="text.secondary">
+                          <Box sx={{ flex: 1 }}>
+                            <Typography variant="h6" color="primary">
+                              {plan.name}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                               {plan.description}
                             </Typography>
-                            <Box sx={{ mt: 1 }}>
-                              {plan.features.map((feature, index) => (
-                                <Chip 
-                                  key={index}
-                                  label={feature} 
-                                  size="small" 
-                                  variant="outlined" 
-                                  sx={{ mr: 1, mb: 1 }} 
-                                />
-                              ))}
-                            </Box>
-                          </Box>
-                          <Box sx={{ textAlign: 'right' }}>
-                            <Typography variant="h5" color="primary">
-                              ¥{plan.unitPrice.toLocaleString()}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                              /月（税込・すべて込み）
+                            <Typography variant="h6" color="text.primary">
+                              ¥{plan.unitPrice.toLocaleString()}/月（固定料金）
                             </Typography>
                             {plan.maxAccounts && (
                               <Typography variant="body2" color="text.secondary">
@@ -193,21 +189,23 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
                     { value: maxAccountsForPlan, label: maxAccountsForPlan.toString() }
                   ]}
                   valueLabelDisplay="on"
-                  sx={{ mt: 3, mb: 2 }}
+                  sx={{ mt: 3, mb: 4 }}
                 />
-                <Typography variant="body1" sx={{ mt: 2, textAlign: 'center' }}>
-                  選択中: <strong>{field.value}アカウント</strong>
+                <Typography variant="h5" align="center" color="primary" sx={{ mb: 2 }}>
+                  {watchAccountCount} アカウント
                 </Typography>
               </Box>
             )}
           />
         </FormControl>
         
-        {watchAccountCount >= maxAccountsForPlan && selectedPlan && (
+        {/* 大規模導入のお問い合わせ */}
+        {selectedPlan?.maxAccounts && (
           <Alert severity="info" sx={{ mt: 2 }}>
             <Typography variant="body2">
-              <strong>💼 大規模導入をご検討の場合</strong><br />
-              {maxAccountsForPlan}アカウント以上の大規模導入については、専用プランをご用意いたします。
+              <strong>💼 {selectedPlan.maxAccounts}アカウント以上をご希望の場合</strong><br />
+              大規模導入や特別プランをご検討の場合は、お気軽にお問い合わせください。<br />
+              専任担当者が最適なプランをご提案いたします。
             </Typography>
             <Button 
               variant="outlined" 
@@ -221,51 +219,135 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
         )}
       </Box>
 
-      {/* 月額料金表示 */}
-      {selectedPlan && (
-        <Box sx={{ mb: 4 }}>
-          <Card variant="outlined" sx={{ backgroundColor: 'primary.50' }}>
-            <CardContent sx={{ textAlign: 'center' }}>
-              <Typography variant="h6" gutterBottom>
-                💰 月額料金（税込）
-              </Typography>
-              <Typography variant="h4" color="primary" gutterBottom>
-                ¥{selectedPlan.unitPrice.toLocaleString()}
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                ChatGPT Plus利用料 + サービス管理費込み
-              </Typography>
-            </CardContent>
-          </Card>
-        </Box>
-      )}
-
-      {/* 開始希望日 */}
+      {/* プラン選択 */}
       <Box sx={{ mb: 4 }}>
-        <FormControl component="fieldset" fullWidth>
-          <FormLabel component="legend" sx={{ mb: 2, fontSize: '1.1rem', fontWeight: 'bold' }}>
-            📅 サービス開始希望日
-          </FormLabel>
-          <Controller
-            name="startDate"
-            control={control}
-            render={({ field }) => (
-              <TextField
-                type="date"
-                {...field}
-                value={field.value ? field.value.toISOString().split('T')[0] : ''}
-                onChange={(e) => field.onChange(new Date(e.target.value))}
-                fullWidth
-                helperText="カード決済の場合は最短翌日開始、請求書払いの場合は審査後3-5営業日で開始"
-              />
-            )}
-          />
-        </FormControl>
+        <FormLabel component="legend" sx={{ mb: 3, fontSize: '1.1rem', fontWeight: 'bold' }}>
+          💰 月額料金（すべて込み）
+        </FormLabel>
+        <Controller
+          name="billingCycle"
+          control={control}
+          render={({ field }) => (
+            <RadioGroup {...field} sx={{ gap: 2 }}>
+              {/* 月額プラン */}
+              <Card 
+                variant={field.value === 'monthly' ? 'outlined' : 'elevation'}
+                sx={{ 
+                  border: field.value === 'monthly' ? 2 : 0,
+                  borderColor: 'primary.main',
+                  cursor: 'pointer',
+                  '&:hover': { boxShadow: 4 }
+                }}
+                onClick={() => field.onChange('monthly')}
+              >
+                <CardContent>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <FormControlLabel 
+                      value="monthly" 
+                      control={<Radio />} 
+                      label=""
+                      sx={{ margin: 0 }}
+                    />
+                    <Box sx={{ flex: 1, ml: 2 }}>
+                      <Typography variant="h6">月額払い</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        毎月のお支払い・月単位で柔軟に対応
+                      </Typography>
+                    </Box>
+                    <Box sx={{ textAlign: 'right' }}>
+                      <Typography variant="h5" color="primary">
+                        ¥{monthlyTotal.toLocaleString()}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        /月
+                      </Typography>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+
+              {/* 年額プラン */}
+              <Card 
+                variant={field.value === 'yearly' ? 'outlined' : 'elevation'}
+                sx={{ 
+                  border: field.value === 'yearly' ? 2 : 0,
+                  borderColor: 'primary.main',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  '&:hover': { boxShadow: 4 }
+                }}
+                onClick={() => field.onChange('yearly')}
+              >
+                {savings > 0 && (
+                  <Chip 
+                    label={`¥${savings.toLocaleString()}お得!`}
+                    color="success"
+                    size="small"
+                    sx={{ 
+                      position: 'absolute', 
+                      top: -8, 
+                      right: 16,
+                      zIndex: 1,
+                      fontWeight: 'bold'
+                    }}
+                  />
+                )}
+                <CardContent>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <FormControlLabel 
+                      value="yearly" 
+                      control={<Radio />} 
+                      label=""
+                      sx={{ margin: 0 }}
+                    />
+                    <Box sx={{ flex: 1, ml: 2 }}>
+                      <Typography variant="h6">年額払い</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        年1回のお支払い・10%割引が適用されます
+                      </Typography>
+                    </Box>
+                    <Box sx={{ textAlign: 'right' }}>
+                      <Typography variant="h5" color="primary">
+                        ¥{yearlyTotal.toLocaleString()}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        /年（月額換算: ¥{Math.floor(yearlyTotal/12).toLocaleString()}）
+                      </Typography>
+                    </Box>
+                  </Box>
+                </CardContent>
+              </Card>
+            </RadioGroup>
+          )}
+        />
       </Box>
+
+      {/* 利用開始日 */}
+      <Box sx={{ mb: 4 }}>
+        <Controller
+          name="startDate"
+          control={control}
+          render={({ field }) => (
+            <TextField
+              {...field}
+              fullWidth
+              label="利用開始希望日"
+              type="date"
+              value={field.value ? field.value.toISOString().split('T')[0] : ''}
+              onChange={(e) => field.onChange(new Date(e.target.value))}
+              InputLabelProps={{
+                shrink: true,
+              }}
+              helperText="最短で申込から3営業日後からご利用可能です"
+            />
+          )}
+        />
+      </Box>
+
 
       <Box sx={{ textAlign: 'center', mt: 4 }}>
         <Typography variant="body2" color="text.secondary">
-          ⏱️ 予想残り時間: あと4分 | 📋 進捗: 1/5
+          ⏱️ 予想入力時間: あと4分 | 📋 進捗: 1/5
         </Typography>
       </Box>
     </Paper>
