@@ -8,6 +8,20 @@ const tableClient = TableClient.fromConnectionString(connectionString, "Customer
 module.exports = async function (context, req) {
     context.log('Customers function processed a request.');
 
+    // Handle CORS preflight
+    if (req.method === 'OPTIONS') {
+        context.res = {
+            status: 200,
+            headers: {
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+                'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+                'Access-Control-Max-Age': '86400'
+            }
+        };
+        return;
+    }
+
     const method = req.method;
     const id = context.bindingData.id;
 
@@ -19,19 +33,62 @@ module.exports = async function (context, req) {
                     try {
                         const entity = await tableClient.getEntity("Customer", id);
                         const customer = {
-                            id: entity.rowKey,
+                            id: entity.id || entity.rowKey,
                             email: entity.email,
                             organization: entity.organization,
                             name: entity.name,
-                            chatGptEmail: entity.chatGptEmail || null,
-                            status: entity.status || 'trial',
-                            plan: entity.plan || 'basic',
+                            
+                            // 詳細な住所情報
+                            phoneNumber: entity.phoneNumber || '',
+                            postalCode: entity.postalCode || '',
+                            address: entity.address || '',
+                            prefecture: entity.prefecture || '',
+                            city: entity.city || '',
+                            addressDetail: entity.addressDetail || '',
+                            
+                            // 医療機関情報
+                            facilityType: entity.facilityType || '',
+                            department: entity.department || '',
+                            contactPhone: entity.contactPhone || entity.phoneNumber || '',
+                            
+                            // サービス情報
+                            plan: entity.plan || 'plus',
+                            planId: entity.planId || '',
+                            accountCount: entity.accountCount || entity.requestedAccountCount || 1,
+                            requestedAccountCount: entity.requestedAccountCount || 1,
+                            billingCycle: entity.billingCycle || 'monthly',
+                            startDate: entity.startDate || '',
+                            
+                            // 支払い情報
                             paymentMethod: entity.paymentMethod || 'card',
+                            cardHolderName: entity.cardHolderName || '',
+                            billingContact: entity.billingContact || entity.name,
+                            billingEmail: entity.billingEmail || entity.email,
+                            
+                            // システム情報
+                            status: entity.status || 'trial',
+                            chatGptEmail: entity.chatGptEmail || null,
+                            chatGptAccounts: JSON.parse(entity.chatGptAccounts || '[]'),
                             stripeCustomerId: entity.stripeCustomerId || null,
-                            createdAt: entity.timestamp,
-                            lastActivityAt: entity.lastActivityAt || entity.timestamp
+                            
+                            // タイムスタンプ
+                            registeredAt: entity.registeredAt || entity.createdAt || entity.timestamp,
+                            createdAt: entity.createdAt || entity.timestamp,
+                            lastActivityAt: entity.lastActivityAt || entity.timestamp,
+                            expiresAt: entity.expiresAt || new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+                            subscriptionMonths: entity.subscriptionMonths || 1,
+                            
+                            // 申し込み関連
+                            applicationId: entity.applicationId || '',
+                            termsAccepted: entity.termsAccepted || false,
+                            privacyAccepted: entity.privacyAccepted || false
                         };
                         context.res = {
+                            status: 200,
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Access-Control-Allow-Origin': '*'
+                            },
                             body: customer
                         };
                     } catch (error) {
@@ -49,21 +106,64 @@ module.exports = async function (context, req) {
                     
                     for await (const entity of entities) {
                         customers.push({
-                            id: entity.rowKey,
+                            id: entity.id || entity.rowKey,
                             email: entity.email,
                             organization: entity.organization,
                             name: entity.name,
-                            chatGptEmail: entity.chatGptEmail || null,
-                            status: entity.status || 'trial',
-                            plan: entity.plan || 'basic',
+                            
+                            // 詳細な住所情報
+                            phoneNumber: entity.phoneNumber || '',
+                            postalCode: entity.postalCode || '',
+                            address: entity.address || '',
+                            prefecture: entity.prefecture || '',
+                            city: entity.city || '',
+                            addressDetail: entity.addressDetail || '',
+                            
+                            // 医療機関情報
+                            facilityType: entity.facilityType || '',
+                            department: entity.department || '',
+                            contactPhone: entity.contactPhone || entity.phoneNumber || '',
+                            
+                            // サービス情報
+                            plan: entity.plan || 'plus',
+                            planId: entity.planId || '',
+                            accountCount: entity.accountCount || entity.requestedAccountCount || 1,
+                            requestedAccountCount: entity.requestedAccountCount || 1,
+                            billingCycle: entity.billingCycle || 'monthly',
+                            startDate: entity.startDate || '',
+                            
+                            // 支払い情報
                             paymentMethod: entity.paymentMethod || 'card',
+                            cardHolderName: entity.cardHolderName || '',
+                            billingContact: entity.billingContact || entity.name,
+                            billingEmail: entity.billingEmail || entity.email,
+                            
+                            // システム情報
+                            status: entity.status || 'trial',
+                            chatGptEmail: entity.chatGptEmail || null,
+                            chatGptAccounts: JSON.parse(entity.chatGptAccounts || '[]'),
                             stripeCustomerId: entity.stripeCustomerId || null,
-                            createdAt: entity.timestamp,
-                            lastActivityAt: entity.lastActivityAt || entity.timestamp
+                            
+                            // タイムスタンプ
+                            registeredAt: entity.registeredAt || entity.createdAt || entity.timestamp,
+                            createdAt: entity.createdAt || entity.timestamp,
+                            lastActivityAt: entity.lastActivityAt || entity.timestamp,
+                            expiresAt: entity.expiresAt || new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+                            subscriptionMonths: entity.subscriptionMonths || 1,
+                            
+                            // 申し込み関連
+                            applicationId: entity.applicationId || '',
+                            termsAccepted: entity.termsAccepted || false,
+                            privacyAccepted: entity.privacyAccepted || false
                         });
                     }
                     
                     context.res = {
+                        status: 200,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Access-Control-Allow-Origin': '*'
+                        },
                         body: customers
                     };
                 }

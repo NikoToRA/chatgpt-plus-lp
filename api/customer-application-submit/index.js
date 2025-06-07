@@ -95,23 +95,62 @@ module.exports = async function (context, req) {
         const customerEntity = {
             partitionKey: "Customer",
             rowKey: `customer-${Date.now()}`,
+            // ユニークID（管理画面で使用）
+            id: `customer-${Date.now()}`,
+            
             // 管理画面のAPIが期待するフィールド名に合わせる
             email: submissionData.basicInformation.email,
             organization: submissionData.basicInformation.organizationName,
             name: submissionData.basicInformation.contactPerson,
-            chatGptEmail: null, // 後でアカウント連携時に設定
-            status: 'trial',
+            
+            // 詳細な住所情報
+            phoneNumber: submissionData.basicInformation.phoneNumber,
+            postalCode: submissionData.basicInformation.postalCode,
+            address: `${submissionData.basicInformation.prefecture} ${submissionData.basicInformation.city} ${submissionData.basicInformation.address}`,
+            prefecture: submissionData.basicInformation.prefecture,
+            city: submissionData.basicInformation.city,
+            addressDetail: submissionData.basicInformation.address,
+            
+            // 医療機関情報
+            facilityType: submissionData.basicInformation.facilityType,
+            department: submissionData.basicInformation.department || '',
+            contactPhone: submissionData.basicInformation.contactPhone || submissionData.basicInformation.phoneNumber,
+            
+            // サービス情報
             plan: submissionData.serviceSelection.planId === 'prod-1' ? 'plus' : 'enterprise',
+            planId: submissionData.serviceSelection.planId,
+            accountCount: submissionData.serviceSelection.requestedAccountCount,
+            requestedAccountCount: submissionData.serviceSelection.requestedAccountCount,
+            billingCycle: submissionData.serviceSelection.billingCycle,
+            startDate: submissionData.serviceSelection.startDate,
+            
+            // 支払い情報
             paymentMethod: submissionData.paymentInformation.paymentMethod,
+            cardHolderName: submissionData.paymentInformation.cardHolderName || '',
+            billingContact: submissionData.paymentInformation.billingContact || submissionData.basicInformation.contactPerson,
+            billingEmail: submissionData.paymentInformation.billingEmail || submissionData.basicInformation.email,
+            
+            // システム情報
+            status: 'trial',
+            chatGptEmail: null, // 後でアカウント連携時に設定
+            chatGptAccounts: [], // 空の配列で初期化
             stripeCustomerId: null, // 後で決済時に設定
+            
+            // タイムスタンプ
             timestamp: new Date().toISOString(),
             lastActivityAt: new Date().toISOString(),
-            // 追加のメタデータ
-            phoneNumber: submissionData.basicInformation.phoneNumber,
-            address: `${submissionData.basicInformation.prefecture} ${submissionData.basicInformation.city} ${submissionData.basicInformation.address}`,
-            accountCount: submissionData.serviceSelection.requestedAccountCount,
-            billingCycle: submissionData.serviceSelection.billingCycle,
-            applicationId: applicationId
+            registeredAt: new Date().toISOString(),
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            
+            // 申し込み関連
+            applicationId: applicationId,
+            termsAccepted: submissionData.paymentInformation.termsAccepted,
+            privacyAccepted: submissionData.paymentInformation.privacyAccepted,
+            
+            // 有効期限設定（トライアルなので3ヶ月後）
+            expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(), // 90日後
+            subscriptionMonths: submissionData.serviceSelection.billingCycle === 'monthly' ? 1 : 12
         };
 
         await customerTableClient.createEntity(customerEntity);
