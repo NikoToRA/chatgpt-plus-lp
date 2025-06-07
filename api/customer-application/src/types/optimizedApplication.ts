@@ -33,6 +33,7 @@ export interface PaymentInformation {
   // 利用規約・プライバシーポリシー同意
   termsAccepted: boolean;
   privacyAccepted: boolean;
+  privacyUnderstandingConfirmed: boolean;
 }
 
 export interface PricingCalculation {

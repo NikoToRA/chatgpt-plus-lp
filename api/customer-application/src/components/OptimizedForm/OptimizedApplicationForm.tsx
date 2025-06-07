@@ -73,7 +73,8 @@ const OptimizedApplicationForm: React.FC = () => {
       billingContact: '',
       billingEmail: '',
       termsAccepted: false,
-      privacyAccepted: false
+      privacyAccepted: false,
+      privacyUnderstandingConfirmed: false
     }
   });
 

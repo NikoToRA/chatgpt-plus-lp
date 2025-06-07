@@ -255,6 +255,42 @@ const Step4PaymentMethod: React.FC<Step4PaymentMethodProps> = ({
             </Typography>
           )}
         </Box>
+        
+        <Alert severity="info" sx={{ mt: 3, mb: 2 }}>
+          <Typography variant="body2">
+            <strong>🔒 個人情報の取り扱いについて</strong><br />
+            ご入力いただいた個人情報は、サービス提供・サポート・請求業務のみに使用し、
+            適切に管理いたします。第三者への提供や、他の目的での使用は一切行いません。
+          </Typography>
+        </Alert>
+        
+        <Box sx={{ mb: 2 }}>
+          <Controller
+            name="privacyUnderstandingConfirmed"
+            control={control}
+            render={({ field }) => (
+              <FormCheckboxLabel
+                control={
+                  <Checkbox 
+                    {...field}
+                    checked={field.value}
+                    color="primary"
+                  />
+                }
+                label={
+                  <Typography variant="body2">
+                    上記の個人情報の取り扱いについて理解し、同意いたします（必須）
+                  </Typography>
+                }
+              />
+            )}
+          />
+          {errors.privacyUnderstandingConfirmed && (
+            <Typography variant="caption" color="error">
+              個人情報の取り扱いについてのご理解・同意が必要です
+            </Typography>
+          )}
+        </Box>
       </Box>
 
 
