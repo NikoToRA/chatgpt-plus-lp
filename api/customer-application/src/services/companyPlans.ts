@@ -83,6 +83,7 @@ export const DEFAULT_COMPANY_PLANS: CompanyPlan[] = [
 // Fetch company plans from Azure API or company settings
 export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
   try {
+    console.log('🔄 Fetching company plans from company settings API...');
     // First try to fetch from company settings API
     const response = await fetch('https://chatgpt-plus-api.azurewebsites.net/api/company-settings');
     
@@ -109,7 +110,8 @@ export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
             ]
           }));
         
-        console.log('Company plans loaded from company settings:', companyPlans);
+        console.log('✅ Company plans loaded from company settings API:', companyPlans.length, 'plans');
+        console.log('📦 Plans:', companyPlans.map(p => `${p.name} (¥${p.unitPrice})`).join(', '));
         return companyPlans;
       }
     }
