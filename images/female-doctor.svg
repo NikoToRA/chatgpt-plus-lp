@@ -1,0 +1,43 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="#E0F2FE" stroke="#3B82F6" stroke-width="2"/>
+  
+  <!-- Doctor body -->
+  <path d="M100 130C75 130 55 150 55 175V195H145V175C145 150 125 130 100 130Z" fill="#FFFFFF" stroke="#1E40AF" stroke-width="2"/>
+  
+  <!-- White coat collar -->
+  <path d="M85 135V145L100 150L115 145V135" fill="#FFFFFF" stroke="#1E40AF" stroke-width="2"/>
+  
+  <!-- Head/Face -->
+  <circle cx="100" cy="85" r="30" fill="#FDB5A6" stroke="#1E40AF" stroke-width="2"/>
+  
+  <!-- Hair -->
+  <path d="M70 75C70 60 80 50 100 50C120 50 130 60 130 75C130 75 125 65 100 65C75 65 70 75 70 75Z" fill="#4B5563"/>
+  <path d="M70 85C70 85 65 80 65 70C65 65 70 60 75 65C75 65 70 75 70 85Z" fill="#4B5563"/>
+  <path d="M130 85C130 85 135 80 135 70C135 65 130 60 125 65C125 65 130 75 130 85Z" fill="#4B5563"/>
+  
+  <!-- Eyes -->
+  <circle cx="88" cy="85" r="2" fill="#1F2937"/>
+  <circle cx="112" cy="85" r="2" fill="#1F2937"/>
+  
+  <!-- Smile -->
+  <path d="M90 95Q100 105 110 95" stroke="#1F2937" stroke-width="2" stroke-linecap="round" fill="none"/>
+  
+  <!-- Stethoscope -->
+  <path d="M100 130V140" stroke="#3B82F6" stroke-width="3"/>
+  <circle cx="100" cy="145" r="8" fill="#3B82F6"/>
+  <path d="M85 115C85 115 80 110 75 110C70 110 70 115 75 115C80 115 85 120 90 125" stroke="#3B82F6" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M115 115C115 115 120 110 125 110C130 110 130 115 125 115C120 115 115 120 110 125" stroke="#3B82F6" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- Medical cross on coat -->
+  <rect x="85" y="155" width="30" height="30" rx="5" fill="#EF4444"/>
+  <path d="M95 165H105M100 160V170" stroke="white" stroke-width="3" stroke-linecap="round"/>
+  
+  <!-- ChatGPT device in hand -->
+  <rect x="125" y="150" width="25" height="35" rx="3" fill="#1F2937" stroke="#3B82F6" stroke-width="2"/>
+  <rect x="128" y="153" width="19" height="25" fill="#3B82F6"/>
+  <text x="137" y="168" font-family="Arial" font-size="8" fill="white" text-anchor="middle">AI</text>
+  
+  <!-- Hand holding device -->
+  <path d="M120 160C120 160 125 155 125 150L125 185C125 185 120 180 120 175" fill="#FDB5A6" stroke="#1E40AF" stroke-width="2"/>
+</svg>

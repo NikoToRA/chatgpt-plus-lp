@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wonder Drill株式会社 | ChatGPT医療機関向け運用代行サービス</title>
+  <meta name="description" content="Wonder Drill株式会社のChatGPT医療機関向け運用代行サービス。クレジットカード不要、請求書払いで即日利用開始。24時間以内にアカウント発行。">
+  
+  <!-- Preload critical CSS files -->
+  <link rel="preload" href="css/modern-styles.css" as="style">
+  <link rel="preload" href="css/aidma-colors.css" as="style">
+  <link rel="preload" href="css/balanced-layout.css" as="style">
+  <link rel="preload" href="css/annual-plan-visibility-fix.css" as="style">
+  <link rel="preload" href="css/hero-background-update.css" as="style">
+  <link rel="preload" href="css/white-text-visibility-fix.css" as="style">
+  <link rel="preload" href="css/critical-fixes.css" as="style">
+  
+  <!-- Load CSS files -->
+  <link rel="stylesheet" href="css/modern-styles.css">
+  <link rel="stylesheet" href="css/aidma-colors.css">
+  <link rel="stylesheet" href="css/balanced-layout.css">
+  <link rel="stylesheet" href="css/annual-plan-visibility-fix.css">
+  <link rel="stylesheet" href="css/hero-background-update.css">
+  <link rel="stylesheet" href="css/white-text-visibility-fix.css">
+  <link rel="stylesheet" href="css/critical-fixes.css">
+  <link rel="stylesheet" href="css/cyber-geometric.css">
+  <link rel="stylesheet" href="css/hero-layout-update.css">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            'sans': ['Inter', 'Noto Sans JP', 'sans-serif'],
+            'display': ['Poppins', 'Noto Sans JP', 'sans-serif'],
+          },
+          animation: {
+            'float': 'float 6s ease-in-out infinite',
+            'pulse-slow': 'pulse 3s ease-in-out infinite',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0)' },
+              '50%': { transform: 'translateY(-20px)' },
+            }
+          }
+        },
+      },
+    }
+  </script>
+</head>
+<body class="bg-gray-50 overflow-x-hidden">
+  <!-- Modern Header with Glass Effect -->
+  <header class="fixed top-0 z-50 w-full glass-dark backdrop-blur-lg border-b border-white/10">
+    <div class="container mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <div>
+            <h1 class="text-white font-bold text-xl md:text-2xl font-display">Wonder Drill株式会社</h1>
+            <p class="text-gray-300 text-xs md:text-sm">ChatGPT医療機関向け運用代行サービス</p>
+          </div>
+        </div>
+        
+        <nav class="hidden lg:flex items-center space-x-8">
+          <a href="#benefits" class="text-gray-300 hover:text-white transition-colors">導入メリット</a>
+          <a href="#workflow" class="text-gray-300 hover:text-white transition-colors">業務フロー</a>
+          <a href="#pricing" class="text-gray-300 hover:text-white transition-colors">料金プラン</a>
+          <a href="#cases" class="text-gray-300 hover:text-white transition-colors">導入事例</a>
+          <a href="#faq" class="text-gray-300 hover:text-white transition-colors">FAQ</a>
+          <a href="#contact" class="btn btn-primary px-6 py-2.5 text-sm font-semibold btn-glow">無料相談する</a>
+        </nav>
+        
+        <button id="mobile-menu-button" class="lg:hidden text-white p-2 hover:bg-white/10 rounded-lg transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+    
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden lg:hidden bg-gray-900/95 backdrop-blur-lg border-t border-white/10">
+      <nav class="container mx-auto px-4 py-4 flex flex-col space-y-3">
+        <a href="#benefits" class="text-gray-300 hover:text-white py-2 transition-colors">導入メリット</a>
+        <a href="#workflow" class="text-gray-300 hover:text-white py-2 transition-colors">業務フロー</a>
+        <a href="#pricing" class="text-gray-300 hover:text-white py-2 transition-colors">料金プラン</a>
+        <a href="#cases" class="text-gray-300 hover:text-white py-2 transition-colors">導入事例</a>
+        <a href="#faq" class="text-gray-300 hover:text-white py-2 transition-colors">FAQ</a>
+        <a href="#contact" class="btn btn-primary px-6 py-3 text-center">無料相談する</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section with Medical Staff Background -->
+  <section class="hero-section relative min-h-screen flex items-center pt-20 overflow-hidden">
+    <!-- Background Image -->
+    <div class="absolute inset-0 z-0">
+      <img src="images/medical-staff.jpg" alt="医療スタッフ" class="w-full h-full object-cover">
+      <!-- Dark overlay for text readability -->
+      <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+    </div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="max-w-2xl">
+        <div class="text-left fade-in">
+          <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6">
+            <span class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+            <span class="text-white/90 text-sm">48時間以内に利用開始可能</span>
+          </div>
+          
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-white mb-6 leading-tight">
+            医療現場のための<br>
+            <span class="gradient-text typing-animation" data-text="ChatGPT" data-speed="150"></span>
+          </h1>
+          
+          <p class="text-xl md:text-2xl text-gray-300 mb-8 leading-relaxed">
+            クレジットカード不要、<span class="text-white font-semibold">請求書払い</span>で即導入。<br>
+            医療従事者の業務効率化を運用代行で実現します。
+          </p>
+          
+          <div class="flex flex-col sm:flex-row gap-4 justify-start mb-12">
+            <a href="#contact" class="btn btn-primary btn-glow px-8 py-4 text-lg font-semibold flex items-center justify-center gap-3 btn-magnetic">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              今すぐ無料相談
+            </a>
+            <a href="#workflow" class="btn btn-secondary px-8 py-4 text-lg font-semibold">
+              導入フローを見る
+            </a>
+          </div>
+          
+          <!-- Trust Indicators -->
+          <div class="flex flex-wrap items-center gap-6 justify-start text-sm text-gray-400">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span>医師監修サービス</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span>48時間以内の迅速導入</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+              </svg>
+              <span>請求書払い対応</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Scroll Indicator -->
+    <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/50 animate-bounce">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+      </svg>
+    </div>
+  </section>
+
+  <!-- Trust Banner with Features -->
+  <section class="relative bg-white py-12 border-y border-gray-100">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div class="text-center fade-in">
+          <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">医師監修</h3>
+          <p class="text-gray-600">医療現場を熟知した医師チームがサービスを監修</p>
+        </div>
+        <div class="text-center fade-in" style="animation-delay: 0.1s;">
+          <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">48時間導入</h3>
+          <p class="text-gray-600">お申込みから48時間以内に利用開始可能</p>
+        </div>
+        <div class="text-center fade-in" style="animation-delay: 0.2s;">
+          <div class="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2">請求書払い</h3>
+          <p class="text-gray-600">クレジットカード不要で簡単な経理処理</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits Section -->
+  <section id="benefits" class="py-20 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-16">
+        <span class="text-blue-600 font-medium uppercase tracking-wider">導入メリット</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-display font-bold mt-4 text-gray-900">
+          医療現場がChatGPT Plusを<br class="md:hidden">
+          選ぶ<span class="gradient-text">3つの理由</span>
+        </h2>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <!-- Benefit 1 -->
+        <div class="card card-gradient p-8 text-center fade-in">
+          <div class="feature-icon mx-auto mb-6">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">時間短縮</h3>
+          <p class="text-gray-600 mb-6">
+            診療記録作成、論文要約、患者説明資料の作成など、
+            日常業務を大幅に効率化
+          </p>
+          <div class="bg-blue-50 rounded-lg p-4">
+            <p class="text-blue-700 font-semibold">平均<span class="text-2xl mx-1">2.5</span>時間/日</p>
+            <p class="text-blue-600 text-sm">業務時間を削減</p>
+          </div>
+        </div>
+        
+        <!-- Benefit 2 -->
+        <div class="card card-gradient p-8 text-center fade-in" style="animation-delay: 0.1s;">
+          <div class="feature-icon mx-auto mb-6">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">品質向上</h3>
+          <p class="text-gray-600 mb-6">
+            最新の医学情報へのアクセス、
+            診断支援、エビデンスの確認に活用
+          </p>
+          <div class="bg-green-50 rounded-lg p-4">
+            <p class="text-green-700 font-semibold">高品質</p>
+            <p class="text-green-600 text-sm">最新情報でサポート</p>
+          </div>
+        </div>
+        
+        <!-- Benefit 3 -->
+        <div class="card card-gradient p-8 text-center fade-in" style="animation-delay: 0.2s;">
+          <div class="feature-icon mx-auto mb-6">
+            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-4">コスト削減</h3>
+          <p class="text-gray-600 mb-6">
+            請求書払いで経理処理が簡単。
+            個人カードの立替え不要
+          </p>
+          <div class="bg-purple-50 rounded-lg p-4">
+            <p class="text-purple-700 font-semibold">コスト最適化</p>
+            <p class="text-purple-600 text-sm">ボリューム割引あり</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <!-- AIDMA: ATTENTION - Workflow Section -->
+  <section id="workflow" class="aidma-attention py-20 relative overflow-hidden">
+    <!-- Enhanced Background Pattern -->
+    <div class="absolute inset-0">
+      <div class="absolute top-20 left-10 w-72 h-72 bg-gradient-to-br from-orange-500 to-red-500 rounded-full filter blur-3xl opacity-20 animate-pulse"></div>
+      <div class="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full filter blur-3xl opacity-20 animate-pulse" style="animation-delay: 1s;"></div>
+      <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full filter blur-3xl opacity-15 animate-pulse" style="animation-delay: 2s;"></div>
+    </div>
+    
+    <div class="container mx-auto px-4 relative z-10">
+      <div class="text-center mb-16">
+        <span class="inline-block px-4 py-2 bg-white bg-opacity-20 rounded-full text-orange-300 font-bold uppercase tracking-wider text-sm backdrop-blur-sm border border-white border-opacity-30">📝 業務フロー</span>
+        <h2 class="text-3xl md:text-4xl lg:text-6xl font-display font-black mt-6 text-white leading-tight">
+          たった<span class="section-title">3ステップ</span>で<br class="md:hidden">
+          <span class="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">48時間以内に利用開始</span>
+        </h2>
+        <p class="text-xl text-gray-200 mt-8 max-w-3xl mx-auto leading-relaxed">
+          🚀 <strong class="text-orange-300">クレジットカード不要</strong>、複雑な手続きなし。<br>
+          シンプルな3つのステップで<strong class="text-blue-300">ChatGPT Plus</strong>を始められます。
+        </p>
+      </div>
+      
+      <!-- Interactive Timeline -->
+      <div class="max-w-5xl mx-auto">
+        <div class="hidden md:block relative">
+          <!-- Enhanced Timeline Line -->
+          <div class="absolute left-0 right-0 top-1/2 h-2 bg-gradient-to-r from-orange-400 via-blue-500 via-purple-500 to-green-400 transform -translate-y-1/2 rounded-full opacity-80"></div>
+          
+          <!-- Enhanced Timeline Steps -->
+          <div class="grid grid-cols-3 gap-8 relative">
+            <!-- Step 1: ATTENTION -->
+            <div class="text-center fade-in timeline-step rounded-3xl p-8">
+              <div class="relative z-10 bg-gradient-to-br from-orange-400 to-red-500 p-3 inline-block rounded-full mb-6 shadow-2xl">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-orange-500 text-2xl font-black shadow-inner">
+                  1
+                </div>
+              </div>
+              <h3 class="text-2xl font-black text-white mb-4">📝 お問い合わせ</h3>
+              <div class="bg-high-contrast text-gray-900 rounded-2xl p-4 mb-4">
+                <p class="font-semibold leading-relaxed">
+                  フォームから必要事項を入力。<br>
+                  <span class="text-orange-600 font-bold">即座に見積書を発行</span>します。
+                </p>
+              </div>
+              <div class="inline-flex items-center gap-2 bg-orange-500 text-white px-4 py-2 rounded-full font-bold text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                たった1分で完了
+              </div>
+            </div>
+            
+            <!-- Step 2: INTEREST -->
+            <div class="text-center fade-in timeline-step rounded-3xl p-8" style="animation-delay: 0.2s;">
+              <div class="relative z-10 bg-gradient-to-br from-blue-500 to-purple-600 p-3 inline-block rounded-full mb-6 shadow-2xl">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-blue-500 text-2xl font-black shadow-inner">
+                  2
+                </div>
+              </div>
+              <h3 class="text-2xl font-black text-white mb-4">⚙️ アカウント作成</h3>
+              <div class="bg-high-contrast text-gray-900 rounded-2xl p-4 mb-4">
+                <p class="font-semibold leading-relaxed">
+                  弊社が代行してアカウントを作成。<br>
+                  <span class="text-blue-600 font-bold">初期設定もお任せ</span>ください。
+                </p>
+              </div>
+              <div class="inline-flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-full font-bold text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                最長36時間で完成
+              </div>
+            </div>
+            
+            <!-- Step 3: DESIRE -->
+            <div class="text-center fade-in timeline-step rounded-3xl p-8" style="animation-delay: 0.4s;">
+              <div class="relative z-10 bg-gradient-to-br from-green-500 to-emerald-600 p-3 inline-block rounded-full mb-6 shadow-2xl">
+                <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center text-green-500 text-2xl font-black shadow-inner">
+                  3
+                </div>
+              </div>
+              <h3 class="text-2xl font-black text-white mb-4">🚀 利用開始</h3>
+              <div class="bg-high-contrast text-gray-900 rounded-2xl p-4 mb-4">
+                <p class="font-semibold leading-relaxed">
+                  ログイン情報をお渡し。<br>
+                  <span class="text-green-600 font-bold">すぐにChatGPT Plusを利用開始</span>。
+                </p>
+              </div>
+              <div class="inline-flex items-center gap-2 bg-green-500 text-white px-4 py-2 rounded-full font-bold text-sm">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                48時間以内に利用可能
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Enhanced Mobile Timeline -->
+        <div class="md:hidden space-y-6">
+          <!-- Mobile Step 1: ATTENTION -->
+          <div class="timeline-step bg-white rounded-3xl shadow-xl p-6 border-l-8 border-orange-500 transform hover:scale-102 transition-all">
+            <div class="flex items-center mb-4">
+              <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl flex items-center justify-center text-white font-black mr-4 shadow-lg">
+                <span class="text-2xl">1</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-black text-gray-900">📝 お問い合わせ</h3>
+                <p class="text-orange-600 font-bold text-sm">たった1分で完了</p>
+              </div>
+            </div>
+            <p class="text-gray-700 font-semibold mb-4 leading-relaxed">
+              フォームから必要事項を入力。<br>
+              <span class="text-orange-600 font-bold">即座に見積書を発行</span>します。
+            </p>
+            <div class="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-3 py-2 rounded-full font-bold text-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              超簡単スピードお問い合わせ
+            </div>
+          </div>
+          
+          <!-- Mobile Step 2: INTEREST -->
+          <div class="timeline-step bg-white rounded-3xl shadow-xl p-6 border-l-8 border-blue-500 transform hover:scale-102 transition-all">
+            <div class="flex items-center mb-4">
+              <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center text-white font-black mr-4 shadow-lg">
+                <span class="text-2xl">2</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-black text-gray-900">⚙️ アカウント作成</h3>
+                <p class="text-blue-600 font-bold text-sm">最長36時間で完成</p>
+              </div>
+            </div>
+            <p class="text-gray-700 font-semibold mb-4 leading-relaxed">
+              弊社が代行してアカウントを作成。<br>
+              <span class="text-blue-600 font-bold">初期設定もお任せ</span>ください。
+            </p>
+            <div class="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-3 py-2 rounded-full font-bold text-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              完全お任せで安心
+            </div>
+          </div>
+          
+          <!-- Mobile Step 3: DESIRE -->
+          <div class="timeline-step bg-white rounded-3xl shadow-xl p-6 border-l-8 border-green-500 transform hover:scale-102 transition-all">
+            <div class="flex items-center mb-4">
+              <div class="w-16 h-16 bg-gradient-to-br from-green-500 to-emerald-600 rounded-2xl flex items-center justify-center text-white font-black mr-4 shadow-lg">
+                <span class="text-2xl">3</span>
+              </div>
+              <div>
+                <h3 class="text-xl font-black text-gray-900">🚀 利用開始</h3>
+                <p class="text-green-600 font-bold text-sm">48時間以内に利用可能</p>
+              </div>
+            </div>
+            <p class="text-gray-700 font-semibold mb-4 leading-relaxed">
+              ログイン情報をお渡し。<br>
+              <span class="text-green-600 font-bold">すぐにChatGPT Plusを利用開始</span>。
+            </p>
+            <div class="inline-flex items-center gap-2 bg-green-100 text-green-700 px-3 py-2 rounded-full font-bold text-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              即日本格運用開始
+            </div>
+          </div>
+        </div>
+        
+        <!-- Enhanced CTA Section -->
+        <div class="text-center mt-16">
+          <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-3xl p-8 max-w-2xl mx-auto border border-white border-opacity-30">
+            <h3 class="text-2xl font-black text-white mb-4">🔥 今すぐ始めて、医療現場でAIを活用しませんか？</h3>
+            <p class="text-gray-200 mb-6 text-lg">無料相談であなたの医療機関に最適なプランをご提案します</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+              <a href="#contact" class="btn-action-primary pulse-action inline-flex items-center justify-center gap-3 text-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-4.5-1.207A11.046 11.046 0 014.5 20H4a2 2 0 01-2-2v-1.262c0-.785.221-1.555.643-2.246L6 12a8 8 0 018-8c4.418 0 8 3.582 8 8z" />
+                </svg>
+                🔥 無料相談を始める
+              </a>
+              <a href="#pricing" class="btn-action-secondary inline-flex items-center justify-center gap-3 text-xl">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                </svg>
+                料金プランを見る
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 対象顧客セクション -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <span class="text-secondary-500 font-medium uppercase">対象顧客</span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2 text-primary-800">サービス利用に最適な医療機関</h2>
+        <div class="section-divider bg-secondary-500 my-6"></div>
+      </div>
+      <div class="max-w-4xl mx-auto">
+        <div class="grid md:grid-cols-3 gap-8">
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <div class="text-secondary-500 text-5xl font-bold mb-4 text-center">1</div>
+            <h3 class="text-xl font-bold text-primary-800 mb-3 text-center">病院・クリニック<br>医療法人</h3>
+            <p class="text-gray-700">幅広い医療機関に適したソリューションを提供しています。規模や専門性を問わず、医療現場でのAI活用をサポートします。</p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <div class="text-secondary-500 text-5xl font-bold mb-4 text-center">2</div>
+            <h3 class="text-xl font-bold text-primary-800 mb-3 text-center">小〜中規模施設<br>1〜10アカウント</h3>
+            <p class="text-gray-700">初期導入として1〜10アカウント程度の小規模から始めることができます。必要に応じて段階的に拡大することも可能です。</p>
+          </div>
+          <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+            <div class="text-secondary-500 text-5xl font-bold mb-4 text-center">3</div>
+            <h3 class="text-xl font-bold text-primary-800 mb-3 text-center">大規模医療法人<br>一括導入</h3>
+            <p class="text-gray-700">将来的には、大規模医療法人での一括導入や契約にもスケールさせていくことが可能です。柔軟なプランで対応します。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- サービス内容セクション -->
+  <section id="service" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <span class="text-secondary-500 font-medium uppercase">提供サービス</span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2 text-primary-800">医療機関に最適化されたChatGPT Plusサービス</h2>
+        <div class="section-divider bg-secondary-500 my-6"></div>
+        <p class="text-lg text-gray-700 max-w-3xl mx-auto">
+          医療機関特有のニーズに応えるため、アカウント取得からサポートまで一貫したサービスを提供します。
+        </p>
+      </div>
+      
+      <div class="max-w-5xl mx-auto grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+          <div class="bg-secondary-50 rounded-full w-16 h-16 flex items-center justify-center mb-4">
+            <svg class="h-8 w-8 text-secondary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-primary-800 mb-3">ChatGPTアカウント取得代行</h3>
+          <p class="text-gray-700">面倒なクレジットカード登録や個人情報入力は不要。当社が代行して医療機関専用のChatGPT Plusアカウントを取得します。</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+          <div class="bg-secondary-50 rounded-full w-16 h-16 flex items-center justify-center mb-4">
+            <svg class="h-8 w-8 text-secondary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V8a2 2 0 00-2-2h-5m-4 0V5a2 2 0 114 0v1m-4 0a2 2 0 104 0m-5 8a2 2 0 100-4 2 2 0 000 4zm0 0c1.306 0 2.417.835 2.83 2M9 14a3.001 3.001 0 00-2.83 2M15 11h3m-3 4h2" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-primary-800 mb-3">初期セットアップ</h3>
+          <p class="text-gray-700">アカウントごとのID・パスワードを発行し、すぐに利用できる状態で提供します。技術的な知識は一切不要です。</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+          <div class="bg-secondary-50 rounded-full w-16 h-16 flex items-center justify-center mb-4">
+            <svg class="h-8 w-8 text-secondary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-primary-800 mb-3">医療現場活用講義（有料）</h3>
+          <p class="text-gray-700">医療現場での具体的な活用例やChatGPTの効果的な使い方は、専門講師による有料講義にて詳しくお教えいたします。診察業務や文書作成での実践的な活用法をマスターできます。</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+          <div class="bg-secondary-50 rounded-full w-16 h-16 flex items-center justify-center mb-4">
+            <svg class="h-8 w-8 text-secondary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-primary-800 mb-3">一括請求・料金管理の代行</h3>
+          <p class="text-gray-700">毎月のクレジットカード決済の手間はゼロ。請求書払いによる一括管理で、経理処理も簡単です。</p>
+        </div>
+        
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+          <div class="bg-secondary-50 rounded-full w-16 h-16 flex items-center justify-center mb-4">
+            <svg class="h-8 w-8 text-secondary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-primary-800 mb-3">サポート窓口</h3>
+          <p class="text-gray-700">初期設定トラブルやログイン不具合など、医療機関ならではのIT課題に専門スタッフが対応します。</p>
+        </div>
+        
+        <div class="bg-primary-800 p-6 rounded-lg shadow-sm border border-primary-700 hover:shadow-md transition-shadow">
+          <div class="bg-white rounded-full w-16 h-16 flex items-center justify-center mb-4">
+            <svg class="h-8 w-8 text-secondary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-white mb-3">今すぐ始める</h3>
+          <p class="text-gray-200">最短24時間でChatGPT Plusの導入が可能です。まずは無料相談から、お気軽にお問い合わせください。</p>
+          <div class="mt-4 space-y-2">
+            <a href="#contact" class="block bg-yellow-500 hover:bg-yellow-600 text-black px-4 py-2 rounded-lg transition-colors font-bold text-center">📄 資料請求・お問い合わせ</a>
+            <a href="#contact" class="block bg-secondary-500 hover:bg-secondary-600 text-white px-4 py-2 rounded-lg transition-colors text-center">今すぐ相談する</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- AIDMA: INTEREST - 料金モデルセクション -->
+  <section id="pricing" class="aidma-interest py-20">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <span class="text-secondary-500 font-medium uppercase">料金モデル</span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2 text-primary-800">シンプルで透明性のある料金体系</h2>
+        <div class="section-divider bg-secondary-500 my-6"></div>
+        <p class="text-lg text-gray-700 max-w-3xl mx-auto">
+          医療機関の予算管理に配慮した、わかりやすい料金プランをご用意しています。<br>
+          請求書払いで、経理処理も簡単です。
+        </p>
+      </div>
+      
+      <div class="max-w-5xl mx-auto grid md:grid-cols-3 gap-8">
+        <!-- 月額プラン -->
+        <div class="pricing-card transform hover:scale-105 transition-all duration-300">
+          <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-8 text-center rounded-t-3xl">
+            <div class="inline-block bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">💳 月額プラン</div>
+            <h3 class="text-3xl font-black text-gray-900 mb-2">月額プラン</h3>
+            <div class="mt-4">
+              <span class="text-5xl font-black text-blue-600">¥6,000</span>
+              <span class="text-gray-600 text-xl"> / 月</span>
+              <p class="text-gray-600 mt-2 font-semibold">1アカウントあたり</p>
+            </div>
+          </div>
+          <div class="p-8 bg-white rounded-b-3xl">
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-start">
+                <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">ChatGPT Plus相当機能込み</span>
+              </li>
+              <li class="flex items-start">
+                <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">請求書払い対応</span>
+              </li>
+              <li class="flex items-start">
+                <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">初期セットアップ費無料</span>
+              </li>
+              <li class="flex items-start">
+                <div class="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">いつでも解約可能</span>
+              </li>
+            </ul>
+            <a href="/application/" target="_blank" class="w-full btn-action-secondary py-4 text-lg font-bold">📝 お申し込み</a>
+          </div>
+        </div>
+        
+        <!-- 年額プラン - FEATURED -->
+        <div class="pricing-card featured transform scale-110 z-20 relative">
+          <div class="absolute -top-6 left-1/2 transform -translate-x-1/2">
+            <div class="bg-gradient-to-r from-red-500 to-orange-500 text-white px-6 py-2 rounded-full font-black text-lg shadow-lg pulse-action">
+              🏆 人気No.1
+            </div>
+          </div>
+          <div class="p-8 text-center rounded-t-3xl">
+            <div class="inline-block bg-white bg-opacity-20 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">💰 年額プラン</div>
+            <h3 class="text-3xl font-black text-white mb-2">年額プラン</h3>
+            <div class="mt-4">
+              <span class="text-5xl font-black text-white">¥66,000</span>
+              <span class="text-gray-200 text-xl"> / 年</span>
+              <p class="text-gray-200 mt-2 font-semibold">1アカウントあたり</p>
+              <div class="mt-4 bg-white bg-opacity-20 rounded-xl p-3">
+                <p class="text-white font-bold text-lg">🎉 1ヶ月分無料！</p>
+                <p class="text-gray-200 text-sm">16.7%お得</p>
+              </div>
+            </div>
+          </div>
+          <div class="p-8 bg-white rounded-b-3xl">
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-start">
+                <div class="w-6 h-6 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">1ヶ月分無料（16.7%お得）</span>
+              </li>
+              <li class="flex items-start">
+                <div class="w-6 h-6 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">請求書払い対応</span>
+              </li>
+              <li class="flex items-start">
+                <div class="w-6 h-6 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">初期セットアップ費無料</span>
+              </li>
+              <li class="flex items-start">
+                <div class="w-6 h-6 bg-gradient-to-r from-red-500 to-orange-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">優先サポート対応</span>
+              </li>
+            </ul>
+            <a href="/application/" target="_blank" class="w-full btn-action-primary py-4 text-lg font-bold pulse-action">🔥 人気プラン<br>で申し込み</a>
+          </div>
+        </div>
+        
+        <!-- 10アカウント以上 -->
+        <div class="pricing-card transform hover:scale-105 transition-all duration-300">
+          <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-8 text-center rounded-t-3xl">
+            <div class="inline-block bg-purple-500 text-white px-4 py-2 rounded-full text-sm font-bold mb-4">🎯 大規模プラン</div>
+            <h3 class="text-3xl font-black text-gray-900 mb-2">10アカウント以上</h3>
+            <div class="mt-4">
+              <span class="text-5xl font-black text-purple-600">ご相談</span>
+              <span class="text-gray-600 text-xl"></span>
+              <p class="text-gray-600 mt-2 font-semibold">個別お見積り</p>
+            </div>
+          </div>
+          <div class="p-8 bg-white rounded-b-3xl">
+            <ul class="space-y-4 mb-8">
+              <li class="flex items-start">
+                <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">管理ダッシュボード提供</span>
+              </li>
+              <li class="flex items-start">
+                <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">年1回無料講習会</span>
+              </li>
+              <li class="flex items-start">
+                <div class="w-6 h-6 bg-purple-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                  <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <span class="text-gray-700 font-semibold">カスタマイズ対応</span>
+              </li>
+            </ul>
+            <a href="#contact" class="w-full btn-action-secondary py-4 text-lg font-bold">📞 お問い合わせ</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+
+  <!-- よくある質問セクション -->
+  <section id="faq" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <div class="text-center mb-12">
+        <span class="text-secondary-500 font-medium uppercase">よくある質問</span>
+        <h2 class="text-3xl md:text-4xl font-bold mt-2 text-primary-800">ご不明点にお答えします</h2>
+        <div class="section-divider bg-secondary-500 my-6"></div>
+      </div>
+      
+      <div class="max-w-3xl mx-auto">
+        <div class="space-y-6">
+          <div class="bg-gray-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-primary-800 mb-3">セキュリティ面は大丈夫ですか？</h3>
+            <p class="text-gray-700">医療機関のセキュリティ要件を考慮したアカウント管理を行っています。個人情報や機密情報の取り扱いについては、厳格なガイドラインに従って対応しています。</p>
+          </div>
+          
+          <div class="bg-gray-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-primary-800 mb-3">導入までどのくらいの期間がかかりますか？</h3>
+            <p class="text-gray-700">お申し込み後、最短24時間でアカウント情報をお届けします。通常は1〜3営業日以内に導入が完了します。</p>
+          </div>
+          
+          <div class="bg-gray-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-primary-800 mb-3">どのような端末で利用できますか？</h3>
+            <p class="text-gray-700">PC、タブレット、スマートフォンなど、インターネットに接続できるほぼすべての端末でご利用いただけます。ブラウザからアクセスするため、特別なソフトウェアのインストールは不要です。</p>
+          </div>
+          
+          <div class="bg-gray-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-primary-800 mb-3">契約期間の縛りはありますか？</h3>
+            <p class="text-gray-700">月額プランは1ヶ月単位、年額プランは1年単位でのご契約となります。最低契約期間の縛りはなく、いつでも解約可能です。</p>
+          </div>
+          
+          <div class="bg-gray-50 rounded-lg p-6">
+            <h3 class="text-xl font-bold text-primary-800 mb-3">医療現場での具体的な活用例を教えてください</h3>
+            <p class="text-gray-700">診療記録の下書き作成、患者説明用資料の作成、医学論文の要約、診療ガイドラインの検索・整理など、様々な場面でご活用いただけます。詳細な活用例は導入時にお渡しするガイドブックに掲載しています。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTAセクション -->
+  <section id="contact" class="py-16 bg-gradient-wonder-light">
+    <!-- Cyber geometric pattern elements -->
+    <div class="cyber-hexagon"></div>
+    <div class="circuit-pattern"></div>
+    <div class="glow-dots"></div>
+    
+    <div class="container mx-auto px-4">
+      <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <div class="md:flex">
+          <div class="md:w-1/2 bg-primary-800 p-8 text-white">
+            <h2 class="text-3xl font-bold mb-4">まずはご相談から</h2>
+            <p class="mb-6">医療機関でのChatGPT Plus導入についてのご質問や、お見積りのご依頼など、お気軽にお問い合わせください。</p>
+            <ul class="space-y-4">
+              <li class="flex items-start">
+                <svg class="h-6 w-6 text-secondary-300 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>無料相談対応</span>
+              </li>
+              <li class="flex items-start">
+                <svg class="h-6 w-6 text-secondary-300 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>48時間以内で導入可能</span>
+              </li>
+              <li class="flex items-start">
+                <svg class="h-6 w-6 text-secondary-300 mr-2 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+                <span>医療機関専用サポート</span>
+              </li>
+            </ul>
+          </div>
+          <div class="md:w-1/2 p-8">
+            <h3 class="text-xl font-bold text-primary-800 mb-4">お問い合わせ</h3>
+            <form id="estimate" class="space-y-4">
+              <div>
+                <label for="organization" class="block text-sm font-medium text-gray-700 mb-1">医療機関名 <span class="text-red-500">*</span></label>
+                <input type="text" id="organization" name="organization" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500" required>
+              </div>
+              <div>
+                <label for="name" class="block text-sm font-medium text-gray-700 mb-1">ご担当者名 <span class="text-red-500">*</span></label>
+                <input type="text" id="name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500" required>
+              </div>
+              <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">メールアドレス <span class="text-red-500">*</span></label>
+                <input type="email" id="email" name="email" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500" required>
+              </div>
+              <div>
+                <label for="contact-purpose" class="block text-sm font-medium text-gray-700 mb-1">お問い合わせ目的 <span class="text-red-500">*</span></label>
+                <select id="contact-purpose" name="purpose" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500" required>
+                  <option value="資料請求" selected>資料請求</option>
+                  <option value="お申し込み">お申し込み</option>
+                  <option value="その他">その他のお問い合わせ</option>
+                </select>
+              </div>
+              <div>
+                <label for="accounts" class="block text-sm font-medium text-gray-700 mb-1">希望アカウント数</label>
+                <select id="accounts" name="accounts" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500">
+                  <option value="1-3">1〜3アカウント</option>
+                  <option value="4-10">4〜10アカウント</option>
+                  <option value="11+">11アカウント以上</option>
+                </select>
+              </div>
+              <div>
+                <label for="message" class="block text-sm font-medium text-gray-700 mb-1">お問い合わせ内容</label>
+                <textarea id="message" name="message" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-secondary-500 focus:border-secondary-500"></textarea>
+              </div>
+              <div class="space-y-3">
+                <button type="submit" class="w-full bg-secondary-500 hover:bg-secondary-600 text-white font-bold py-3 px-4 rounded-lg transition-colors">お問い合わせ・資料ダウンロード</button>
+                <div id="downloadLinkContainer" class="hidden bg-green-50 border border-green-200 rounded-lg p-4">
+                  <p class="text-green-800 font-semibold mb-2">✅ お問い合わせありがとうございます！</p>
+                  <a href="/PDF_DL.pdf" download="医療機関向けサービス資料.pdf" class="inline-flex items-center text-green-700 hover:text-green-900 font-medium underline">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    資料をダウンロード（PDF）
+                  </a>
+                </div>
+                <button type="button" onclick="openEstimateModal()" class="w-full btn-estimate bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-4 rounded-lg transition-all transform hover:scale-105 shadow-lg">
+                  <span class="flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                    </svg>
+                    お試しお見積もり
+                  </span>
+                </button>
+                <a href="/application/" target="_blank" class="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-lg transition-all transform hover:scale-105 shadow-lg mt-2 block text-center">
+                  <span class="flex items-center justify-center">
+                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                    </svg>
+                    正式申し込みフォーム
+                  </span>
+                </a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- お見積もりモーダル -->
+  <div id="estimateModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-6 border-b border-gray-200">
+        <div class="flex justify-between items-center">
+          <h2 class="text-2xl font-bold text-gray-900">お試しお見積もり</h2>
+          <button onclick="closeEstimateModal()" class="text-gray-400 hover:text-gray-600 text-2xl">&times;</button>
+        </div>
+        <p class="text-gray-600 mt-2">導入規模と期間を入力して、概算費用を算出いたします。</p>
+      </div>
+      
+      <form id="estimateForm" class="p-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label for="facilityName" class="block text-sm font-medium text-gray-700 mb-2">医療機関名 *</label>
+            <input type="text" id="facilityName" name="facilityName" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+          </div>
+          <div>
+            <label for="contactPerson" class="block text-sm font-medium text-gray-700 mb-2">ご担当者様 *</label>
+            <input type="text" id="contactPerson" name="contactPerson" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 mb-2">メールアドレス *</label>
+            <input type="email" id="email" name="email" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+          </div>
+          <div>
+            <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">電話番号</label>
+            <input type="tel" id="phone" name="phone" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label for="facilityType" class="block text-sm font-medium text-gray-700 mb-2">施設種別 *</label>
+          <select id="facilityType" name="facilityType" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+            <option value="">選択してください</option>
+            <option value="clinic">クリニック・診療所</option>
+            <option value="hospital">病院</option>
+            <option value="dental">歯科医院</option>
+            <option value="pharmacy">調剤薬局</option>
+            <option value="other">その他</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <label for="accountCount" class="block text-sm font-medium text-gray-700 mb-2">導入予定アカウント数 *</label>
+            <select id="accountCount" name="accountCount" required onchange="calculateEstimate()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+              <option value="">選択してください</option>
+              <option value="1">1アカウント</option>
+              <option value="2">2アカウント</option>
+              <option value="3">3アカウント</option>
+              <option value="5">5アカウント</option>
+              <option value="10">10アカウント</option>
+              <option value="20">20アカウント以上</option>
+            </select>
+          </div>
+          <div>
+            <label for="contractPeriod" class="block text-sm font-medium text-gray-700 mb-2">契約期間 *</label>
+            <select id="contractPeriod" name="contractPeriod" required onchange="calculateEstimate()" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500">
+              <option value="">選択してください</option>
+              <option value="1">1ヶ月</option>
+              <option value="3">3ヶ月</option>
+              <option value="6">6ヶ月</option>
+              <option value="12">12ヶ月（年間契約）</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">追加サービス</label>
+          <div class="space-y-2">
+            <label class="flex items-center">
+              <input type="checkbox" id="lectureService" name="additionalServices" value="lecture" onchange="calculateEstimate()" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+              <span class="ml-2 text-sm text-gray-700">医療現場活用講義（+30,000円/回）</span>
+            </label>
+            <label class="flex items-center">
+              <input type="checkbox" id="prioritySupport" name="additionalServices" value="support" onchange="calculateEstimate()" class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500">
+              <span class="ml-2 text-sm text-gray-700">優先サポート（+10,000円/月）</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- 見積もり結果表示 -->
+        <div id="estimateResult" class="hidden bg-gradient-to-r from-emerald-50 to-teal-50 border-l-4 border-emerald-400 p-4 mb-6">
+          <h3 class="text-lg font-semibold text-emerald-800 mb-2">概算お見積もり</h3>
+          <div class="text-sm text-emerald-700 space-y-1">
+            <div class="flex justify-between">
+              <span>基本料金（<span id="resultAccountCount">-</span>アカウント × <span id="resultPeriod">-</span>ヶ月）</span>
+              <span id="basicCost">¥0</span>
+            </div>
+            <div class="flex justify-between">
+              <span>初期設定費用</span>
+              <span id="setupCost">¥0</span>
+            </div>
+            <div id="additionalCostSection" class="hidden">
+              <div class="flex justify-between">
+                <span>追加サービス</span>
+                <span id="additionalCost">¥0</span>
+              </div>
+            </div>
+            <hr class="border-emerald-200 my-2">
+            <div class="flex justify-between font-semibold text-emerald-800">
+              <span>合計金額（税込）</span>
+              <span id="totalCost">¥0</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex space-x-3">
+          <button type="button" onclick="generateInvoice()" id="generateInvoiceBtn" class="flex-1 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold py-3 px-4 rounded-lg transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+            お試し請求書を発行
+          </button>
+          <button type="button" onclick="closeEstimateModal()" class="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+            閉じる
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- フッター -->
+  <footer class="bg-primary-900 text-gray-400 py-12">
+    <div class="container mx-auto px-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="lg:col-span-1">
+          <h3 class="text-xl font-bold text-white mb-4">Wonder Drill株式会社</h3>
+          <p class="text-sm">ChatGPT医療機関向け運用代行サービス<br>医療現場のAI活用を促進し、業務効率化を実現する運用代行サービス</p>
+        </div>
+        <div>
+          <h4 class="text-lg font-medium text-white mb-4">サービス</h4>
+          <ul class="space-y-2">
+            <li><a href="#service" class="hover:text-white transition-colors">アカウント取得代行</a></li>
+            <li><a href="#service" class="hover:text-white transition-colors">初期セットアップ</a></li>
+            <li><a href="#service" class="hover:text-white transition-colors">一括請求・料金管理</a></li>
+            <li><a href="#service" class="hover:text-white transition-colors">サポート窓口</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-lg font-medium text-white mb-4">リンク</h4>
+          <ul class="space-y-2">
+            <li><a href="#benefits" class="hover:text-white transition-colors">導入メリット</a></li>
+            <li><a href="#workflow" class="hover:text-white transition-colors">業務フロー</a></li>
+            <li><a href="#pricing" class="hover:text-white transition-colors">料金プラン</a></li>
+            <li><a href="#faq" class="hover:text-white transition-colors">よくある質問</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="text-lg font-medium text-white mb-4">お問い合わせ</h4>
+          <ul class="space-y-2">
+            <li><a href="#contact" class="hover:text-white transition-colors">お問い合わせフォーム</a></li>
+            <li><a href="mailto:support@wonder-drill.com" class="hover:text-white transition-colors">support@wonder-drill.com</a></li>
+            <li><a href="https://wonder-drill.com/about#corp" target="_blank" class="hover:text-white transition-colors">会社情報</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="mt-12 pt-8 border-t border-primary-800 text-center">
+        <p>&copy; 2025 Wonder Drill株式会社 ChatGPT医療機関向け運用代行サービス. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- モバイルメニュー用JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+      
+      mobileMenuButton.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+      });
+      
+      // モバイルメニューのリンクをクリックしたらメニューを閉じる
+      const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+      mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+          mobileMenu.classList.add('hidden');
+        });
+      });
+
+      // PDFダウンロードフォーム送信処理
+      const estimateForm = document.getElementById('estimate');
+      if (estimateForm) {
+        estimateForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          // フォーム送信処理をform-handler.jsに移動
+        });
+      }
+    });
+  </script>
+  
+  <!-- Modern Scripts -->
+  <script src="js/modern-interactions.js"></script>
+  <script src="js/azure-form-handler.js"></script>
+  <script src="js/estimate-calculator.js"></script>
+</body>
+</html>

@@ -1,20 +1,22 @@
 {
   "routes": [
     {
-      "route": "/application",
-      "rewrite": "/application/index.html"
-    },
-    {
       "route": "/application/*",
-      "rewrite": "/application/index.html"
+      "serve": "/application/index.html",
+      "statusCode": 200
     },
     {
-      "route": "/admin",
-      "rewrite": "/admin/index.html"
+      "route": "/application",
+      "redirect": "/application/"
     },
     {
       "route": "/admin/*",
-      "rewrite": "/admin/index.html"
+      "serve": "/admin/index.html",
+      "statusCode": 200
+    },
+    {
+      "route": "/admin",
+      "redirect": "/admin/"
     },
     {
       "route": "/docs/PDF_DL.pdf",
@@ -37,13 +39,23 @@
       "allowedRoles": ["anonymous"]
     },
     {
-      "route": "/*",
+      "route": "/lp",
       "serve": "/docs/index.html",
+      "statusCode": 200
+    },
+    {
+      "route": "/lp/*",
+      "serve": "/docs/index.html",
+      "statusCode": 200
+    },
+    {
+      "route": "/*",
+      "serve": "/index.html",
       "statusCode": 200
     }
   ],
   "navigationFallback": {
-    "rewrite": "/docs/index.html",
+    "rewrite": "/index.html",
     "exclude": [
       "/application/*",
       "/admin/*",
@@ -54,14 +66,8 @@
       "/*.pdf", 
       "/docs/*.pdf",
       "/docs/PDF_DL.pdf",
-      "/PDF_DL.pdf",
-      "/static/*"
+      "/PDF_DL.pdf"
     ]
-  },
-  "responseOverrides": {
-    "404": {
-      "rewrite": "/docs/index.html"
-    }
   },
   "mimeTypes": {
     ".pdf": "application/pdf",
