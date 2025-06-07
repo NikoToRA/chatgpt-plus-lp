@@ -100,7 +100,7 @@ export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
             unitPrice: product.unitPrice,
             taxRate: product.taxRate,
             isActive: product.isActive,
-            billingOptions: ['monthly', 'yearly'] as Array<'monthly' | 'yearly'>,
+            billingOptions: ['monthly'] as Array<'monthly'>,
             maxAccounts: 10, // Default value
             features: [
               'ChatGPT Plus契約代行',
@@ -144,7 +144,7 @@ export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
               unitPrice: product.unitPrice,
               taxRate: product.taxRate,
               isActive: product.isActive,
-              billingOptions: ['monthly', 'yearly'] as Array<'monthly' | 'yearly'>,
+              billingOptions: ['monthly'] as Array<'monthly'>,
               maxAccounts: 10,
               features: [
                 'ChatGPT Plus契約代行',

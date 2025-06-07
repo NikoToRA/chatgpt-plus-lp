@@ -49,7 +49,7 @@ const OptimizedApplicationForm: React.FC = () => {
     defaultValues: {
       planId: 'prod-1',
       requestedAccountCount: 1,
-      billingCycle: 'monthly',
+      billingCycle: 'monthly' as const,
       startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 1週間後
     }
   });
