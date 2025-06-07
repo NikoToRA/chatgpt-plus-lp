@@ -1,4 +1,4 @@
-// Company Plans Service - Monthly Only Version
+// Company Plans Service
 // Integrates with company-configured plans from admin dashboard
 
 export interface CompanyPlan {
@@ -28,13 +28,13 @@ interface CompanySettingsResponse {
   };
 }
 
-// Default plans matching company settings
+// Default plans matching company settings - TEMPORARY until Azure API is fixed
 export const DEFAULT_COMPANY_PLANS: CompanyPlan[] = [
   {
     id: 'prod-1',
     name: 'ChatGPT Plus 医療機関向けプラン',
     description: '医療機関専用のChatGPT Plus代行サービス（チームプラン・アカウント共有）',
-    unitPrice: 20000,
+    unitPrice: 3000, // Updated price from admin dashboard test
     taxRate: 0.10,
     isActive: true,
     billingOptions: ['monthly'],
@@ -50,7 +50,7 @@ export const DEFAULT_COMPANY_PLANS: CompanyPlan[] = [
     id: 'prod-2',
     name: 'ChatGPT Plus 企業向けプラン',
     description: '企業向けのChatGPT Plus代行サービス（チームプラン・アカウント共有）',
-    unitPrice: 15000,
+    unitPrice: 2500, // Different pricing for enterprise
     taxRate: 0.10,
     isActive: true,
     billingOptions: ['monthly'],
@@ -60,6 +60,22 @@ export const DEFAULT_COMPANY_PLANS: CompanyPlan[] = [
       'アカウント設定・管理',
       '請求書一元化',
       'サポート対応'
+    ]
+  },
+  {
+    id: 'prod-1735632267392',
+    name: 'ChatGPT Plus 医療機関プラン',
+    description: '医療機関向け専用プラン',
+    unitPrice: 3000, // Test product from admin dashboard
+    taxRate: 0.10,
+    isActive: true,
+    billingOptions: ['monthly'],
+    maxAccounts: 10,
+    features: [
+      'ChatGPT Plus契約代行',
+      'アカウント設定・管理',
+      '請求書一元化',
+      '技術サポート'
     ]
   }
 ];
@@ -84,7 +100,7 @@ export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
             unitPrice: product.unitPrice,
             taxRate: product.taxRate,
             isActive: product.isActive,
-            billingOptions: ['monthly'],
+            billingOptions: ['monthly'] as Array<'monthly'>,
             maxAccounts: 10, // Default value
             features: [
               'ChatGPT Plus契約代行',
@@ -100,6 +116,51 @@ export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
       }
     }
     
+    // Try fallback: company-plans API (if exists)
+    try {
+      const plansResponse = await fetch('https://chatgpt-plus-api.azurewebsites.net/api/company-plans');
+      if (plansResponse.ok) {
+        const plansData = await plansResponse.json();
+        if (plansData.success && plansData.plans) {
+          return plansData.plans.filter((plan: CompanyPlan) => plan.isActive);
+        }
+      }
+    } catch (plansError) {
+      console.warn('Company plans API not available:', plansError);
+    }
+    
+    // Try localStorage fallback
+    try {
+      const localCompanyInfo = localStorage.getItem('companyInfo');
+      if (localCompanyInfo) {
+        const companyInfo = JSON.parse(localCompanyInfo);
+        if (companyInfo.products) {
+          const localPlans: CompanyPlan[] = companyInfo.products
+            .filter((product: any) => product.isActive)
+            .map((product: any) => ({
+              id: product.id,
+              name: product.name,
+              description: product.description,
+              unitPrice: product.unitPrice,
+              taxRate: product.taxRate,
+              isActive: product.isActive,
+              billingOptions: ['monthly'] as Array<'monthly'>,
+              maxAccounts: 10,
+              features: [
+                'ChatGPT Plus契約代行',
+                'アカウント設定・管理',
+                '請求書一元化',
+                product.name.includes('医療') ? '技術サポート' : 'サポート対応'
+              ]
+            }));
+          console.log('Company plans loaded from localStorage:', localPlans);
+          return localPlans;
+        }
+      }
+    } catch (localError) {
+      console.warn('Failed to load from localStorage:', localError);
+    }
+    
     // Final fallback to default plans
     console.warn('Using default fallback plans - API data not available');
     return DEFAULT_COMPANY_PLANS.filter(plan => plan.isActive);
@@ -110,7 +171,8 @@ export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
   }
 };
 
-// Calculate pricing for a plan (Monthly only)
+// Calculate pricing for a plan
+// Note: This is for ChatGPT Plus subscription management service, not per-account billing
 export const calculatePlanPricing = (
   plan: CompanyPlan, 
   accountCount: number
