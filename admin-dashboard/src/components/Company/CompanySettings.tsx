@@ -34,6 +34,7 @@ import { CompanyInfo, ProductInfo } from '../../types';
 
 export default function CompanySettings() {
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
+  const [componentError, setComponentError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -52,6 +53,8 @@ export default function CompanySettings() {
 
   const loadCompanyInfo = async () => {
     try {
+      setComponentError(null);
+      
       // First try to get from Azure API
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://chatgpt-plus-api.azurewebsites.net/api'}/company-settings`);
@@ -245,6 +248,7 @@ Email: {{email}}
       }
     } catch (error) {
       console.error('Failed to load company info:', error);
+      setComponentError(`会社情報の読み込みに失敗しました: ${(error as Error).message || 'Unknown error'}`);
     } finally {
       setIsLoading(false);
     }
@@ -376,12 +380,42 @@ Email: {{email}}
     });
   };
 
+  if (componentError) {
+    return (
+      <Box p={3}>
+        <Alert severity="error">
+          {componentError}
+        </Alert>
+        <Button 
+          variant="contained" 
+          sx={{ mt: 2 }}
+          onClick={() => {
+            setComponentError(null);
+            loadCompanyInfo();
+          }}
+        >
+          再試行
+        </Button>
+      </Box>
+    );
+  }
+
   if (isLoading) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <Box p={3}>
+        <Typography>会社設定を読み込み中...</Typography>
+      </Box>
+    );
   }
 
   if (!companyInfo) {
-    return <Typography>会社情報が見つかりません。</Typography>;
+    return (
+      <Box p={3}>
+        <Alert severity="warning">
+          会社情報が見つかりません。
+        </Alert>
+      </Box>
+    );
   }
 
   return (

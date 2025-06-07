@@ -9,7 +9,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 // import CustomerList from './components/Customers/CustomerList';
 // import CustomerDetail from './components/Customers/CustomerDetail';
 // import AccountLinking from './components/Accounts/AccountLinking';
-// import CompanySettings from './components/Company/CompanySettings';
+import CompanySettings from './components/Company/CompanySettings';
 
 const theme = createTheme({
   palette: {
@@ -62,7 +62,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<div style={{padding: '20px', backgroundColor: '#f0f0f0'}}><h1>✅ 管理画面が正常に動作しています</h1><p>Loadingの後に真っ白になる問題を解決しました</p><br/><a href="/company" style={{color: 'blue', textDecoration: 'underline'}}>会社設定ページへ</a></div>} />
-          <Route path="/company" element={<div style={{padding: '20px', backgroundColor: '#e8f5e8'}}><h1>🏢 会社設定ページ</h1><p>製品追加機能をテスト中...</p><button onClick={() => alert('製品追加機能をテストします')} style={{padding: '10px 20px', backgroundColor: '#007bff', color: 'white', border: 'none', borderRadius: '5px', cursor: 'pointer'}}>製品を追加</button><br/><br/><a href="/" style={{color: 'blue', textDecoration: 'underline'}}>ダッシュボードに戻る</a></div>} />
+          <Route path="/company" element={<CompanySettings />} />
         </Routes>
       </Router>
     </ThemeProvider>
