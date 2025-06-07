@@ -9,6 +9,18 @@
       "redirect": "/.auth/logout"
     },
     {
+      "route": "/customers/*",
+      "allowedRoles": ["anonymous", "authenticated"]
+    },
+    {
+      "route": "/accounts/*",
+      "allowedRoles": ["anonymous", "authenticated"]
+    },
+    {
+      "route": "/company",
+      "allowedRoles": ["anonymous", "authenticated"]
+    },
+    {
       "route": "/*",
       "allowedRoles": ["anonymous", "authenticated"]
     }
@@ -16,5 +28,8 @@
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": ["/static/*", "/*.{css,scss,js,png,gif,ico,jpg,svg}"]
+  },
+  "mimeTypes": {
+    ".json": "application/json"
   }
 }
