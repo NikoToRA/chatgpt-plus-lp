@@ -50,9 +50,9 @@ jobs:
           azure_static_web_apps_api_token: c998c2f305ec02b5b2ae7a7635e69a07f89a9eb10e876d16b83f2c2fa2b8741106-4f1998e4-27d7-4737-900b-11b667f337390001408046254d00
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "api/customer-application"
+          app_location: "api/customer-application/build"
           api_location: ""
-          output_location: "build"
+          output_location: ""
           skip_app_build: true
 
   close_pull_request_job:
