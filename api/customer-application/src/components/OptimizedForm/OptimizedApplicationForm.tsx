@@ -104,7 +104,7 @@ const OptimizedApplicationForm: React.FC = () => {
     try {
       // バリデーション
       const paymentData = paymentForm.getValues();
-      if (!paymentData.termsAccepted || !paymentData.privacyAccepted) {
+      if (!paymentData.termsAccepted || !paymentData.privacyAccepted || !paymentData.privacyUnderstandingConfirmed) {
         throw new Error('利用規約とプライバシーポリシーへの同意が必要です');
       }
 
@@ -119,10 +119,21 @@ const OptimizedApplicationForm: React.FC = () => {
       const newApplicationId = `APP-${Date.now()}-${Math.random().toString(36).substr(2, 8).toUpperCase()}`;
       setApplicationId(newApplicationId);
       
+      // クレジットカード決済の場合はStripeダミー処理
+      if (paymentData.paymentMethod === 'card') {
+        // Stripeダミー処理（実際はStripe Elements使用）
+        await simulateStripePayment();
+      }
+      
       // Azure Functions APIへの送信実装
       console.log('申込データ:', submission);
       
-      const response = await fetch('/api/customer-application-submit', {
+      // 本番環境とローカル環境でのAPI URLを判定
+      const apiBaseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://chatgpt-plus-api.azurewebsites.net/api'
+        : '/api';
+      
+      const response = await fetch(`${apiBaseUrl}/customer-application-submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -154,6 +165,22 @@ const OptimizedApplicationForm: React.FC = () => {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Stripeダミー決済処理
+  const simulateStripePayment = async (): Promise<void> => {
+    return new Promise((resolve, reject) => {
+      // ダミーのStripe処理をシミュレート
+      setTimeout(() => {
+        const success = Math.random() > 0.1; // 90%の成功率でダミー
+        if (success) {
+          console.log('✅ Stripe決済シミュレーション成功');
+          resolve();
+        } else {
+          reject(new Error('決済処理に失敗しました。カード情報をご確認ください。'));
+        }
+      }, 2000); // 2秒のダミー処理時間
+    });
   };
 
   // 契約書ダウンロード
