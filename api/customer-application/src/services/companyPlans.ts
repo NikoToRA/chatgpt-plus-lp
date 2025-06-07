@@ -176,7 +176,7 @@ export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
 export const calculatePlanPricing = (
   plan: CompanyPlan, 
   accountCount: number, 
-  billingCycle: 'monthly' = 'monthly'
+  billingCycle?: 'monthly'
 ) => {
   // Fixed monthly service fee regardless of account count (service management fee)
   const basePrice = plan.unitPrice;
