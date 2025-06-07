@@ -1,0 +1,129 @@
+/* Hero Section Layout Update - Medical Staff Background with Left-aligned Text */
+
+/* Hero Section Base Styling */
+.hero-section {
+  position: relative;
+  background: #0f172a; /* Fallback color */
+}
+
+/* Background Image Styling */
+.hero-section img {
+  filter: brightness(0.8) contrast(1.1);
+}
+
+/* Text Content Positioning with Background Pillow */
+.hero-section .max-w-2xl {
+  margin-left: 0;
+  margin-right: auto;
+  padding-left: 2rem;
+}
+
+/* Semi-transparent background pillow for better text visibility */
+.hero-section .fade-in {
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(8px);
+  border-radius: 1.5rem;
+  padding: 2.5rem 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+/* Enhanced Text Contrast (merged with pillow styling above) */
+
+/* Button Alignment */
+.hero-section .btn {
+  justify-self: start;
+  width: auto;
+  min-width: 200px;
+}
+
+/* Trust Indicators Styling */
+.hero-section .text-gray-400 {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Enhanced Overlay for Better Text Readability */
+.hero-section .bg-black.bg-opacity-50 {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(0, 0, 0, 0.5) 50%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+}
+
+/* Mobile Responsive Adjustments */
+@media (max-width: 768px) {
+  .hero-section .max-w-2xl {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .hero-section .text-4xl {
+    font-size: 2.5rem !important;
+  }
+  
+  .hero-section .text-xl {
+    font-size: 1.25rem !important;
+  }
+  
+  .hero-section .flex-col {
+    align-items: flex-start !important;
+  }
+  
+  .hero-section .btn {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+/* Tablet Adjustments */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .hero-section .max-w-2xl {
+    max-width: 36rem;
+    padding-left: 1.5rem;
+  }
+}
+
+/* Large Screen Optimization */
+@media (min-width: 1025px) {
+  .hero-section .max-w-2xl {
+    max-width: 42rem;
+    padding-left: 3rem;
+  }
+}
+
+/* Ensure proper stacking */
+.hero-section .relative.z-10 {
+  z-index: 10;
+}
+
+/* Improve backdrop blur for status indicator */
+.hero-section .bg-white\/10.backdrop-blur-sm {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* Animation Enhancement */
+.hero-section .fade-in {
+  animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Force white text for CTA section */
+#workflow .bg-white.bg-opacity-10 h3 {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+}

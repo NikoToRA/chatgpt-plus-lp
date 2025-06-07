@@ -1,0 +1,231 @@
+/* Critical Fixes - Must Load Last for Maximum Priority */
+
+/* Fix 1: Annual Plan White Background Issue */
+/* The featured pricing card has white background with gray text that should be visible */
+#pricing .pricing-card.featured div.p-8.bg-white.rounded-b-3xl {
+  background-color: #f9fafb !important; /* Light gray instead of pure white */
+  border: 1px solid #e5e7eb !important; /* Add subtle border */
+}
+
+/* Ensure the red checkmarks remain visible */
+#pricing .pricing-card.featured .bg-gradient-to-r.from-red-500.to-orange-500 {
+  background: linear-gradient(to right, #ef4444, #f97316) !important;
+}
+
+/* Fix 2: Contact Section Missing Background Gradient */
+#contact.bg-gradient-wonder-light {
+  background: linear-gradient(135deg, #ddd6fe 0%, #c7d2fe 50%, #a5b4fc 100%) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add subtle animation to the gradient background */
+#contact.bg-gradient-wonder-light::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+  animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.1); opacity: 0.1; }
+}
+
+/* Ensure content stays above the animated background */
+#contact > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* Fix 3: Ensure AIDMA colors are properly applied */
+.aidma-interest .pricing-card.featured {
+  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%) !important;
+}
+
+/* Override any conflicting background colors for the featured card top section */
+.aidma-interest .pricing-card.featured > div:first-child {
+  background: transparent !important; /* Let the parent gradient show through */
+}
+
+/* Fix 4: Enhance text contrast in all potential problem areas */
+/* White text on colored backgrounds should always be visible */
+.pricing-card.featured h3,
+.pricing-card.featured .text-white,
+.pricing-card.featured .text-gray-200 {
+  color: #ffffff !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Gray text on light backgrounds should be darker */
+.bg-white .text-gray-700,
+.bg-gray-50 .text-gray-700,
+#pricing .text-gray-700 {
+  color: #374151 !important; /* Darker gray for better contrast */
+}
+
+/* Fix 5: Mobile responsiveness for featured card */
+@media (max-width: 768px) {
+  #pricing .pricing-card.featured {
+    transform: scale(1) translateY(-5px) !important;
+    margin: 1rem 0;
+    padding-top: 2.5rem !important; /* Slightly less padding on mobile */
+  }
+  
+  .pricing-card.featured .absolute.-top-6 {
+    top: 0.25rem !important; /* Closer to top on mobile */
+    font-size: 0.9rem !important;
+    padding: 0.5rem 1.25rem !important;
+  }
+  
+  /* No animated border to disable (removed for subtle design) */
+}
+
+/* Fix 6: Enhanced popular badge design - ensure it stays within card bounds */
+.pricing-card.featured {
+  position: relative;
+  z-index: 20 !important;
+  /* Remove external margin, handle spacing internally */
+  margin-top: 0 !important;
+  /* Add top padding inside the card for the badge */
+  padding-top: 3rem !important;
+}
+
+/* Redesign the popular badge to stay within card bounds - subtle version */
+.pricing-card.featured .absolute.-top-6 {
+  /* Change from external positioning to internal */
+  position: absolute !important;
+  top: 0.5rem !important; /* Inside the card */
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  z-index: 30 !important;
+  /* Subtle badge styling */
+  background: linear-gradient(135deg, #dc2626, #ea580c) !important;
+  box-shadow: 
+    0 4px 12px rgba(220, 38, 38, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.15) !important;
+  /* Remove animation for subtlety */
+}
+
+/* Remove flashy animations for subtle approach */
+
+/* Ensure the pricing section has adequate spacing */
+#pricing .container {
+  padding-top: 1rem !important;
+}
+
+/* Enhanced card styling for subtle appeal */
+.pricing-card.featured {
+  /* Moderate elevation effect */
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+  /* Subtle border */
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background-clip: padding-box !important;
+  /* Moderate transform for prominence */
+  transform: scale(1.05) translateY(-5px) !important;
+}
+
+/* Ensure the featured card content is properly spaced */
+.pricing-card.featured .p-8 {
+  padding-top: 1rem !important; /* Reduce top padding since we added padding to card */
+}
+
+/* Make the badge text subtle but clear */
+.pricing-card.featured .absolute.-top-6 {
+  /* Moderate typography */
+  font-size: 0.9rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.25px !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2) !important;
+  /* Moderate padding */
+  padding: 0.5rem 1.25rem !important;
+  /* Rounded for friendly appeal */
+  border-radius: 1.5rem !important;
+}
+
+/* Remove animated border for subtle approach */
+
+/* Fix 8: Adjust font sizes for better text layout */
+/* Make contact section title fit on one line */
+#contact .bg-primary-800 h2 {
+  font-size: 2.5rem !important; /* Slightly smaller than text-3xl */
+  line-height: 1.2 !important;
+}
+
+/* Ensure popular plan button text displays correctly */
+.pricing-card.featured .btn-action-primary {
+  font-size: 1rem !important; /* Smaller font for two-line layout */
+  line-height: 1.3 !important;
+  padding: 1rem !important;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  #contact .bg-primary-800 h2 {
+    font-size: 2rem !important;
+  }
+  
+  .pricing-card.featured .btn-action-primary {
+    font-size: 0.9rem !important;
+    padding: 0.875rem !important;
+  }
+}
+
+/* Fix 7: Change "今すぐ始める" card to blue for better visibility */
+/* Target the specific card with bg-primary-800 class */
+#service .bg-primary-800 {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border-color: #2563eb !important;
+}
+
+/* Alternative selector for more specificity */
+#service div.bg-primary-800.p-6.rounded-lg {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  border-color: #2563eb !important;
+}
+
+/* Ensure white text remains visible on blue background */
+#service .bg-primary-800 h3,
+#service .bg-primary-800 p {
+  color: #ffffff !important;
+}
+
+/* Make the button stand out more */
+#service .bg-primary-800 a {
+  background-color: #fbbf24 !important; /* Amber/yellow for contrast */
+  color: #111827 !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+}
+
+#service .bg-primary-800 a:hover {
+  background-color: #f59e0b !important;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Fix 8: Additional specificity for the "今すぐ始める" card - ensure it overrides everything */
+/* Using multiple selectors to ensure the style is applied */
+.bg-primary-800.p-6.rounded-lg.shadow-sm.border.border-primary-700,
+div.bg-primary-800[class*="rounded-lg"][class*="shadow-sm"],
+section#service div.bg-primary-800 {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+  background-color: #3b82f6 !important; /* Fallback */
+  border-color: #2563eb !important;
+}
+
+/* Fix 9: Debug helper - Remove in production */
+/* This will highlight any remaining white-on-white text issues */
+@media (prefers-reduced-motion: no-preference) and (max-width: 1px) {
+  /* Disabled by default - change max-width to 9999px to enable during debugging */
+  .bg-white .text-white:not(.btn):not(svg) {
+    outline: 3px dashed red !important;
+    outline-offset: 2px;
+  }
+}

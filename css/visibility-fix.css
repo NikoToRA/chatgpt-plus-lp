@@ -1,0 +1,230 @@
+/* Visibility Fixes for Azure Deployment */
+
+/* Ensure all text has proper contrast */
+body {
+  color: #111827 !important;
+  background-color: #ffffff !important;
+}
+
+/* Fix header visibility */
+header {
+  background: rgba(17, 24, 39, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+header h1, header p, header a {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Fix hero section text visibility */
+.relative.min-h-screen {
+  background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%) !important;
+}
+
+.relative.min-h-screen h1,
+.relative.min-h-screen h2,
+.relative.min-h-screen p {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+/* Fix gradient text visibility */
+.gradient-text {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  font-weight: 800 !important;
+  display: inline-block !important;
+}
+
+/* Workflow section visibility fixes */
+#workflow {
+  background: linear-gradient(135deg, #0f172a 0%, #1e40af 100%) !important;
+  color: #ffffff !important;
+}
+
+#workflow h2, #workflow h3, #workflow p {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+#workflow .bg-high-contrast {
+  background: rgba(255, 255, 255, 0.95) !important;
+  color: #111827 !important;
+}
+
+#workflow .bg-high-contrast p {
+  color: #111827 !important;
+}
+
+/* Fix timeline visibility */
+.timeline-step {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+/* Section backgrounds for better contrast */
+section {
+  position: relative;
+  z-index: 1;
+}
+
+/* Benefits section */
+#benefits {
+  background: #f9fafb !important;
+}
+
+#benefits h2, #benefits h3, #benefits p {
+  color: #111827 !important;
+}
+
+/* Pricing section */
+#pricing {
+  background: #eff6ff !important;
+}
+
+#pricing h2, #pricing h3 {
+  color: #111827 !important;
+}
+
+#pricing .pricing-card {
+  background: #ffffff !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+}
+
+#pricing .pricing-card.featured {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+}
+
+#pricing .pricing-card.featured h3,
+#pricing .pricing-card.featured p,
+#pricing .pricing-card.featured span {
+  color: #ffffff !important;
+}
+
+/* FAQ section */
+#faq {
+  background: #ffffff !important;
+}
+
+#faq h2, #faq h3, #faq p {
+  color: #111827 !important;
+}
+
+/* Contact section */
+#contact {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%) !important;
+}
+
+#contact h2, #contact h3 {
+  color: #111827 !important;
+}
+
+/* Button visibility fixes */
+.btn {
+  opacity: 1 !important;
+  font-weight: 600 !important;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+.btn-secondary {
+  background: #ffffff !important;
+  color: #2563eb !important;
+  border: 2px solid #2563eb !important;
+}
+
+.btn-action-primary {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%) !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+
+.btn-action-secondary {
+  background: #ffffff !important;
+  color: #dc2626 !important;
+  border: 2px solid #dc2626 !important;
+}
+
+/* Form elements */
+input, select, textarea {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border: 2px solid #d1d5db !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #2563eb !important;
+  outline: none !important;
+}
+
+/* Footer visibility */
+footer {
+  background: #111827 !important;
+  color: #9ca3af !important;
+}
+
+footer h3, footer h4 {
+  color: #ffffff !important;
+}
+
+footer a {
+  color: #9ca3af !important;
+}
+
+footer a:hover {
+  color: #ffffff !important;
+}
+
+/* Mobile menu visibility */
+#mobile-menu {
+  background: rgba(17, 24, 39, 0.95) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+#mobile-menu a {
+  color: #d1d5db !important;
+}
+
+/* Ensure icons are visible */
+svg {
+  opacity: 1 !important;
+}
+
+/* Z-index fixes for overlapping elements */
+header {
+  z-index: 50 !important;
+}
+
+.relative {
+  z-index: 1;
+}
+
+/* Animation visibility */
+.fade-in, .slide-in-left, .slide-in-right {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* High contrast mode for accessibility */
+@media (prefers-contrast: high) {
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  
+  .aidma-attention {
+    background: #000080 !important;
+    color: #ffffff !important;
+  }
+}
