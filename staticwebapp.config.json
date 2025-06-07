@@ -69,6 +69,10 @@
       "/PDF_DL.pdf"
     ]
   },
+  "trailingSlash": "auto",
+  "globalHeaders": {
+    "content-security-policy": "default-src https: 'unsafe-eval' 'unsafe-inline'; object-src 'none'"
+  },
   "mimeTypes": {
     ".pdf": "application/pdf",
     ".json": "application/json",
