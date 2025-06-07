@@ -191,7 +191,7 @@ export const calculatePlanPricing = (
     subtotal,
     taxAmount,
     totalAmount,
-    billingCycle,
+    billingCycle: 'monthly' as const,
     accountCount,
     planId: plan.id
   };
