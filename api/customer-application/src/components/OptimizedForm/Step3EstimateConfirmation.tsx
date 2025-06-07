@@ -70,6 +70,13 @@ const Step3EstimateConfirmation: React.FC<Step3EstimateConfirmationProps> = ({
               <Typography variant="body1">{basicData.email}</Typography>
             </Box>
           </Box>
+          
+          <Alert severity="success" sx={{ mt: 2 }}>
+            <Typography variant="body2">
+              <strong>🎯 サービス内容</strong><br />
+              ChatGPT Plusチームプランのアカウント情報（ID・パスワード）をメールでお届けします
+            </Typography>
+          </Alert>
         </CardContent>
       </Card>
 

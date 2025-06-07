@@ -139,10 +139,10 @@ const Step5Completion: React.FC<Step5CompletionProps> = ({
               </TimelineSeparator>
               <TimelineContent>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  {isCardPayment ? 'アカウント設定開始' : '審査・承認'}
+                  {isCardPayment ? 'チームプラン契約開始' : '審査・承認'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {isCardPayment ? '決済完了後即座' : '1-3営業日'}
+                  {isCardPayment ? '決済完了後即座' : '1-3営業日'} - ChatGPT Plusチーム契約
                 </Typography>
               </TimelineContent>
             </TimelineItem>
@@ -155,10 +155,10 @@ const Step5Completion: React.FC<Step5CompletionProps> = ({
               </TimelineSeparator>
               <TimelineContent>
                 <Typography variant="subtitle1" fontWeight="bold">
-                  サービス開始
+                  アカウント情報お渡し
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {isCardPayment ? '最短当日' : '3-5営業日'} - アカウント情報をメール送信
+                  {isCardPayment ? '最短当日' : '3-5営業日'} - ChatGPT Plus ID・パスワードをメール送信
                 </Typography>
               </TimelineContent>
             </TimelineItem>

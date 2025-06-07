@@ -122,89 +122,13 @@ const Step2BasicInformation: React.FC<Step2BasicInformationProps> = ({ control, 
             />
           </Box>
           
-          <Box>
-            <Controller
-              name="postalCode"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="郵便番号"
-                  placeholder="1234567"
-                  required
-                  error={!!errors.postalCode}
-                  helperText={errors.postalCode?.message}
-                  onChange={(e) => {
-                    field.onChange(e);
-                    if (e.target.value.length === 7) {
-                      fetchAddressFromPostalCode(e.target.value);
-                    }
-                  }}
-                />
-              )}
-            />
-          </Box>
-          
-          <Box>
-            <Controller
-              name="prefecture"
-              control={control}
-              render={({ field }) => (
-                <Autocomplete
-                  {...field}
-                  options={PREFECTURES}
-                  value={field.value || ''}
-                  onChange={(_, value) => field.onChange(value || '')}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      label="都道府県"
-                      required
-                      error={!!errors.prefecture}
-                      helperText={errors.prefecture?.message}
-                    />
-                  )}
-                />
-              )}
-            />
-          </Box>
-          
-          <Box>
-            <Controller
-              name="city"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="市区町村"
-                  required
-                  placeholder="新宿区"
-                  error={!!errors.city}
-                  helperText={errors.city?.message}
-                />
-              )}
-            />
-          </Box>
-          
-          <Box>
-            <Controller
-              name="address"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  fullWidth
-                  label="番地・建物名"
-                  required
-                  placeholder="西新宿1-1-1 新宿ビル5F"
-                  error={!!errors.address}
-                  helperText={addressFromZip ? `住所候補: ${addressFromZip}` : errors.address?.message}
-                />
-              )}
-            />
-          </Box>
+          <Alert severity="info" sx={{ mb: 3 }}>
+            <Typography variant="body2">
+              <strong>💼 代行サービス内容</strong><br />
+              当社がChatGPT Plusチームプランを契約し、アカウントID・パスワードをお渡しします。<br />
+              詳細な住所情報は請求書送付のみに使用いたします。
+            </Typography>
+          </Alert>
         </Box>
       </Box>
 

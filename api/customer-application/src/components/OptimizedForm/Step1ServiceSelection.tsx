@@ -85,8 +85,10 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
         </Typography>
         <Alert severity="info" sx={{ mt: 2, textAlign: 'left' }}>
           <Typography variant="body2">
-            <strong>💡 代行サービス内容</strong><br />
-            OpenAI ChatGPT Plusの契約・設定・管理を代行いたします
+            <strong>💡 チームプラン代行サービス</strong><br />
+            • ChatGPT Plusチームプランを当社が契約<br />
+            • アカウントID・パスワードをお客様にお渡し<br />
+            • 契約・請求・管理業務をすべて代行
           </Typography>
         </Alert>
       </Box>

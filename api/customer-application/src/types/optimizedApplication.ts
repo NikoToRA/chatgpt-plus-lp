@@ -11,13 +11,9 @@ export interface BasicInformation {
   // 医療機関情報
   organizationName: string;
   facilityType: 'hospital' | 'clinic' | 'dental_clinic' | 'pharmacy' | 'nursing_home' | 'other';
-  postalCode: string;
-  prefecture: string;
-  city: string;
-  address: string;
   phoneNumber: string;
   
-  // 担当者情報
+  // 担当者情報（アカウント配布用）
   contactPerson: string;
   department?: string;
   email: string;
