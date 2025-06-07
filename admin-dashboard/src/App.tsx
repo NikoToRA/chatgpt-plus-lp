@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import { Box, Typography, Button, Alert } from '@mui/material';
+import Layout from './components/Common/Layout';
 import CompanySettings from './components/Company/CompanySettings';
 import Dashboard from './components/Dashboard/Dashboard';
 import CustomerList from './components/Customers/CustomerList';
+import AccountLinking from './components/Accounts/AccountLinking';
 
 const theme = createTheme({
   palette: {
@@ -57,33 +58,12 @@ function App() {
       <CssBaseline />
       <Router>
         <Routes>
-          <Route path="/" element={
-            <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
-              <Alert severity="success" sx={{ mb: 3 }}>
-                ✅ ChatGPT Plus 管理ダッシュボードが正常に動作しています
-              </Alert>
-              <Typography variant="h4" gutterBottom>
-                🏥 医療機関向け管理画面
-              </Typography>
-              <Typography variant="body1" sx={{ mb: 3 }}>
-                このダッシュボードでは、医療機関向けChatGPT Plusサービスの管理が行えます。
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                <Button variant="contained" color="primary" href="/dashboard">
-                  📊 ダッシュボード
-                </Button>
-                <Button variant="contained" color="secondary" href="/customers">
-                  👥 顧客管理
-                </Button>
-                <Button variant="outlined" color="primary" href="/company">
-                  🏢 会社設定
-                </Button>
-              </Box>
-            </Box>
-          } />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/customers" element={<CustomerList />} />
-          <Route path="/company" element={<CompanySettings />} />
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="customers" element={<CustomerList />} />
+            <Route path="accounts/link" element={<AccountLinking />} />
+            <Route path="company" element={<CompanySettings />} />
+          </Route>
         </Routes>
       </Router>
     </ThemeProvider>
