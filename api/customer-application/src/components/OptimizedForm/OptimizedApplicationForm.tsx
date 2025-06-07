@@ -128,10 +128,10 @@ const OptimizedApplicationForm: React.FC = () => {
       // Azure Functions APIへの送信実装
       console.log('申込データ:', submission);
       
-      // 本番環境とローカル環境でのAPI URLを判定
+      // 環境変数からAPI URLを取得（本番環境ではlocationベースのAPI URLを使用）
       const apiBaseUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://chatgpt-plus-api.azurewebsites.net/api'
-        : '/api';
+        ? `${window.location.protocol}//${window.location.host}/api`
+        : process.env.REACT_APP_API_URL || 'https://chatgpt-plus-api.azurewebsites.net/api';
       
       const response = await fetch(`${apiBaseUrl}/customer-application-submit`, {
         method: 'POST',
