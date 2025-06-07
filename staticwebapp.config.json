@@ -19,8 +19,15 @@
       "redirect": "/admin/"
     },
     {
+      "route": "/docs/PDF_DL.pdf",
+      "headers": {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": "attachment; filename=\"PDF_DL.pdf\"",
+        "Cache-Control": "public, max-age=3600"
+      }
+    },
+    {
       "route": "/PDF_DL.pdf",
-      "serve": "/PDF_DL.pdf",
       "headers": {
         "Content-Type": "application/pdf",
         "Content-Disposition": "attachment; filename=\"PDF_DL.pdf\"",
@@ -46,7 +53,10 @@
       "/css/*", 
       "/js/*", 
       "/api/*", 
-      "/*.pdf"
+      "/*.pdf", 
+      "/docs/*.pdf",
+      "/docs/PDF_DL.pdf",
+      "/PDF_DL.pdf"
     ]
   },
   "mimeTypes": {
