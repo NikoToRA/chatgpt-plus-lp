@@ -50,9 +50,10 @@ jobs:
           azure_static_web_apps_api_token: 26b6f06e7b0bba28e049e6baf990439ed047ecd60611a9ac2d5ca30eb11d3ce706-108ac8f6-b0bc-49b2-a9fe-97b018ac0aa300017000a5e9df00
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "/admin-dashboard"
+          app_location: "admin-dashboard"
           api_location: ""
           output_location: "build"
+          skip_app_build: true
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
