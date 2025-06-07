@@ -69,6 +69,7 @@ jobs:
           cp -r js deploy/
           cp -r images deploy/
           cp staticwebapp.config.json deploy/
+          cp test-api-manual.html deploy/ || true
           cp favicon.ico deploy/ || true
           cp manifest.json deploy/ || true
           cp robots.txt deploy/ || true
