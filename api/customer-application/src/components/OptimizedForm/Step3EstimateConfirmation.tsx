@@ -93,13 +93,10 @@ const Step3EstimateConfirmation: React.FC<Step3EstimateConfirmationProps> = ({
               size="medium"
             />
             <Chip 
-              label={serviceData.billingCycle === 'monthly' ? '月額プラン' : '年額プラン'} 
+              label="月額プラン" 
               color="secondary" 
               size="medium"
             />
-            {serviceData.billingCycle === 'yearly' && (
-              <Chip label="2ヶ月分お得" color="success" size="small" />
-            )}
           </Box>
           <Typography variant="body2" color="text.secondary">
             利用開始予定日: {serviceData.startDate.toLocaleDateString('ja-JP')}

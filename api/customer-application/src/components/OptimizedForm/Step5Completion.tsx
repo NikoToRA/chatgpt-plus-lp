@@ -188,7 +188,7 @@ const Step5Completion: React.FC<Step5CompletionProps> = ({
             <Box>
               <Typography variant="body2" color="text.secondary">プラン</Typography>
               <Typography variant="body1" fontWeight="bold">
-                {applicationData.serviceSelection.billingCycle === 'monthly' ? '月額' : '年額'}プラン
+                月額プラン
               </Typography>
             </Box>
             <Box>
