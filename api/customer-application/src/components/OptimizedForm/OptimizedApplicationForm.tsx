@@ -58,10 +58,6 @@ const OptimizedApplicationForm: React.FC = () => {
     defaultValues: {
       organizationName: '',
       facilityType: 'hospital',
-      postalCode: '',
-      prefecture: '',
-      city: '',
-      address: '',
       phoneNumber: '',
       contactPerson: '',
       department: '',
