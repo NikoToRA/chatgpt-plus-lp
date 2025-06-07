@@ -39,6 +39,7 @@ export default function CompanySettings() {
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [productDialogOpen, setProductDialogOpen] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<string[]>([]);
   const [newProduct, setNewProduct] = useState<Partial<ProductInfo>>({
     name: '',
     description: '',
@@ -54,27 +55,37 @@ export default function CompanySettings() {
   const loadCompanyInfo = async () => {
     try {
       setComponentError(null);
+      setDebugInfo(prev => [...prev, 'loadCompanyInfo開始']);
       
       // First try to get from Azure API
       try {
+        setDebugInfo(prev => [...prev, 'Azure API呼び出し開始']);
         const response = await fetch(`${process.env.REACT_APP_API_URL || 'https://chatgpt-plus-api.azurewebsites.net/api'}/company-settings`);
         if (response.ok) {
+          setDebugInfo(prev => [...prev, 'API応答OK']);
           const data = await response.json();
+          setDebugInfo(prev => [...prev, `APIデータ: ${JSON.stringify(data).substring(0, 100)}...`]);
           if (data.success && data.data) {
             setCompanyInfo(data.data);
             // Also save to localStorage as backup
             localStorage.setItem('companyInfo', JSON.stringify(data.data));
+            setDebugInfo(prev => [...prev, 'APIデータ設定完了']);
             setIsLoading(false);
             return;
           }
+        } else {
+          setDebugInfo(prev => [...prev, `API応答エラー: ${response.status}`]);
         }
       } catch (apiError) {
+        setDebugInfo(prev => [...prev, `APIエラー: ${(apiError as Error).message}`]);
         console.warn('Azure API not available, falling back to localStorage:', apiError);
       }
 
       // Fallback to localStorage
+      setDebugInfo(prev => [...prev, 'localStorage確認開始']);
       const localCompanyInfo = localStorage.getItem('companyInfo');
       if (localCompanyInfo) {
+        setDebugInfo(prev => [...prev, 'localStorageからデータ発見']);
         const parsedInfo = JSON.parse(localCompanyInfo);
         // 新しいフィールドが存在しない場合はデフォルト値を追加
         if (!parsedInfo.emailSettings) {
@@ -404,6 +415,16 @@ Email: {{email}}
     return (
       <Box p={3}>
         <Typography>会社設定を読み込み中...</Typography>
+        <Box mt={2}>
+          <Typography variant="caption" component="div">
+            デバッグ情報:
+          </Typography>
+          {debugInfo.map((info, index) => (
+            <Typography key={index} variant="caption" component="div">
+              {index + 1}. {info}
+            </Typography>
+          ))}
+        </Box>
       </Box>
     );
   }
