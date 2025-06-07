@@ -40,12 +40,12 @@
     },
     {
       "route": "/*",
-      "serve": "/index.html",
+      "serve": "/docs/index.html",
       "statusCode": 200
     }
   ],
   "navigationFallback": {
-    "rewrite": "/index.html",
+    "rewrite": "/docs/index.html",
     "exclude": [
       "/application/*",
       "/admin/*",
