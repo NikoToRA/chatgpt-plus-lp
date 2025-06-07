@@ -56,7 +56,7 @@ const Step1ServiceSelection: React.FC<Step1ServiceSelectionProps> = ({
   useEffect(() => {
     const selectedPlan = companyPlans.find(plan => plan.id === watchPlanId);
     if (selectedPlan) {
-      const pricing = calculatePlanPricing(selectedPlan, watchAccountCount, 'monthly');
+      const pricing = calculatePlanPricing(selectedPlan, watchAccountCount);
       onPricingUpdate(pricing);
     }
   }, [watchPlanId, watchAccountCount, companyPlans, onPricingUpdate]);

@@ -175,8 +175,7 @@ export const fetchCompanyPlans = async (): Promise<CompanyPlan[]> => {
 // Note: This is for ChatGPT Plus subscription management service, not per-account billing
 export const calculatePlanPricing = (
   plan: CompanyPlan, 
-  accountCount: number, 
-  billingCycle?: 'monthly'
+  accountCount: number
 ) => {
   // Fixed monthly service fee regardless of account count (service management fee)
   const basePrice = plan.unitPrice;
