@@ -6,10 +6,6 @@ import {
   Grid,
   TextField,
   Button,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
   Alert,
   IconButton,
   List,
@@ -25,7 +21,6 @@ import {
 import {
   Save as SaveIcon,
   Business as BusinessIcon,
-  AccountBalance as BankIcon,
   Receipt as ReceiptIcon,
   Add as AddIcon,
   Delete as DeleteIcon,
@@ -442,46 +437,206 @@ Email: {{email}}
   return (
     <Box p={3}>
       <Typography variant="h4" gutterBottom>
-        🏢 会社設定 - テストバージョン
+        🏢 会社設定管理
       </Typography>
       
-      <Box mb={3} p={2} bgcolor="#f0f0f0" borderRadius={1}>
-        <Typography variant="h6">データ読み込み成功</Typography>
-        <Typography>会社名: {companyInfo.companyName || '未設定'}</Typography>
-        <Typography>製品数: {companyInfo.products?.length || 0}個</Typography>
+      {message && (
+        <Alert severity={message.type} sx={{ mb: 3 }}>
+          {message.text}
+        </Alert>
+      )}
+
+      <Box mb={3}>
+        <Paper elevation={2} sx={{ p: 3 }}>
+          <Box display="flex" alignItems="center" mb={2}>
+            <BusinessIcon sx={{ mr: 1, color: 'primary.main' }} />
+            <Typography variant="h6">基本情報</Typography>
+          </Box>
+          
+          <Grid container spacing={3}>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="会社名"
+                value={companyInfo.companyName || ''}
+                onChange={(e) => handleInputChange('companyName', e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="代表者名"
+                value={companyInfo.representativeName || ''}
+                onChange={(e) => handleInputChange('representativeName', e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="郵便番号"
+                value={companyInfo.postalCode || ''}
+                onChange={(e) => handleInputChange('postalCode', e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="住所"
+                value={companyInfo.address || ''}
+                onChange={(e) => handleInputChange('address', e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="電話番号"
+                value={companyInfo.phoneNumber || ''}
+                onChange={(e) => handleInputChange('phoneNumber', e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                fullWidth
+                label="メールアドレス"
+                type="email"
+                value={companyInfo.email || ''}
+                onChange={(e) => handleInputChange('email', e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="ウェブサイト"
+                value={companyInfo.website || ''}
+                onChange={(e) => handleInputChange('website', e.target.value)}
+              />
+            </Grid>
+          </Grid>
+        </Paper>
       </Box>
 
       <Box mb={3}>
-        <Typography variant="h6">簡易製品追加テスト</Typography>
-        <button 
-          onClick={() => {
-            try {
-              alert('製品追加機能をテストします');
-            } catch (error) {
-              alert(`エラー: ${error}`);
-            }
-          }}
-          style={{
-            padding: '10px 20px',
-            backgroundColor: '#007bff',
-            color: 'white',
-            border: 'none',
-            borderRadius: '5px',
-            cursor: 'pointer'
-          }}
+        <Paper elevation={2} sx={{ p: 3 }}>
+          <Box display="flex" alignItems="center" justifyContent="space-between" mb={2}>
+            <Box display="flex" alignItems="center">
+              <ReceiptIcon sx={{ mr: 1, color: 'primary.main' }} />
+              <Typography variant="h6">製品・サービス管理</Typography>
+            </Box>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={() => setProductDialogOpen(true)}
+            >
+              製品追加
+            </Button>
+          </Box>
+          
+          <List>
+            {companyInfo.products.map((product, index) => (
+              <ListItem key={product.id} divider={index < companyInfo.products.length - 1}>
+                <ListItemText
+                  primary={product.name}
+                  secondary={
+                    <Box>
+                      <Typography variant="body2" color="text.secondary">
+                        {product.description}
+                      </Typography>
+                      <Box display="flex" alignItems="center" mt={1}>
+                        <Typography variant="body2" color="text.primary" sx={{ mr: 2 }}>
+                          価格: ¥{product.unitPrice.toLocaleString()}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary" sx={{ mr: 2 }}>
+                          税率: {(product.taxRate * 100).toFixed(0)}%
+                        </Typography>
+                        <Chip
+                          label={product.isActive ? 'アクティブ' : '無効'}
+                          color={product.isActive ? 'success' : 'default'}
+                          size="small"
+                        />
+                      </Box>
+                    </Box>
+                  }
+                />
+                <ListItemSecondaryAction>
+                  <IconButton
+                    edge="end"
+                    onClick={() => removeProduct(product.id)}
+                    color="error"
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
+              </ListItem>
+            ))}
+            {companyInfo.products.length === 0 && (
+              <ListItem>
+                <ListItemText
+                  primary="製品が登録されていません"
+                  secondary="「製品追加」ボタンから新しい製品を追加してください。"
+                />
+              </ListItem>
+            )}
+          </List>
+        </Paper>
+      </Box>
+
+      <Box display="flex" justifyContent="flex-end" gap={2}>
+        <Button
+          variant="contained"
+          startIcon={<SaveIcon />}
+          onClick={handleSave}
+          disabled={isSaving}
+          color="primary"
         >
-          簡易製品追加テスト
-        </button>
+          {isSaving ? '保存中...' : '設定を保存'}
+        </Button>
       </Box>
 
-      <Box mb={3}>
-        <Typography variant="h6">デバッグ情報</Typography>
-        {debugInfo.map((info, index) => (
-          <Typography key={index} variant="body2">
-            {index + 1}. {info}
-          </Typography>
-        ))}
-      </Box>
+      {/* 製品追加ダイアログ */}
+      <Dialog open={productDialogOpen} onClose={() => setProductDialogOpen(false)} maxWidth="sm" fullWidth>
+        <DialogTitle>新しい製品を追加</DialogTitle>
+        <DialogContent>
+          <Box sx={{ pt: 1 }}>
+            <TextField
+              fullWidth
+              label="製品名"
+              value={newProduct.name || ''}
+              onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="製品説明"
+              multiline
+              rows={3}
+              value={newProduct.description || ''}
+              onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="単価"
+              type="number"
+              value={newProduct.unitPrice || ''}
+              onChange={(e) => setNewProduct({ ...newProduct, unitPrice: parseInt(e.target.value) || 0 })}
+              sx={{ mb: 2 }}
+            />
+            <TextField
+              fullWidth
+              label="税率 (%)"
+              type="number"
+              value={newProduct.taxRate ? (newProduct.taxRate * 100).toString() : '10'}
+              onChange={(e) => setNewProduct({ ...newProduct, taxRate: (parseInt(e.target.value) || 10) / 100 })}
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setProductDialogOpen(false)}>キャンセル</Button>
+          <Button onClick={addProduct} variant="contained" disabled={!newProduct.name}>
+            追加
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 
