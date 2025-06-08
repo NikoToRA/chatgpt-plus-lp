@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API デバッグテスト</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; max-height: 400px; }
+        .loading { color: #007bff; }
+        textarea { width: 100%; height: 200px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <h1>API デバッグテスト</h1>
+    
+    <div class="test-section">
+        <h3>1. 外部API接続テスト</h3>
+        <button onclick="testExternalAPI()">外部API接続テスト</button>
+        <div id="external-api-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. 顧客API直接テスト</h3>
+        <button onclick="testCustomersAPI()">顧客API テスト</button>
+        <div id="customers-api-result"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. 申し込みAPI詳細テスト</h3>
+        <button onclick="testSubmissionAPI()">申し込みAPI テスト</button>
+        <div id="submission-api-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>4. カスタムAPIテスト</h3>
+        <label>API URL:</label>
+        <input type="text" id="custom-url" value="https://chatgpt-plus-api.azurewebsites.net/api/test-connection" style="width: 100%; margin: 5px 0;">
+        <br>
+        <label>メソッド:</label>
+        <select id="custom-method">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="OPTIONS">OPTIONS</option>
+        </select>
+        <br><br>
+        <label>リクエストBody (POST用):</label>
+        <textarea id="custom-body" placeholder='{"test": "data"}'></textarea>
+        <br>
+        <button onclick="testCustomAPI()">カスタムテスト実行</button>
+        <div id="custom-api-result"></div>
+    </div>
+
+    <script>
+        async function testExternalAPI() {
+            const resultDiv = document.getElementById('external-api-result');
+            resultDiv.innerHTML = '<p class="loading">テスト中...</p>';
+            
+            const testUrl = 'https://chatgpt-plus-api.azurewebsites.net/api/test-connection';
+            
+            try {
+                const response = await fetch(testUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                const responseText = await response.text();
+                console.log('Response text:', responseText);
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ 外部API接続成功</h4>
+                            <p>Status: ${response.status}</p>
+                            <p>URL: ${testUrl}</p>
+                            <pre>${responseText}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ 外部API接続失敗</h4>
+                            <p>Status: ${response.status} ${response.statusText}</p>
+                            <p>URL: ${testUrl}</p>
+                            <pre>${responseText}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('API Error:', error);
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ 外部APIエラー</h4>
+                        <p>Error: ${error.message}</p>
+                        <p>URL: ${testUrl}</p>
+                        <p>これはCORSエラーまたはネットワークエラーの可能性があります</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testCustomersAPI() {
+            const resultDiv = document.getElementById('customers-api-result');
+            resultDiv.innerHTML = '<p class="loading">テスト中...</p>';
+            
+            const testUrl = 'https://chatgpt-plus-api.azurewebsites.net/api/customers';
+            
+            try {
+                const response = await fetch(testUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const responseText = await response.text();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ 顧客API成功</h4>
+                            <p>Status: ${response.status}</p>
+                            <pre>${responseText}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ 顧客API失敗</h4>
+                            <p>Status: ${response.status}</p>
+                            <pre>${responseText}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ 顧客APIエラー</h4>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testSubmissionAPI() {
+            const resultDiv = document.getElementById('submission-api-result');
+            resultDiv.innerHTML = '<p class="loading">テスト中...</p>';
+            
+            const testUrl = 'https://chatgpt-plus-api.azurewebsites.net/api/customer-application-submit';
+            
+            const testData = {
+                serviceSelection: {
+                    planId: 'prod-1',
+                    requestedAccountCount: 1,
+                    billingCycle: 'monthly',
+                    startDate: new Date().toISOString()
+                },
+                basicInformation: {
+                    organizationName: 'デバッグテスト病院',
+                    facilityType: 'hospital',
+                    postalCode: '100-0001',
+                    prefecture: '東京都',
+                    city: '千代田区',
+                    address: '丸の内1-1-1',
+                    phoneNumber: '03-1234-5678',
+                    contactPerson: 'デバッグ太郎',
+                    department: 'IT部',
+                    email: 'debug@test.com',
+                    contactPhone: '03-1234-5678'
+                },
+                paymentInformation: {
+                    paymentMethod: 'card',
+                    cardHolderName: 'デバッグ太郎',
+                    billingContact: 'デバッグ太郎',
+                    billingEmail: 'debug@test.com',
+                    termsAccepted: true,
+                    privacyAccepted: true,
+                    privacyUnderstandingConfirmed: true
+                },
+                submittedAt: new Date().toISOString()
+            };
+            
+            try {
+                console.log('Sending data:', testData);
+                
+                const response = await fetch(testUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                console.log('Response status:', response.status);
+                
+                const responseText = await response.text();
+                console.log('Response text:', responseText);
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ 申し込みAPI成功</h4>
+                            <p>Status: ${response.status}</p>
+                            <pre>${responseText}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ 申し込みAPI失敗</h4>
+                            <p>Status: ${response.status}</p>
+                            <pre>${responseText}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Submission Error:', error);
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ 申し込みAPIエラー</h4>
+                        <p>${error.message}</p>
+                        <p>これは多くの場合CORSエラーです</p>
+                    </div>
+                `;
+            }
+        }
+
+        async function testCustomAPI() {
+            const resultDiv = document.getElementById('custom-api-result');
+            const url = document.getElementById('custom-url').value;
+            const method = document.getElementById('custom-method').value;
+            const body = document.getElementById('custom-body').value;
+            
+            resultDiv.innerHTML = '<p class="loading">テスト中...</p>';
+            
+            try {
+                const options = {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                };
+                
+                if (method === 'POST' && body.trim()) {
+                    options.body = body;
+                }
+                
+                const response = await fetch(url, options);
+                const responseText = await response.text();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = `
+                        <div class="success">
+                            <h4>✅ カスタムAPI成功</h4>
+                            <p>Status: ${response.status}</p>
+                            <p>URL: ${url}</p>
+                            <p>Method: ${method}</p>
+                            <pre>${responseText}</pre>
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="error">
+                            <h4>❌ カスタムAPI失敗</h4>
+                            <p>Status: ${response.status}</p>
+                            <p>URL: ${url}</p>
+                            <pre>${responseText}</pre>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <h4>❌ カスタムAPIエラー</h4>
+                        <p>${error.message}</p>
+                        <p>URL: ${url}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // ページロード時に自動テスト実行
+        window.onload = function() {
+            console.log('デバッグページが読み込まれました');
+            console.log('現在のURL:', window.location.href);
+            console.log('Origin:', window.location.origin);
+        };
+    </script>
+</body>
+</html>

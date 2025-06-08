@@ -128,8 +128,8 @@ const OptimizedApplicationForm: React.FC = () => {
       // Azure Functions APIへの送信実装
       console.log('申込データ:', submission);
       
-      // 外部API URLを設定（Azure Static Web Apps APIが利用できないため）
-      const apiBaseUrl = 'https://chatgpt-plus-api.azurewebsites.net/api';
+      // Azure Static Web Apps内部のAPIを使用
+      const apiBaseUrl = '/api';
       
       const response = await fetch(`${apiBaseUrl}/customer-application-submit`, {
         method: 'POST',

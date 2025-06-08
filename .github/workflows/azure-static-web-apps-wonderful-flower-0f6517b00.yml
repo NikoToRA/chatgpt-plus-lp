@@ -70,6 +70,7 @@ jobs:
           cp -r images deploy/
           cp staticwebapp.config.json deploy/
           cp test-api-manual.html deploy/ || true
+          cp debug-api.html deploy/ || true
           cp favicon.ico deploy/ || true
           cp manifest.json deploy/ || true
           cp robots.txt deploy/ || true
@@ -84,7 +85,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           app_location: "deploy" # デプロイ専用ディレクトリを指定
-          api_location: "" # APIを無効化（一時的）
+          api_location: "api-functions" # シンプルなAPI ディレクトリを指定
           output_location: "" # Built app content directory - optional
           skip_app_build: true
 
