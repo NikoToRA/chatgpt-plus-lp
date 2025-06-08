@@ -2,6 +2,7 @@
   "name": "chatgpt-plus-lp-api",
   "version": "1.0.0",
   "description": "Azure Functions API for ChatGPT Plus medical institution landing page",
+  "main": "index.js",
   "scripts": {
     "start": "func start",
     "test": "echo \"No tests yet\""
@@ -14,6 +15,10 @@
     "stripe": "^12.0.0"
   },
   "devDependencies": {
+    "@azure/functions": "^4.5.0",
     "azure-functions-core-tools": "^4.0.5530"
+  },
+  "engines": {
+    "node": ">=18"
   }
 }
