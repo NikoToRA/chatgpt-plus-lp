@@ -1,4 +1,6 @@
-// シンプルな申し込み処理API - Azure Static Web Apps用
+// Azure Table Storage を使用した申し込み処理API
+const { TableClient } = require("@azure/data-tables");
+
 module.exports = async function (context, req) {
     context.log('Customer Application Submit API called');
 
@@ -61,35 +63,108 @@ module.exports = async function (context, req) {
             submittedAt: new Date().toISOString()
         };
 
-        // 申し込みデータをグローバルストレージに保存（シンプルな実装）
-        // 実際の実装ではAzure Table Storageに保存
-        const { customers } = require('../customers/index.js');
-        
-        // グローバルな申し込みデータに追加するための仕組み
-        // customers APIで参照されるデータを更新
-        const applicationRecord = {
-            ...customerData,
-            originalSubmission: submissionData,
-            processedAt: new Date().toISOString(),
-            isNewApplication: true,
-            chatGptAccounts: []  // 初期状態では空
+        // Azure Table Storage への直接保存
+        const connectionString = process.env.AzureWebJobsStorage || 
+            process.env.AZURE_STORAGE_CONNECTION_STRING || 
+            "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VNH3n0IhjyW2mM6xOtJqCuOL8l3/iHjJP1kxvGCVLdD4O7Z4+vN6M2vuQ1GKjz4S3WP7dZjBAJJM+AStGFbhmg==;EndpointSuffix=core.windows.net";
+
+        // CustomerApplications テーブルに保存
+        const applicationTableClient = new TableClient(connectionString, "CustomerApplications");
+        await applicationTableClient.createTable();
+
+        const applicationEntity = {
+            partitionKey: "CustomerApplication",
+            rowKey: applicationId,
+            applicationId: applicationId,
+            
+            // Service Selection
+            planId: submissionData.serviceSelection.planId,
+            requestedAccountCount: submissionData.serviceSelection.requestedAccountCount,
+            billingCycle: submissionData.serviceSelection.billingCycle,
+            startDate: submissionData.serviceSelection.startDate,
+            
+            // Basic Information
+            organizationName: submissionData.basicInformation.organizationName,
+            facilityType: submissionData.basicInformation.facilityType,
+            postalCode: submissionData.basicInformation.postalCode,
+            prefecture: submissionData.basicInformation.prefecture,
+            city: submissionData.basicInformation.city,
+            address: submissionData.basicInformation.address,
+            phoneNumber: submissionData.basicInformation.phoneNumber,
+            contactPerson: submissionData.basicInformation.contactPerson,
+            department: submissionData.basicInformation.department || '',
+            email: submissionData.basicInformation.email,
+            contactPhone: submissionData.basicInformation.contactPhone || '',
+            
+            // Payment Information
+            paymentMethod: submissionData.paymentInformation.paymentMethod,
+            cardHolderName: submissionData.paymentInformation.cardHolderName || '',
+            billingContact: submissionData.paymentInformation.billingContact || '',
+            billingEmail: submissionData.paymentInformation.billingEmail || '',
+            termsAccepted: submissionData.paymentInformation.termsAccepted,
+            privacyAccepted: submissionData.paymentInformation.privacyAccepted,
+            
+            // Metadata
+            submittedAt: new Date().toISOString(),
+            status: 'new_application',
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+            isNewApplication: true
         };
+
+        await applicationTableClient.createEntity(applicationEntity);
+        context.log('Application saved to CustomerApplications table:', applicationId);
+
+        // Customers テーブルにも保存（管理画面での表示用）
+        const customerTableClient = new TableClient(connectionString, "Customers");
+        await customerTableClient.createTable();
         
-        // ファイルベースの共有ストレージをシミュレート
-        const fs = require('fs');
-        const path = '/tmp/applications.json';
-        
-        try {
-            let existingData = [];
-            if (fs.existsSync(path)) {
-                existingData = JSON.parse(fs.readFileSync(path, 'utf8'));
-            }
-            existingData.push(applicationRecord);
-            fs.writeFileSync(path, JSON.stringify(existingData, null, 2));
-            context.log('Application data saved to temporary storage:', applicationRecord);
-        } catch (fileError) {
-            context.log('Could not save to file, using memory only:', fileError.message);
-        }
+        const customerEntity = {
+            partitionKey: "Customer",
+            rowKey: customerData.id,
+            
+            // 管理画面で表示するための基本情報
+            id: customerData.id,
+            email: customerData.email,
+            organization: customerData.organization,
+            name: customerData.name,
+            phoneNumber: customerData.phoneNumber,
+            postalCode: customerData.postalCode,
+            address: customerData.address,
+            facilityType: customerData.facilityType,
+            plan: customerData.plan,
+            accountCount: customerData.accountCount,
+            requestedAccountCount: submissionData.serviceSelection.requestedAccountCount,
+            paymentMethod: customerData.paymentMethod,
+            status: customerData.status,
+            
+            // タイムスタンプ
+            registeredAt: customerData.registeredAt,
+            createdAt: customerData.createdAt,
+            submittedAt: customerData.submittedAt,
+            
+            // 申し込み関連
+            applicationId: applicationId,
+            isNewApplication: true,
+            
+            // ChatGPTアカウント（初期状態では空の配列）
+            chatGptAccounts: JSON.stringify([]),
+            
+            // 追加フィールド
+            billingCycle: submissionData.serviceSelection.billingCycle,
+            startDate: submissionData.serviceSelection.startDate,
+            department: submissionData.basicInformation.department || '',
+            contactPhone: submissionData.basicInformation.contactPhone || '',
+            prefecture: submissionData.basicInformation.prefecture,
+            city: submissionData.basicInformation.city,
+            
+            // 有効期限設定（トライアルなので3ヶ月後）
+            expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+            subscriptionMonths: submissionData.serviceSelection.billingCycle === 'monthly' ? 1 : 12
+        };
+
+        await customerTableClient.createEntity(customerEntity);
+        context.log('Customer saved to Customers table:', customerData.id);
 
         // 成功レスポンス
         context.res = {

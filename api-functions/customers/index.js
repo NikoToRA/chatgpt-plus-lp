@@ -1,6 +1,5 @@
-// シンプルな顧客データ取得API - Azure Static Web Apps用
-// グローバルな申し込みデータストレージ（実際の実装ではAzure Table Storageを使用）
-let globalApplicationData = [];
+// Azure Table Storage から顧客データを取得するAPI
+const { TableClient } = require("@azure/data-tables");
 
 module.exports = async function (context, req) {
     context.log('Customers API called');
@@ -23,9 +22,73 @@ module.exports = async function (context, req) {
     }
 
     try {
-        // ベースとなるダミー顧客データ
-        const baseCustomers = [
-            {
+        // Azure Table Storage から顧客データを取得
+        const connectionString = process.env.AzureWebJobsStorage || 
+            process.env.AZURE_STORAGE_CONNECTION_STRING || 
+            "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VNH3n0IhjyW2mM6xOtJqCuOL8l3/iHjJP1kxvGCVLdD4O7Z4+vN6M2vuQ1GKjz4S3WP7dZjBAJJM+AStGFbhmg==;EndpointSuffix=core.windows.net";
+
+        const customerTableClient = new TableClient(connectionString, "Customers");
+        
+        const customers = [];
+        
+        try {
+            // CustomersテーブルからすべてのデータToAcquisition
+            const entities = customerTableClient.listEntities({
+                queryOptions: { filter: "PartitionKey eq 'Customer'" }
+            });
+            
+            for await (const entity of entities) {
+                const customer = {
+                    id: entity.id || entity.rowKey,
+                    email: entity.email,
+                    organization: entity.organization,
+                    name: entity.name,
+                    phoneNumber: entity.phoneNumber || '',
+                    postalCode: entity.postalCode || '',
+                    address: entity.address || '',
+                    facilityType: entity.facilityType || '',
+                    plan: entity.plan || 'plus',
+                    accountCount: entity.accountCount || entity.requestedAccountCount || 1,
+                    requestedAccountCount: entity.requestedAccountCount || 1,
+                    paymentMethod: entity.paymentMethod || 'card',
+                    status: entity.status || 'trial',
+                    
+                    // タイムスタンプ
+                    registeredAt: entity.registeredAt || entity.createdAt || entity.timestamp,
+                    createdAt: entity.createdAt || entity.timestamp,
+                    submittedAt: entity.submittedAt || entity.createdAt,
+                    
+                    // 申し込み関連
+                    applicationId: entity.applicationId || '',
+                    isNewApplication: entity.isNewApplication || false,
+                    
+                    // ChatGPTアカウント
+                    chatGptAccounts: entity.chatGptAccounts ? JSON.parse(entity.chatGptAccounts) : [],
+                    
+                    // 追加フィールド
+                    billingCycle: entity.billingCycle || 'monthly',
+                    startDate: entity.startDate || '',
+                    department: entity.department || '',
+                    contactPhone: entity.contactPhone || '',
+                    prefecture: entity.prefecture || '',
+                    city: entity.city || '',
+                    expiresAt: entity.expiresAt || new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString(),
+                    subscriptionMonths: entity.subscriptionMonths || 1,
+                    lastActivityAt: entity.lastActivityAt || entity.createdAt || entity.timestamp,
+                    stripeCustomerId: entity.stripeCustomerId || null,
+                    productId: entity.productId || ''
+                };
+                
+                customers.push(customer);
+            }
+            
+            context.log(`Retrieved ${customers.length} customers from Azure Table Storage`);
+            
+        } catch (tableError) {
+            context.log('Could not read from Azure Table Storage:', tableError.message);
+            
+            // Azure Table Storageから取得できない場合、ダミーデータを返す
+            const dummyCustomer = {
                 id: 'customer-1',
                 email: 'test@hospital.com',
                 organization: 'テスト総合病院',
@@ -36,42 +99,35 @@ module.exports = async function (context, req) {
                 facilityType: 'hospital',
                 plan: 'plus',
                 accountCount: 4,
+                requestedAccountCount: 4,
                 paymentMethod: 'card',
                 status: 'active',
                 registeredAt: new Date('2024-01-01').toISOString(),
                 createdAt: new Date('2024-01-01').toISOString(),
-                requestedAccountCount: 4,
-                chatGptAccounts: [
-                    {
-                        id: 'gpt-1',
-                        email: 'test1@chatgpt.com',
-                        isActive: true,
-                        createdAt: new Date('2024-01-01')
-                    }
-                ]
-            }
-        ];
-
-        // ファイルベースのストレージから申し込みデータを読み込み
-        let applicationData = [];
-        const fs = require('fs');
-        const path = '/tmp/applications.json';
-        
-        try {
-            if (fs.existsSync(path)) {
-                applicationData = JSON.parse(fs.readFileSync(path, 'utf8'));
-                context.log(`Loaded ${applicationData.length} applications from temporary storage`);
-            }
-        } catch (fileError) {
-            context.log('Could not read from file storage:', fileError.message);
+                chatGptAccounts: [{
+                    id: 'gpt-1',
+                    email: 'test1@chatgpt.com',
+                    isActive: true,
+                    createdAt: new Date('2024-01-01')
+                }],
+                isNewApplication: false,
+                applicationId: '',
+                billingCycle: 'monthly',
+                startDate: '',
+                department: '',
+                contactPhone: '',
+                prefecture: '東京都',
+                city: '千代田区',
+                expiresAt: new Date('2025-01-01').toISOString(),
+                subscriptionMonths: 12,
+                lastActivityAt: new Date().toISOString(),
+                stripeCustomerId: null,
+                productId: ''
+            };
+            
+            customers.push(dummyCustomer);
+            context.log('Using dummy data due to table storage error');
         }
-        
-        // 申し込みデータから新規顧客を追加
-        const allCustomers = [...baseCustomers, ...applicationData];
-        
-        context.log(`Returning ${allCustomers.length} customers (${baseCustomers.length} base + ${applicationData.length} from applications)`);
-
-        const customers = allCustomers;
 
         context.res = {
             status: 200,
