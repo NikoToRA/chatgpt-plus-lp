@@ -21,6 +21,8 @@ import {
   Search as SearchIcon,
   Edit as EditIcon,
   Link as LinkIcon,
+  Refresh as RefreshIcon,
+  CloudDownload as CloudDownloadIcon,
 } from '@mui/icons-material';
 import { customerApi } from '../../services/api';
 import { Customer, CompanyInfo } from '../../types';
@@ -34,6 +36,7 @@ export default function CustomerList() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   useEffect(() => {
     loadCustomers();
@@ -54,7 +57,9 @@ export default function CustomerList() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, customers]);
 
-  const loadCustomers = async () => {
+  const loadCustomers = async (forceRefresh = false) => {
+    const loadingState = forceRefresh ? setIsRefreshing : setIsLoading;
+    loadingState(true);
     try {
       // まずAzure APIから最新データを取得
       try {
@@ -251,7 +256,13 @@ export default function CustomerList() {
       setFilteredCustomers(dummyCustomers);
     } finally {
       setIsLoading(false);
+      setIsRefreshing(false);
     }
+  };
+
+  // Azureから最新データを手動で取得
+  const refreshFromAzure = async () => {
+    await loadCustomers(true);
   };
 
   const loadCompanyInfo = () => {
@@ -335,6 +346,14 @@ export default function CustomerList() {
           顧客管理
         </Typography>
         <Box display="flex" gap={2}>
+          <Button
+            variant="outlined"
+            startIcon={<RefreshIcon />}
+            onClick={refreshFromAzure}
+            disabled={isRefreshing}
+          >
+            {isRefreshing ? 'データ取得中...' : 'Azureから最新データ取得'}
+          </Button>
           <Button
             variant="outlined"
             onClick={() => {
