@@ -39,7 +39,7 @@
     <div class="test-section">
         <h3>4. カスタムAPIテスト</h3>
         <label>API URL:</label>
-        <input type="text" id="custom-url" value="https://chatgpt-plus-api.azurewebsites.net/api/test-connection" style="width: 100%; margin: 5px 0;">
+        <input type="text" id="custom-url" value="/api/customers" style="width: 100%; margin: 5px 0;">
         <br>
         <label>メソッド:</label>
         <select id="custom-method">
@@ -60,7 +60,7 @@
             const resultDiv = document.getElementById('external-api-result');
             resultDiv.innerHTML = '<p class="loading">テスト中...</p>';
             
-            const testUrl = 'https://chatgpt-plus-api.azurewebsites.net/api/test-connection';
+            const testUrl = '/api/customers';
             
             try {
                 const response = await fetch(testUrl, {
@@ -112,7 +112,7 @@
             const resultDiv = document.getElementById('customers-api-result');
             resultDiv.innerHTML = '<p class="loading">テスト中...</p>';
             
-            const testUrl = 'https://chatgpt-plus-api.azurewebsites.net/api/customers';
+            const testUrl = '/api/customers';
             
             try {
                 const response = await fetch(testUrl, {
@@ -155,7 +155,7 @@
             const resultDiv = document.getElementById('submission-api-result');
             resultDiv.innerHTML = '<p class="loading">テスト中...</p>';
             
-            const testUrl = 'https://chatgpt-plus-api.azurewebsites.net/api/customer-application-submit';
+            const testUrl = '/api/customer-application-submit';
             
             const testData = {
                 serviceSelection: {
