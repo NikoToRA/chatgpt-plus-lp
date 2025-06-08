@@ -16,6 +16,7 @@ import {
   IconButton,
   Chip,
   Button,
+  Alert,
 } from '@mui/material';
 import {
   Search as SearchIcon,
@@ -23,6 +24,7 @@ import {
   Link as LinkIcon,
   Refresh as RefreshIcon,
   CloudDownload as CloudDownloadIcon,
+  Notifications as NotificationsIcon,
 } from '@mui/icons-material';
 import { customerApi } from '../../services/api';
 import { Customer, CompanyInfo } from '../../types';
@@ -71,22 +73,38 @@ export default function CustomerList() {
             email: customer.email,
             organization: customer.organizationName || customer.organization,
             name: customer.contactPerson || customer.name,
+            phoneNumber: customer.phoneNumber || '',
+            postalCode: customer.postalCode || '',
+            address: customer.address || '',
+            facilityType: customer.facilityType || '',
+            requestedAccountCount: customer.requestedAccountCount || customer.accountCount || 1,
+            applicationDate: customer.submittedAt ? new Date(customer.submittedAt) : undefined,
             chatGptAccounts: customer.chatGptAccounts || [],
             status: customer.status || 'trial',
             plan: customer.planType || customer.plan || 'plus',
             paymentMethod: customer.paymentMethod || 'card',
-            registeredAt: new Date(customer.createdAt || customer.timestamp || Date.now()),
+            registeredAt: new Date(customer.createdAt || customer.registeredAt || customer.timestamp || Date.now()),
             subscriptionMonths: customer.billingCycle === 'monthly' ? 1 : 12,
             expiresAt: new Date(Date.now() + (customer.billingCycle === 'monthly' ? 30 : 365) * 24 * 60 * 60 * 1000),
             lastActivityAt: new Date(customer.lastActiveAt || customer.lastActivityAt || customer.createdAt || Date.now()),
-            accountCount: customer.accountCount || 1,
-            applicationId: customer.applicationId
+            accountCount: customer.accountCount || customer.requestedAccountCount || 1,
+            applicationId: customer.applicationId,
+            isNewApplication: customer.isNewApplication || false,
+            productId: customer.productId || '',
+            stripeCustomerId: customer.stripeCustomerId || null
           }));
           
           setCustomers(transformedData);
           setFilteredCustomers(transformedData);
           // 取得したデータをローカルストレージにも保存
           localStorage.setItem('customers', JSON.stringify(transformedData));
+          
+          // 新規申込みがあるかチェック
+          const newApplications = transformedData.filter((c: any) => c.isNewApplication);
+          if (newApplications.length > 0) {
+            console.log(`${newApplications.length}件の新規申込みを検出:`, newApplications);
+          }
+          
           return;
         }
       } catch (apiError) {
@@ -339,8 +357,21 @@ export default function CustomerList() {
     return <Typography>Loading...</Typography>;
   }
 
+  // 新規申込みの数をカウント
+  const newApplicationsCount = customers.filter((c: any) => c.isNewApplication).length;
+
   return (
     <Box>
+      {newApplicationsCount > 0 && (
+        <Alert 
+          severity="info" 
+          icon={<NotificationsIcon />}
+          sx={{ mb: 3 }}
+        >
+          {newApplicationsCount}件の新規申込みがあります。「Azureから最新データ取得」ボタンで最新情報を確認してください。
+        </Alert>
+      )}
+      
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h4">
           顧客管理
@@ -410,8 +441,27 @@ export default function CustomerList() {
               {filteredCustomers
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((customer) => (
-                  <TableRow key={customer.id} hover>
-                    <TableCell>{customer.name}</TableCell>
+                  <TableRow 
+                    key={customer.id} 
+                    hover
+                    sx={(customer as any).isNewApplication ? { 
+                      backgroundColor: '#fff3cd',
+                      '&:hover': { backgroundColor: '#ffeaa7' }
+                    } : undefined}
+                  >
+                    <TableCell>
+                      <Box display="flex" alignItems="center" gap={1}>
+                        {customer.name}
+                        {(customer as any).isNewApplication && (
+                          <Chip 
+                            label="新規申込み" 
+                            size="small" 
+                            color="warning" 
+                            variant="filled"
+                          />
+                        )}
+                      </Box>
+                    </TableCell>
                     <TableCell>{customer.organization}</TableCell>
                     <TableCell>{customer.email}</TableCell>
                     <TableCell>

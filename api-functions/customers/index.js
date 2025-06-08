@@ -1,4 +1,7 @@
 // シンプルな顧客データ取得API - Azure Static Web Apps用
+// グローバルな申し込みデータストレージ（実際の実装ではAzure Table Storageを使用）
+let globalApplicationData = [];
+
 module.exports = async function (context, req) {
     context.log('Customers API called');
 
@@ -20,8 +23,8 @@ module.exports = async function (context, req) {
     }
 
     try {
-        // ダミーの顧客データを返す（開発用）
-        const customers = [
+        // ベースとなるダミー顧客データ
+        const baseCustomers = [
             {
                 id: 'customer-1',
                 email: 'test@hospital.com',
@@ -37,6 +40,7 @@ module.exports = async function (context, req) {
                 status: 'active',
                 registeredAt: new Date('2024-01-01').toISOString(),
                 createdAt: new Date('2024-01-01').toISOString(),
+                requestedAccountCount: 4,
                 chatGptAccounts: [
                     {
                         id: 'gpt-1',
@@ -47,6 +51,27 @@ module.exports = async function (context, req) {
                 ]
             }
         ];
+
+        // ファイルベースのストレージから申し込みデータを読み込み
+        let applicationData = [];
+        const fs = require('fs');
+        const path = '/tmp/applications.json';
+        
+        try {
+            if (fs.existsSync(path)) {
+                applicationData = JSON.parse(fs.readFileSync(path, 'utf8'));
+                context.log(`Loaded ${applicationData.length} applications from temporary storage`);
+            }
+        } catch (fileError) {
+            context.log('Could not read from file storage:', fileError.message);
+        }
+        
+        // 申し込みデータから新規顧客を追加
+        const allCustomers = [...baseCustomers, ...applicationData];
+        
+        context.log(`Returning ${allCustomers.length} customers (${baseCustomers.length} base + ${applicationData.length} from applications)`);
+
+        const customers = allCustomers;
 
         context.res = {
             status: 200,

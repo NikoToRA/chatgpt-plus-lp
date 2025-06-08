@@ -61,6 +61,36 @@ module.exports = async function (context, req) {
             submittedAt: new Date().toISOString()
         };
 
+        // 申し込みデータをグローバルストレージに保存（シンプルな実装）
+        // 実際の実装ではAzure Table Storageに保存
+        const { customers } = require('../customers/index.js');
+        
+        // グローバルな申し込みデータに追加するための仕組み
+        // customers APIで参照されるデータを更新
+        const applicationRecord = {
+            ...customerData,
+            originalSubmission: submissionData,
+            processedAt: new Date().toISOString(),
+            isNewApplication: true,
+            chatGptAccounts: []  // 初期状態では空
+        };
+        
+        // ファイルベースの共有ストレージをシミュレート
+        const fs = require('fs');
+        const path = '/tmp/applications.json';
+        
+        try {
+            let existingData = [];
+            if (fs.existsSync(path)) {
+                existingData = JSON.parse(fs.readFileSync(path, 'utf8'));
+            }
+            existingData.push(applicationRecord);
+            fs.writeFileSync(path, JSON.stringify(existingData, null, 2));
+            context.log('Application data saved to temporary storage:', applicationRecord);
+        } catch (fileError) {
+            context.log('Could not save to file, using memory only:', fileError.message);
+        }
+
         // 成功レスポンス
         context.res = {
             status: 200,
