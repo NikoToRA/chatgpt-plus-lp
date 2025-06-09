@@ -44,6 +44,11 @@ module.exports = async function (context, req) {
         
         context.log('Generated IDs:', { applicationId, customerId });
 
+        // 環境変数の詳細ログ
+        context.log('Environment variables check:');
+        context.log('- AzureWebJobsStorage exists:', !!process.env.AzureWebJobsStorage);
+        context.log('- AZURE_STORAGE_CONNECTION_STRING exists:', !!process.env.AZURE_STORAGE_CONNECTION_STRING);
+        
         // 接続文字列の確認（環境変数から取得）
         let connectionString = process.env.AzureWebJobsStorage;
         
@@ -60,16 +65,56 @@ module.exports = async function (context, req) {
             process.env.AzureWebJobsStorage ? 'AzureWebJobsStorage' : 
             process.env.AZURE_STORAGE_CONNECTION_STRING ? 'AZURE_STORAGE_CONNECTION_STRING' : 
             'default fallback');
+        
+        // 接続文字列の詳細検証
+        context.log('Connection string length:', connectionString.length);
+        context.log('Connection string starts with:', connectionString.substring(0, 50));
+        context.log('Connection string contains AccountName:', connectionString.includes('AccountName='));
+        context.log('Connection string contains AccountKey:', connectionString.includes('AccountKey='));
+        
+        // 接続文字列の基本フォーマット検証
+        if (!connectionString || typeof connectionString !== 'string') {
+            throw new Error('Connection string is null or not a string');
+        }
+        
+        if (!connectionString.includes('AccountName=') || !connectionString.includes('AccountKey=')) {
+            throw new Error('Connection string missing required AccountName or AccountKey');
+        }
 
-        // まずシンプルなCustomersテーブルのみに保存
-        const customerTableClient = new TableClient(connectionString, "Customers");
+        // TableClient作成の詳細エラーハンドリング
+        let customerTableClient;
+        try {
+            context.log('Attempting to create TableClient with Customers table...');
+            customerTableClient = new TableClient(connectionString, "Customers");
+            context.log('✅ TableClient created successfully');
+        } catch (tableClientError) {
+            context.log.error('❌ TableClient creation failed:', tableClientError.message);
+            context.log.error('Error stack:', tableClientError.stack);
+            
+            // より詳細なエラー情報を提供
+            if (tableClientError.message.includes('Invalid URL')) {
+                context.log.error('URL parsing error detected. Connection string format issue.');
+                context.log.error('Connection string components check:');
+                const parts = connectionString.split(';');
+                parts.forEach((part, index) => {
+                    context.log.error(`  ${index}: ${part}`);
+                });
+            }
+            
+            throw new Error(`TableClient creation failed: ${tableClientError.message}`);
+        }
         
         try {
+            context.log('Attempting to create/verify Customers table...');
             await customerTableClient.createTable();
-            context.log('Customers table verified/created');
+            context.log('✅ Customers table verified/created successfully');
         } catch (tableCreateError) {
-            context.log.error('Table creation error:', tableCreateError);
+            context.log.error('❌ Table creation error:', tableCreateError.message);
+            context.log.error('Table creation error stack:', tableCreateError.stack);
             // テーブル作成エラーでも続行（既存テーブルの可能性）
+            if (tableCreateError.code === 'TableAlreadyExists') {
+                context.log('Table already exists, continuing...');
+            }
         }
         
         // シンプルな顧客エンティティ
@@ -109,10 +154,13 @@ module.exports = async function (context, req) {
         context.log('Customer entity to save:', JSON.stringify(customerEntity, null, 2));
 
         try {
+            context.log('Attempting to save customer entity...');
             await customerTableClient.createEntity(customerEntity);
             context.log('✅ Customer successfully saved to table:', customerId);
         } catch (saveError) {
-            context.log.error('❌ Error saving customer entity:', saveError);
+            context.log.error('❌ Error saving customer entity:', saveError.message);
+            context.log.error('Save error stack:', saveError.stack);
+            context.log.error('Entity data that failed to save:', JSON.stringify(customerEntity, null, 2));
             throw new Error(`Customer save failed: ${saveError.message}`);
         }
 
