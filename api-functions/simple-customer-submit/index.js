@@ -49,11 +49,11 @@ module.exports = async function (context, req) {
         context.log('- AzureWebJobsStorage exists:', !!process.env.AzureWebJobsStorage);
         context.log('- AZURE_STORAGE_CONNECTION_STRING exists:', !!process.env.AZURE_STORAGE_CONNECTION_STRING);
         
-        // 接続文字列の確認（環境変数から取得）
-        let connectionString = process.env.AzureWebJobsStorage;
+        // 接続文字列の確認（Azure Static Web Apps対応環境変数から取得）
+        let connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
         
         if (!connectionString) {
-            connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING;
+            connectionString = process.env.STORAGE_CONNECTION_STRING;
         }
         
         if (!connectionString) {
@@ -62,8 +62,8 @@ module.exports = async function (context, req) {
         }
         
         context.log('Connection string source:', 
-            process.env.AzureWebJobsStorage ? 'AzureWebJobsStorage' : 
             process.env.AZURE_STORAGE_CONNECTION_STRING ? 'AZURE_STORAGE_CONNECTION_STRING' : 
+            process.env.STORAGE_CONNECTION_STRING ? 'STORAGE_CONNECTION_STRING' : 
             'default fallback');
         
         // 接続文字列の詳細検証

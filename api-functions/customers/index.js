@@ -22,9 +22,9 @@ module.exports = async function (context, req) {
     }
 
     try {
-        // Azure Table Storage から顧客データを取得
-        const connectionString = process.env.AzureWebJobsStorage || 
-            process.env.AZURE_STORAGE_CONNECTION_STRING || 
+        // Azure Table Storage から顧客データを取得（Azure Static Web Apps対応）
+        const connectionString = process.env.AZURE_STORAGE_CONNECTION_STRING || 
+            process.env.STORAGE_CONNECTION_STRING || 
             "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VNH3n0IhjyW2mM6xOtJqCuOL8l3/iHjJP1kxvGCVLdD4O7Z4+vN6M2vuQ1GKjz4S3WP7dZjBAJJM+AStGFbhmg==;EndpointSuffix=core.windows.net";
 
         const customerTableClient = new TableClient(connectionString, "Customers");

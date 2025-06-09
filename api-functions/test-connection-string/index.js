@@ -29,30 +29,30 @@ module.exports = async function (context, req) {
     };
 
     try {
-        // 1. 環境変数の確認
+        // 1. 環境変数の確認（Azure Static Web Apps対応）
         testResults.environmentVariables = {
-            AzureWebJobsStorage: !!process.env.AzureWebJobsStorage,
             AZURE_STORAGE_CONNECTION_STRING: !!process.env.AZURE_STORAGE_CONNECTION_STRING,
+            STORAGE_CONNECTION_STRING: !!process.env.STORAGE_CONNECTION_STRING,
             NODE_ENV: process.env.NODE_ENV || 'undefined',
             WEBSITE_SITE_NAME: process.env.WEBSITE_SITE_NAME || 'undefined'
         };
 
         context.log('Environment variables check:', testResults.environmentVariables);
 
-        // 2. 接続文字列のリスト
+        // 2. 接続文字列のリスト（Azure Static Web Apps対応）
         const connectionStrings = [];
-        
-        if (process.env.AzureWebJobsStorage) {
-            connectionStrings.push({
-                name: 'AzureWebJobsStorage (env)',
-                value: process.env.AzureWebJobsStorage
-            });
-        }
         
         if (process.env.AZURE_STORAGE_CONNECTION_STRING) {
             connectionStrings.push({
                 name: 'AZURE_STORAGE_CONNECTION_STRING (env)',
                 value: process.env.AZURE_STORAGE_CONNECTION_STRING
+            });
+        }
+        
+        if (process.env.STORAGE_CONNECTION_STRING) {
+            connectionStrings.push({
+                name: 'STORAGE_CONNECTION_STRING (env)',
+                value: process.env.STORAGE_CONNECTION_STRING
             });
         }
         
@@ -106,8 +106,8 @@ module.exports = async function (context, req) {
         // 4. 推奨アクション
         const recommendations = [];
         
-        if (!testResults.environmentVariables.AzureWebJobsStorage && !testResults.environmentVariables.AZURE_STORAGE_CONNECTION_STRING) {
-            recommendations.push('環境変数にAzureWebJobsStorageまたはAZURE_STORAGE_CONNECTION_STRINGを設定してください');
+        if (!testResults.environmentVariables.AZURE_STORAGE_CONNECTION_STRING && !testResults.environmentVariables.STORAGE_CONNECTION_STRING) {
+            recommendations.push('環境変数にAZURE_STORAGE_CONNECTION_STRINGまたはSTORAGE_CONNECTION_STRINGを設定してください');
         }
         
         const hasSuccessfulConnection = testResults.connectionStringTests.some(test => test.tableClientTest === 'SUCCESS - TableClient created');
