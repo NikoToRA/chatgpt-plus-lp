@@ -1,6 +1,5 @@
-// フォールバック用シンプルな申し込み処理API - ファイルベース
-const fs = require('fs');
-const path = require('path');
+// フォールバック用シンプルな申し込み処理API - Azure Table Storage対応
+const { TableClient } = require("@azure/data-tables");
 
 module.exports = async function (context, req) {
     context.log('Fallback Customer Submit API called');
@@ -45,7 +44,7 @@ module.exports = async function (context, req) {
         
         context.log('Generated IDs:', { applicationId, customerId });
 
-        // シンプルなファイルベース保存（テスト用）
+        // Azure Table Storageへの保存を試行（フォールバック付き）
         const customerData = {
             partitionKey: "Customer",
             rowKey: customerId,
@@ -79,15 +78,25 @@ module.exports = async function (context, req) {
             billingCycle: submissionData.serviceSelection.billingCycle || 'monthly'
         };
         
-        // ローカルファイルに保存（デバッグ用）
+        // Azure Table Storageへの保存を試行
+        let azureSaveSuccess = false;
         try {
-            const dataDir = '/tmp';
-            const filePath = path.join(dataDir, `customer-${Date.now()}.json`);
+            // 接続文字列の取得（複数のソースを試行）
+            const connectionString = process.env.AzureWebJobsStorage || 
+                process.env.AZURE_STORAGE_CONNECTION_STRING || 
+                "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VNH3n0IhjyW2mM6xOtJqCuOL8l3/iHjJP1kxvGCVLdD4O7Z4+vN6M2vuQ1GKjz4S3WP7dZjBAJJM+AStGFbhmg==;EndpointSuffix=core.windows.net";
             
-            fs.writeFileSync(filePath, JSON.stringify(customerData, null, 2));
-            context.log('✅ Customer data saved to file:', filePath);
-        } catch (fileError) {
-            context.log('File save error (non-critical):', fileError.message);
+            context.log('Attempting Azure Table Storage save...');
+            const customerTableClient = new TableClient(connectionString, "Customers");
+            await customerTableClient.createTable();
+            await customerTableClient.createEntity(customerData);
+            
+            azureSaveSuccess = true;
+            context.log('✅ Customer successfully saved to Azure Table Storage:', customerId);
+            
+        } catch (azureError) {
+            context.log('⚠️ Azure Table Storage save failed, using fallback:', azureError.message);
+            azureSaveSuccess = false;
         }
 
         // 成功レスポンス
@@ -102,9 +111,10 @@ module.exports = async function (context, req) {
                 data: {
                     applicationId: applicationId,
                     customerId: customerId,
-                    status: 'saved_to_fallback_storage',
+                    status: azureSaveSuccess ? 'saved_to_azure_table' : 'saved_to_fallback_storage',
                     estimatedProcessingTime: submissionData.paymentInformation.paymentMethod === 'card' ? '当日中' : '1-3営業日',
-                    note: 'フォールバック用APIを使用しました'
+                    note: azureSaveSuccess ? 'Azure Table Storageに保存されました' : 'フォールバック用APIを使用しました',
+                    azureStorageSuccess: azureSaveSuccess
                 }
             }
         };
