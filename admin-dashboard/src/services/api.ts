@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Customer, DashboardStats, AccountLinking, InvoiceRequest } from '../types';
 
-const API_URL = process.env.REACT_APP_API_URL || 'https://chatgpt-plus-api.azurewebsites.net/api';
+const API_URL = process.env.REACT_APP_API_URL || '/api';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -22,21 +22,8 @@ api.interceptors.request.use((config) => {
 // Customer APIs
 export const customerApi = {
   getAll: async (): Promise<Customer[]> => {
-    try {
-      const response = await api.get('/customers');
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching customers from API:', error);
-      
-      // Try to load from localStorage as fallback
-      const localCustomers = localStorage.getItem('customers');
-      if (localCustomers) {
-        return JSON.parse(localCustomers);
-      }
-      
-      // If no local data, return empty array
-      return [];
-    }
+    const response = await api.get('/customers');
+    return response.data;
   },
 
   getById: async (id: string): Promise<Customer> => {
