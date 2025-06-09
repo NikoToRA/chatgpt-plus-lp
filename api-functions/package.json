@@ -1,19 +1,16 @@
 {
   "name": "chatgpt-plus-api-functions",
   "version": "1.0.0",
-  "description": "Azure Static Web Apps Functions",
+  "description": "Azure Functions for ChatGPT Plus",
   "main": "index.js",
   "scripts": {
     "start": "func start",
-    "test": "echo \"No tests yet\""
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@azure/data-tables": "^13.3.1"
+    "@azure/data-tables": "^13.2.2"
   },
   "devDependencies": {
-    "@azure/functions": "^4.5.0"
-  },
-  "engines": {
-    "node": ">=18"
+    "@azure/functions": "^4.0.1"
   }
 }
