@@ -8,7 +8,8 @@
       "methods": [
         "post",
         "options"
-      ]
+      ],
+      "route": "simple-submit"
     },
     {
       "type": "http",

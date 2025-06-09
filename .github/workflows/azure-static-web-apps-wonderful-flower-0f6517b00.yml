@@ -35,7 +35,7 @@ jobs:
           rm -rf admin/*
           cp -r admin-dashboard/build/* admin/
         env:
-          REACT_APP_API_URL: https://chatgpt-plus-api.azurewebsites.net/api
+          REACT_APP_API_URL: /api
           REACT_APP_ENVIRONMENT: production
           CI: false
           ESLINT_NO_DEV_ERRORS: true
@@ -51,7 +51,7 @@ jobs:
           rm -rf application/*
           cp -r api/customer-application/build/* application/
         env:
-          REACT_APP_API_URL: https://chatgpt-plus-api.azurewebsites.net/api
+          REACT_APP_API_URL: /api
           REACT_APP_ENVIRONMENT: production
           CI: false
           ESLINT_NO_DEV_ERRORS: true
