@@ -11,8 +11,8 @@ const PRICING = {
   },
   discounts: {
     3: 0.05,  // 3ヶ月: 5%割引
-    6: 0.10,  // 6ヶ月: 10%割引
-    12: 0.08  // 12ヶ月: 8%割引（66000/6000/12 = 約8%割引）
+    6: 0.10   // 6ヶ月: 10%割引
+    // 12ヶ月は年額料金を直接使用するため割引設定不要
   }
 };
 
@@ -46,11 +46,18 @@ function calculateEstimate() {
   }
 
   // 基本料金計算
-  let basicCost = accountCount * PRICING.monthlyRate * contractPeriod;
-  
-  // 割引適用
-  const discount = PRICING.discounts[contractPeriod] || 0;
-  basicCost = Math.round(basicCost * (1 - discount));
+  let basicCost;
+  if (contractPeriod === 12) {
+    // 12ヶ月契約は年額料金を使用
+    basicCost = accountCount * PRICING.yearlyRate;
+  } else {
+    // 12ヶ月以外は月額料金×期間で計算
+    basicCost = accountCount * PRICING.monthlyRate * contractPeriod;
+    
+    // 割引適用
+    const discount = PRICING.discounts[contractPeriod] || 0;
+    basicCost = Math.round(basicCost * (1 - discount));
+  }
 
   // 初期設定費用
   const setupCost = PRICING.setupFee;
@@ -131,9 +138,19 @@ function generateInvoiceHTML(data) {
   const invoiceNumber = 'TRIAL-' + today.getFullYear() + String(today.getMonth() + 1).padStart(2, '0') + String(today.getDate()).padStart(2, '0') + '-' + Math.floor(Math.random() * 1000).toString().padStart(3, '0');
   
   // 料金計算（再計算）
-  let basicCost = data.accountCount * PRICING.monthlyRate * data.contractPeriod;
-  const discount = PRICING.discounts[data.contractPeriod] || 0;
-  basicCost = Math.round(basicCost * (1 - discount));
+  let basicCost;
+  let discount = 0;
+  if (data.contractPeriod === 12) {
+    // 12ヶ月契約は年額料金を使用
+    basicCost = data.accountCount * PRICING.yearlyRate;
+  } else {
+    // 12ヶ月以外は月額料金×期間で計算
+    basicCost = data.accountCount * PRICING.monthlyRate * data.contractPeriod;
+    
+    // 割引適用
+    discount = PRICING.discounts[data.contractPeriod] || 0;
+    basicCost = Math.round(basicCost * (1 - discount));
+  }
   
   const setupCost = PRICING.setupFee;
   let additionalCost = 0;
@@ -234,9 +251,9 @@ function generateInvoiceHTML(data) {
       </thead>
       <tbody>
         <tr>
-          <td>ChatGPT Plus利用料金${discount > 0 ? ' (' + Math.round(discount * 100) + '%割引適用)' : ''}</td>
-          <td>${data.accountCount}アカウント × ${data.contractPeriod}ヶ月</td>
-          <td>¥${PRICING.monthlyRate.toLocaleString()}/月</td>
+          <td>ChatGPT Plus利用料金${data.contractPeriod === 12 ? ' (年額プラン)' : (discount > 0 ? ' (' + Math.round(discount * 100) + '%割引適用)' : '')}</td>
+          <td>${data.accountCount}アカウント × ${data.contractPeriod === 12 ? '1年' : data.contractPeriod + 'ヶ月'}</td>
+          <td>${data.contractPeriod === 12 ? '¥' + PRICING.yearlyRate.toLocaleString() + '/年' : '¥' + PRICING.monthlyRate.toLocaleString() + '/月'}</td>
           <td class="amount">¥${basicCost.toLocaleString()}</td>
         </tr>
         <tr>
