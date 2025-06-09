@@ -212,21 +212,22 @@ export default function CustomerList() {
         </Typography>
         <Box display="flex" gap={2}>
           <Button
-            variant="outlined"
-            startIcon={<RefreshIcon />}
-            onClick={refreshFromAzure}
-            disabled={isRefreshing}
+            variant="contained"
+            color="primary"
+            startIcon={<LinkIcon />}
+            onClick={() => navigate('/customers/new')}
           >
-            {isRefreshing ? 'データ取得中...' : 'Azureから最新データ取得'}
+            新規顧客を登録
           </Button>
           <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<CloudDownloadIcon />}
-            onClick={refreshFromAzure}
-            disabled={isRefreshing}
+            variant="outlined"
+            startIcon={<NotificationsIcon />}
+            onClick={() => {
+              // Notion申し込み確認ページを開く
+              window.open('https://notion.so', '_blank');
+            }}
           >
-            {isRefreshing ? 'データ取得中...' : '新規申し込み確認'}
+            Notion申し込み確認
           </Button>
           <Button
             variant="outlined"

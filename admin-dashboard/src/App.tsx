@@ -7,6 +7,7 @@ import CompanySettings from './components/Company/CompanySettings';
 import Dashboard from './components/Dashboard/Dashboard';
 import CustomerList from './components/Customers/CustomerList';
 import CustomerDetail from './components/Customers/CustomerDetail';
+import CustomerNew from './components/Customers/CustomerNew';
 import AccountLinking from './components/Accounts/AccountLinking';
 
 const theme = createTheme({
@@ -62,6 +63,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="customers" element={<CustomerList />} />
+            <Route path="customers/new" element={<CustomerNew />} />
             <Route path="customers/:id" element={<CustomerDetail />} />
             <Route path="accounts/link" element={<AccountLinking />} />
             <Route path="company" element={<CompanySettings />} />

@@ -119,33 +119,6 @@ module.exports = async function (context, req) {
             // ストレージエラーでも処理を続行（フォールバック対応）
         }
 
-        // 管理画面用のデータ形式（従来のローカルストレージ連携用）
-        const customerData = {
-            id: customerId,
-            applicationId: applicationId,
-            email: submissionData.basicInformation.email || '',
-            organization: submissionData.basicInformation.organizationName || '',
-            name: submissionData.basicInformation.contactPerson || '',
-            phoneNumber: submissionData.basicInformation.phoneNumber || '',
-            address: `${submissionData.basicInformation.prefecture || ''} ${submissionData.basicInformation.city || ''} ${submissionData.basicInformation.address || ''}`.trim(),
-            facilityType: submissionData.basicInformation.facilityType || '',
-            plan: submissionData.serviceSelection.planId === 'prod-1' ? 'plus' : 'enterprise',
-            requestedAccountCount: submissionData.serviceSelection.requestedAccountCount || 1,
-            paymentMethod: submissionData.paymentInformation.paymentMethod || 'card',
-            status: 'trial',
-            isNewApplication: true,
-            registeredAt: new Date().toISOString(),
-            createdAt: new Date().toISOString(),
-            submittedAt: new Date().toISOString(),
-            chatGptAccounts: [],
-            billingCycle: submissionData.serviceSelection.billingCycle || 'monthly',
-            subscriptionMonths: submissionData.serviceSelection.billingCycle === 'monthly' ? 1 : 12,
-            expiresAt: new Date(Date.now() + (submissionData.serviceSelection.billingCycle === 'monthly' ? 30 : 365) * 24 * 60 * 60 * 1000).toISOString(),
-            lastActivityAt: new Date().toISOString(),
-            stripeCustomerId: null,
-            productId: ''
-        };
-
         // 成功レスポンス
         context.res = {
             status: 200,
@@ -155,13 +128,11 @@ module.exports = async function (context, req) {
                 applicationId: applicationId,
                 customerId: customerId,
                 message: "申し込みを受け付けました",
-                customerData: customerData, // 管理画面で使用するデータ
                 data: {
                     applicationId: applicationId,
                     customerId: customerId,
                     status: 'submitted',
-                    estimatedProcessingTime: submissionData.paymentInformation.paymentMethod === 'card' ? '当日中' : '1-3営業日',
-                    instructions: '管理画面の「申し込み確認」ボタンで新規申し込みを確認してください'
+                    estimatedProcessingTime: submissionData.paymentInformation.paymentMethod === 'card' ? '当日中' : '1-3営業日'
                 }
             }
         };
