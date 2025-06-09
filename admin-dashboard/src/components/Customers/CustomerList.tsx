@@ -25,6 +25,7 @@ import {
   Refresh as RefreshIcon,
   CloudDownload as CloudDownloadIcon,
   Notifications as NotificationsIcon,
+  Email as EmailIcon,
 } from '@mui/icons-material';
 import { customerApi } from '../../services/api';
 import { Customer, CompanyInfo } from '../../types';
