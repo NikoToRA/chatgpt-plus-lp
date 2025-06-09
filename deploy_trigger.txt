@@ -1,1 +1,1 @@
-trigger deploy - 2025-06-09-21:05:15
+trigger deploy - simplified LP - 2025-06-09-21:12:30
