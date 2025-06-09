@@ -1,15 +1,6 @@
 {
   "routes": [
     {
-      "route": "/application/*",
-      "serve": "/application/index.html",
-      "statusCode": 200
-    },
-    {
-      "route": "/application",
-      "redirect": "/application/"
-    },
-    {
       "route": "/admin/*",
       "serve": "/admin/index.html",
       "statusCode": 200
@@ -57,7 +48,6 @@
   "navigationFallback": {
     "rewrite": "/index.html",
     "exclude": [
-      "/application/*",
       "/admin/*",
       "/images/*.{png,jpg,gif,svg}", 
       "/css/*", 

@@ -41,22 +41,6 @@ jobs:
           ESLINT_NO_DEV_ERRORS: true
           GENERATE_SOURCEMAP: false
       
-      # 申し込みフォームのビルド
-      - name: Build Customer Application Form
-        run: |
-          cd api/customer-application
-          npm ci
-          npm run build
-          cd ../..
-          rm -rf application/*
-          cp -r api/customer-application/build/* application/
-        env:
-          REACT_APP_API_URL: /api
-          REACT_APP_ENVIRONMENT: production
-          CI: false
-          ESLINT_NO_DEV_ERRORS: true
-          GENERATE_SOURCEMAP: false
-      
       # デプロイ専用ディレクトリを作成
       - name: Create deployment directory
         run: |
@@ -64,7 +48,6 @@ jobs:
           # 必要なファイルのみをコピー
           cp index.html deploy/
           cp -r admin deploy/
-          cp -r application deploy/
           cp -r css deploy/
           cp -r js deploy/
           cp -r images deploy/
