@@ -64,13 +64,31 @@ module.exports = async function (context, req) {
         };
 
         // Azure Table Storage への直接保存
+        // 接続文字列の確認と設定
         const connectionString = process.env.AzureWebJobsStorage || 
             process.env.AZURE_STORAGE_CONNECTION_STRING || 
             "DefaultEndpointsProtocol=https;AccountName=koereqqstorage;AccountKey=VNH3n0IhjyW2mM6xOtJqCuOL8l3/iHjJP1kxvGCVLdD4O7Z4+vN6M2vuQ1GKjz4S3WP7dZjBAJJM+AStGFbhmg==;EndpointSuffix=core.windows.net";
+        
+        context.log('Using connection string from:', 
+            process.env.AzureWebJobsStorage ? 'AzureWebJobsStorage' : 
+            process.env.AZURE_STORAGE_CONNECTION_STRING ? 'AZURE_STORAGE_CONNECTION_STRING' : 
+            'fallback default');
+        
+        // 接続文字列の検証
+        if (!connectionString || !connectionString.includes('AccountName=')) {
+            throw new Error('Invalid Azure Storage connection string');
+        }
 
         // CustomerApplications テーブルに保存
-        const applicationTableClient = new TableClient(connectionString, "CustomerApplications");
-        await applicationTableClient.createTable();
+        let applicationTableClient;
+        try {
+            applicationTableClient = new TableClient(connectionString, "CustomerApplications");
+            await applicationTableClient.createTable();
+            context.log('CustomerApplications table created/verified');
+        } catch (tableError) {
+            context.log.error('Error creating CustomerApplications table:', tableError);
+            throw new Error(`Table creation failed: ${tableError.message}`);
+        }
 
         const applicationEntity = {
             partitionKey: "CustomerApplication",
@@ -112,12 +130,24 @@ module.exports = async function (context, req) {
             isNewApplication: true
         };
 
-        await applicationTableClient.createEntity(applicationEntity);
-        context.log('Application saved to CustomerApplications table:', applicationId);
+        try {
+            await applicationTableClient.createEntity(applicationEntity);
+            context.log('Application saved to CustomerApplications table:', applicationId);
+        } catch (applicationSaveError) {
+            context.log.error('Error saving to CustomerApplications:', applicationSaveError);
+            throw new Error(`Application save failed: ${applicationSaveError.message}`);
+        }
 
         // Customers テーブルにも保存（管理画面での表示用）
-        const customerTableClient = new TableClient(connectionString, "Customers");
-        await customerTableClient.createTable();
+        let customerTableClient;
+        try {
+            customerTableClient = new TableClient(connectionString, "Customers");
+            await customerTableClient.createTable();
+            context.log('Customers table created/verified');
+        } catch (customerTableError) {
+            context.log.error('Error creating Customers table:', customerTableError);
+            throw new Error(`Customer table creation failed: ${customerTableError.message}`);
+        }
         
         const customerEntity = {
             partitionKey: "Customer",
@@ -163,8 +193,13 @@ module.exports = async function (context, req) {
             subscriptionMonths: submissionData.serviceSelection.billingCycle === 'monthly' ? 1 : 12
         };
 
-        await customerTableClient.createEntity(customerEntity);
-        context.log('Customer saved to Customers table:', customerData.id);
+        try {
+            await customerTableClient.createEntity(customerEntity);
+            context.log('Customer saved to Customers table:', customerData.id);
+        } catch (customerSaveError) {
+            context.log.error('Error saving to Customers table:', customerSaveError);
+            throw new Error(`Customer save failed: ${customerSaveError.message}`);
+        }
 
         // 成功レスポンス
         context.res = {

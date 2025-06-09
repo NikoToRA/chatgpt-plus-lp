@@ -131,7 +131,7 @@ const OptimizedApplicationForm: React.FC = () => {
       // Azure Static Web Apps内部のAPIを使用
       const apiBaseUrl = '/api';
       
-      const response = await fetch(`${apiBaseUrl}/customer-application-submit`, {
+      const response = await fetch(`${apiBaseUrl}/simple-customer-submit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
