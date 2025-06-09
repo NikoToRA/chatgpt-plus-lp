@@ -32,12 +32,25 @@ module.exports = async function (context, req) {
         const customers = [];
         
         try {
+            context.log('Attempting to read from Customers table...');
+            
             // CustomersテーブルからすべてのデータToAcquisition
             const entities = customerTableClient.listEntities({
                 queryOptions: { filter: "PartitionKey eq 'Customer'" }
             });
             
+            context.log('Successfully created listEntities query');
+            let entityCount = 0;
+            
             for await (const entity of entities) {
+                entityCount++;
+                context.log(`Processing entity ${entityCount}:`, {
+                    id: entity.id || entity.rowKey,
+                    email: entity.email,
+                    organization: entity.organization,
+                    isNewApplication: entity.isNewApplication,
+                    timestamp: entity.timestamp
+                });
                 const customer = {
                     id: entity.id || entity.rowKey,
                     email: entity.email,
@@ -82,7 +95,9 @@ module.exports = async function (context, req) {
                 customers.push(customer);
             }
             
+            context.log(`Successfully processed ${entityCount} entities`);
             context.log(`Retrieved ${customers.length} customers from Azure Table Storage`);
+            context.log('Sample customer data:', customers.slice(0, 2));
             
         } catch (tableError) {
             context.log('Could not read from Azure Table Storage:', tableError.message);
