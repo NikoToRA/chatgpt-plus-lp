@@ -99,12 +99,27 @@ module.exports = async function (context, req) {
                     }
                 } else {
                     // Get all customers
-                    const customers = [];
-                    const entities = tableClient.listEntities({
-                        queryOptions: { filter: "PartitionKey eq 'Customer'" }
-                    });
+                    context.log('=== Getting all customers ===');
+                    context.log('Connection string preview:', connectionString ? connectionString.substring(0, 50) + '...' : 'NOT SET');
                     
-                    for await (const entity of entities) {
+                    const customers = [];
+                    try {
+                        const entities = tableClient.listEntities({
+                            queryOptions: { filter: "PartitionKey eq 'Customer'" }
+                        });
+                        
+                        context.log('Entity query created successfully');
+                        let entityCount = 0;
+                        
+                        for await (const entity of entities) {
+                            entityCount++;
+                            context.log(`Processing entity ${entityCount}:`, {
+                                partitionKey: entity.partitionKey,
+                                rowKey: entity.rowKey,
+                                id: entity.id,
+                                organization: entity.organization,
+                                email: entity.email
+                            });
                         customers.push({
                             id: entity.id || entity.rowKey,
                             email: entity.email,
@@ -156,13 +171,22 @@ module.exports = async function (context, req) {
                             termsAccepted: entity.termsAccepted || false,
                             privacyAccepted: entity.privacyAccepted || false
                         });
+                        }
+                        
+                        context.log(`=== Query completed. Found ${entityCount} entities, ${customers.length} customers ===`);
+                        
+                    } catch (queryError) {
+                        context.log.error('Error querying entities:', queryError);
+                        throw queryError;
                     }
                     
                     context.res = {
                         status: 200,
                         headers: {
                             'Content-Type': 'application/json',
-                            'Access-Control-Allow-Origin': '*'
+                            'Access-Control-Allow-Origin': '*',
+                            'X-Debug-Count': customers.length.toString(),
+                            'X-Connection-Status': 'OK'
                         },
                         body: customers
                     };
