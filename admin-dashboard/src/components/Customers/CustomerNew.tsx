@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { customerApi } from '../../services/api';
 import {
   Box,
   Paper,
@@ -60,30 +61,31 @@ export default function CustomerNew() {
     setActiveStep(prev => prev - 1);
   };
 
-  const handleSave = () => {
-    // 新しい顧客IDを生成
-    const newCustomerId = `customer-${Date.now()}`;
-    
-    // 顧客データを構築
-    const customerData = {
-      id: newCustomerId,
-      ...formData,
-      chatGptAccounts: [],
-      registeredAt: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-      expiresAt: new Date(Date.now() + (formData.subscriptionMonths * 30 * 24 * 60 * 60 * 1000)).toISOString(),
-      lastActivityAt: new Date().toISOString(),
-      stripeCustomerId: null,
-      productId: formData.plan === 'plus' ? 'prod-1' : 'prod-2'
-    };
+  const handleSave = async () => {
+    try {
+      // 顧客データを構築
+      const customerData = {
+        ...formData,
+        facilityType: formData.facilityType as 'hospital' | 'clinic' | 'dental_clinic' | 'pharmacy' | 'nursing_home' | 'other' | undefined,
+        status: formData.status as 'trial' | 'active' | 'suspended' | 'cancelled',
+        plan: formData.plan as 'basic' | 'plus' | 'enterprise',
+        paymentMethod: formData.paymentMethod as 'card' | 'invoice',
+        chatGptAccounts: [],
+        stripeCustomerId: undefined,
+        termsAccepted: true,
+        privacyAccepted: true,
+        productId: formData.plan === 'plus' ? 'prod-1' : 'prod-2'
+      };
 
-    // ローカルストレージに保存
-    const existingCustomers = JSON.parse(localStorage.getItem('customers') || '[]');
-    const updatedCustomers = [...existingCustomers, customerData];
-    localStorage.setItem('customers', JSON.stringify(updatedCustomers));
-
-    alert('新規顧客を登録しました！');
-    navigate('/customers');
+      // Azure Table Storageに保存
+      const newCustomer = await customerApi.create(customerData);
+      
+      alert('新規顧客をAzure DBに登録しました！');
+      navigate('/customers');
+    } catch (error) {
+      console.error('Error creating customer:', error);
+      alert('顧客登録に失敗しました。もう一度お試しください。');
+    }
   };
 
   const renderStepContent = () => {

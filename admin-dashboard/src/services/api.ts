@@ -31,6 +31,11 @@ export const customerApi = {
     return response.data;
   },
 
+  create: async (data: Partial<Customer>): Promise<Customer> => {
+    const response = await api.post('/customers', data);
+    return response.data;
+  },
+
   update: async (id: string, data: Partial<Customer>): Promise<Customer> => {
     const response = await api.put(`/customers/${id}`, data);
     return response.data;

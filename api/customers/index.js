@@ -242,10 +242,92 @@ module.exports = async function (context, req) {
                         };
                     }
                 } else {
-                    context.res = {
-                        status: 400,
-                        body: { error: "Invalid endpoint" }
-                    };
+                    // Create new customer
+                    const customerData = req.body;
+                    const customerId = `cust_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+                    
+                    try {
+                        const newEntity = {
+                            partitionKey: "Customer",
+                            rowKey: customerId,
+                            id: customerId,
+                            
+                            // 基本情報
+                            email: customerData.email || '',
+                            organization: customerData.organization || '',
+                            name: customerData.name || '',
+                            
+                            // 詳細な住所情報
+                            phoneNumber: customerData.phoneNumber || '',
+                            postalCode: customerData.postalCode || '',
+                            address: customerData.address || '',
+                            prefecture: customerData.prefecture || '',
+                            city: customerData.city || '',
+                            addressDetail: customerData.addressDetail || '',
+                            
+                            // 医療機関情報
+                            facilityType: customerData.facilityType || '',
+                            department: customerData.department || '',
+                            contactPhone: customerData.contactPhone || customerData.phoneNumber || '',
+                            
+                            // サービス情報
+                            plan: customerData.plan || 'plus',
+                            planId: customerData.planId || '',
+                            accountCount: customerData.accountCount || 1,
+                            requestedAccountCount: customerData.requestedAccountCount || customerData.accountCount || 1,
+                            billingCycle: customerData.billingCycle || 'monthly',
+                            startDate: customerData.startDate || new Date().toISOString(),
+                            
+                            // 支払い情報
+                            paymentMethod: customerData.paymentMethod || 'invoice',
+                            cardHolderName: customerData.cardHolderName || '',
+                            billingContact: customerData.billingContact || customerData.name || '',
+                            billingEmail: customerData.billingEmail || customerData.email || '',
+                            
+                            // システム情報
+                            status: customerData.status || 'active',
+                            chatGptEmail: customerData.chatGptEmail || null,
+                            chatGptAccounts: JSON.stringify(customerData.chatGptAccounts || []),
+                            stripeCustomerId: customerData.stripeCustomerId || null,
+                            
+                            // タイムスタンプ
+                            registeredAt: new Date().toISOString(),
+                            createdAt: new Date().toISOString(),
+                            lastActivityAt: new Date().toISOString(),
+                            expiresAt: customerData.expiresAt || new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(), // 1年後
+                            subscriptionMonths: customerData.subscriptionMonths || 1,
+                            
+                            // 申し込み関連
+                            applicationId: customerData.applicationId || '',
+                            termsAccepted: customerData.termsAccepted || true,
+                            privacyAccepted: customerData.privacyAccepted || true
+                        };
+                        
+                        await tableClient.createEntity(newEntity);
+                        
+                        context.res = {
+                            status: 201,
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Access-Control-Allow-Origin': '*'
+                            },
+                            body: {
+                                id: customerId,
+                                ...customerData,
+                                createdAt: newEntity.createdAt,
+                                status: newEntity.status
+                            }
+                        };
+                    } catch (error) {
+                        context.log.error('Error creating customer:', error);
+                        context.res = {
+                            status: 500,
+                            headers: {
+                                'Access-Control-Allow-Origin': '*'
+                            },
+                            body: { error: "Failed to create customer" }
+                        };
+                    }
                 }
                 break;
 
