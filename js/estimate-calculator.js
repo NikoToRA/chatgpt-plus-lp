@@ -4,7 +4,7 @@
 const PRICING = {
   monthlyRate: 6000, // 1アカウントあたりの月額料金
   yearlyRate: 66000, // 1アカウントあたりの年額料金
-  setupFee: 20000,   // 初期設定費用
+  setupFee: 10000,   // 初期設定費用
   additionalServices: {
     lecture: 30000,  // レクチャー費用（1回）
     support: 10000   // 優先サポート（月額）
