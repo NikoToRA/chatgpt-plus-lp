@@ -224,7 +224,7 @@ export default function CustomerList() {
             startIcon={<NotificationsIcon />}
             onClick={() => {
               // Notion申し込み確認ページを開く
-              window.open('https://notion.so', '_blank');
+              window.open('https://acute-bonsai-31d.notion.site/20d5d7357cc780a48de3e5a6a86c1bf4?pvs=105', '_blank');
             }}
           >
             Notion申し込み確認
