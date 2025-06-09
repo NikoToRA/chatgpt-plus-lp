@@ -386,6 +386,18 @@ export default function CustomerList() {
             {isRefreshing ? 'データ取得中...' : 'Azureから最新データ取得'}
           </Button>
           <Button
+            variant="contained"
+            color="secondary"
+            startIcon={<CloudDownloadIcon />}
+            onClick={() => {
+              // 新規申し込み確認（実装簡易版）
+              const newApplicationAlert = '新規申し込みがある場合、この機能で確認できます。\n現在はローカルストレージベースで動作しています。';
+              alert(newApplicationAlert);
+            }}
+          >
+            申し込み確認
+          </Button>
+          <Button
             variant="outlined"
             onClick={() => {
               console.log('Test navigation to customer 1');
