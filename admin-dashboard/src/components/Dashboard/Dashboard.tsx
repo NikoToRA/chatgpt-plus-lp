@@ -13,6 +13,7 @@ import {
   TableHead,
   TableRow,
   Chip,
+  Alert,
 } from '@mui/material';
 import {
   TrendingUp as TrendingUpIcon,
@@ -20,7 +21,7 @@ import {
   Assignment as AssignmentIcon,
   AttachMoney as AttachMoneyIcon,
 } from '@mui/icons-material';
-import { dashboardApi } from '../../services/api';
+import { customerApi } from '../../services/api';
 import { DashboardStats, Customer } from '../../types';
 import RevenueChart from './RevenueChart';
 
@@ -28,6 +29,7 @@ export default function Dashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentApplications, setRecentApplications] = useState<Customer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     loadDashboardData();
@@ -35,82 +37,11 @@ export default function Dashboard() {
 
   const loadDashboardData = async () => {
     try {
-      const [statsData, recentData] = await Promise.all([
-        dashboardApi.getStats(),
-        dashboardApi.getRecentApplications(),
-      ]);
-      setStats(statsData);
-      setRecentApplications(recentData);
-    } catch (error) {
-      console.error('Failed to load dashboard data:', error);
-      
-      // ローカルストレージから顧客データを取得して動的計算
-      const localCustomers = localStorage.getItem('customers');
-      let customers: Customer[] = [];
-      
-      if (localCustomers) {
-        customers = JSON.parse(localCustomers);
-      } else {
-        // フォールバック用ダミーデータ
-        customers = [
-          {
-            id: '1',
-            email: 'yamada@example.com',
-            organization: '株式会社山田商事',
-            name: '山田太郎',
-            chatGptAccounts: [
-              { id: 'gpt-1', email: 'yamada@chatgpt.com', isActive: true, createdAt: new Date('2025-05-01') },
-              { id: 'gpt-5', email: 'yamada2@chatgpt.com', isActive: true, createdAt: new Date('2025-05-10') },
-              { id: 'gpt-6', email: 'yamada3@chatgpt.com', isActive: true, createdAt: new Date('2025-05-15') },
-              { id: 'gpt-7', email: 'yamada4@chatgpt.com', isActive: true, createdAt: new Date('2025-05-20') }
-            ],
-            status: 'active',
-            plan: 'plus',
-            paymentMethod: 'card',
-            registeredAt: new Date('2025-05-01'),
-            subscriptionMonths: 12,
-            expiresAt: new Date('2026-05-01'),
-            lastActivityAt: new Date(),
-          },
-          {
-            id: '2',
-            email: 'suzuki@example.com',
-            organization: '鈴木工業株式会社',
-            name: '鈴木花子',
-            chatGptAccounts: [],
-            status: 'trial',
-            plan: 'plus',
-            paymentMethod: 'invoice',
-            registeredAt: new Date('2025-05-15'),
-            subscriptionMonths: 3,
-            expiresAt: new Date('2025-08-15'),
-            lastActivityAt: new Date(),
-          },
-          {
-            id: '3',
-            email: 'tanaka@example.com',
-            organization: '田中システム',
-            name: '田中次郎',
-            chatGptAccounts: [
-              { id: 'gpt-2', email: 'tanaka@chatgpt.com', isActive: true, createdAt: new Date('2025-04-20') },
-              { id: 'gpt-3', email: 'tanaka2@chatgpt.com', isActive: true, createdAt: new Date('2025-04-25') },
-              { id: 'gpt-4', email: 'tanaka3@chatgpt.com', isActive: false, createdAt: new Date('2025-04-30') }
-            ],
-            status: 'active',
-            plan: 'plus',
-            paymentMethod: 'invoice',
-            registeredAt: new Date('2025-04-20'),
-            subscriptionMonths: 6,
-            expiresAt: new Date('2025-10-20'),
-            lastActivityAt: new Date(),
-          },
-        ];
-        localStorage.setItem('customers', JSON.stringify(customers));
-      }
+      // Supabaseから直接顧客データを取得して統計計算
+      const customers = await customerApi.getAll();
       
       // 動的計算
       const totalApplications = customers.length;
-      const pendingApplications = customers.filter(c => c.status === 'trial').length;
       const activeAccounts = customers.filter(c => c.status === 'active').length;
       
       // 月間売上計算（アカウント数 × プラン料金）
@@ -120,7 +51,6 @@ export default function Dashboard() {
       const monthlyRevenue = customers
         .filter(c => c.status === 'active')
         .reduce((total, customer) => {
-          // 顧客詳細のチームプラン状況と同じ計算ロジック
           const customerRevenue = customer.chatGptAccounts
             .filter(acc => acc.isActive || acc.status === 'active')
             .reduce((customerTotal, acc) => {
@@ -131,8 +61,6 @@ export default function Dashboard() {
             }, 0);
           return total + customerRevenue;
         }, 0);
-      
-      const conversionRate = totalApplications > 0 ? (activeAccounts / totalApplications) * 100 : 0;
       
       setStats({
         totalCustomers: totalApplications,
@@ -148,6 +76,19 @@ export default function Dashboard() {
           .sort((a, b) => new Date(b.registeredAt).getTime() - new Date(a.registeredAt).getTime())
           .slice(0, 5)
       );
+      
+    } catch (error) {
+      console.error('Supabaseからのデータ取得に失敗:', error);
+      setError('データの取得に失敗しました。Supabase接続を確認してください。');
+      
+      // エラー時は空の状態を設定
+      setStats({
+        totalCustomers: 0,
+        activeCustomers: 0,
+        totalRevenue: 0,
+        monthlyRevenue: 0,
+      });
+      setRecentApplications([]);
     } finally {
       setIsLoading(false);
     }
@@ -201,6 +142,12 @@ export default function Dashboard() {
       <Typography variant="h4" gutterBottom>
         ダッシュボード
       </Typography>
+      
+      {error && (
+        <Alert severity="error" sx={{ mb: 3 }} onClose={() => setError('')}>
+          {error}
+        </Alert>
+      )}
 
       <Grid container spacing={3} sx={{ mb: 3 }}>
         {statCards.map((card, index) => (

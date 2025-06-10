@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase接続テスト</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 20px auto; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        button { padding: 10px 20px; margin: 5px; background: #007cba; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #005a87; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow: auto; }
+        .loading { color: #6c757d; }
+    </style>
+</head>
+<body>
+    <h1>Supabase接続診断</h1>
+    
+    <div class="test-section">
+        <h3>1. API接続テスト</h3>
+        <button onclick="testConnection()">接続テスト実行</button>
+        <div id="connectionResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>2. テーブル存在確認</h3>
+        <button onclick="testTableExists()">テーブル確認</button>
+        <div id="tableResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>3. 権限テスト</h3>
+        <button onclick="testPermissions()">権限テスト</button>
+        <div id="permissionResult"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>4. データ投稿テスト</h3>
+        <button onclick="testInsert()">投稿テスト</button>
+        <div id="insertResult"></div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://xyztpwuoptomidmpasxy.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5enRwd3VvcHRvbWlkbXBhc3h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2Mzk1MjUsImV4cCI6MjA1OTIxNTUyNX0.tvRP0zLfgNz0mnlBjClI-4B8nsstAXbs7_NDhz3VEzg';
+
+        function showResult(elementId, content, isError = false) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = content;
+            element.className = isError ? 'error' : 'success';
+        }
+
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = '<div class="loading">テスト中...</div>';
+            element.className = '';
+        }
+
+        async function testConnection() {
+            showLoading('connectionResult');
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/`, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                
+                console.log('Connection test response:', response);
+                
+                if (response.ok) {
+                    showResult('connectionResult', `
+                        <h4>✅ 接続成功</h4>
+                        <p>ステータス: ${response.status}</p>
+                        <p>URL: ${SUPABASE_URL}</p>
+                    `);
+                } else {
+                    showResult('connectionResult', `
+                        <h4>❌ 接続失敗</h4>
+                        <p>ステータス: ${response.status}</p>
+                        <p>エラー: ${response.statusText}</p>
+                    `, true);
+                }
+            } catch (error) {
+                showResult('connectionResult', `
+                    <h4>❌ 接続エラー</h4>
+                    <pre>${error.message}</pre>
+                `, true);
+            }
+        }
+
+        async function testTableExists() {
+            showLoading('tableResult');
+            try {
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/form_submissions?limit=0`, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                
+                console.log('Table test response:', response);
+                const responseText = await response.text();
+                console.log('Table test response body:', responseText);
+                
+                if (response.ok) {
+                    showResult('tableResult', `
+                        <h4>✅ テーブル存在確認</h4>
+                        <p>form_submissionsテーブルが存在します</p>
+                        <p>ステータス: ${response.status}</p>
+                    `);
+                } else {
+                    showResult('tableResult', `
+                        <h4>❌ テーブルアクセス失敗</h4>
+                        <p>ステータス: ${response.status}</p>
+                        <pre>${responseText}</pre>
+                    `, true);
+                }
+            } catch (error) {
+                showResult('tableResult', `
+                    <h4>❌ テーブル確認エラー</h4>
+                    <pre>${error.message}</pre>
+                `, true);
+            }
+        }
+
+        async function testPermissions() {
+            showLoading('permissionResult');
+            try {
+                // READ権限テスト
+                const readResponse = await fetch(`${SUPABASE_URL}/rest/v1/form_submissions?limit=1`, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`
+                    }
+                });
+                
+                const readText = await readResponse.text();
+                console.log('Read permission test:', readResponse.status, readText);
+                
+                let result = `<h4>権限テスト結果</h4>`;
+                
+                if (readResponse.ok) {
+                    result += `<p>✅ READ権限: OK (${readResponse.status})</p>`;
+                } else {
+                    result += `<p>❌ READ権限: NG (${readResponse.status})</p>`;
+                    result += `<pre>${readText}</pre>`;
+                }
+                
+                showResult('permissionResult', result, !readResponse.ok);
+                
+            } catch (error) {
+                showResult('permissionResult', `
+                    <h4>❌ 権限テストエラー</h4>
+                    <pre>${error.message}</pre>
+                `, true);
+            }
+        }
+
+        async function testInsert() {
+            showLoading('insertResult');
+            try {
+                const testData = {
+                    organization: 'テスト病院',
+                    name: '山田太郎',
+                    email: 'test@example.com',
+                    purpose: '資料請求',
+                    accounts: 1,
+                    message: '接続テストです',
+                    user_agent: navigator.userAgent,
+                    ip_address: null
+                };
+                
+                console.log('Test data:', testData);
+                
+                const response = await fetch(`${SUPABASE_URL}/rest/v1/form_submissions`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify(testData)
+                });
+                
+                const responseText = await response.text();
+                console.log('Insert test response:', response.status, responseText);
+                
+                if (response.ok) {
+                    const data = JSON.parse(responseText);
+                    showResult('insertResult', `
+                        <h4>✅ データ投稿成功</h4>
+                        <p>ステータス: ${response.status}</p>
+                        <p>作成されたレコードID: ${data[0]?.id || 'N/A'}</p>
+                        <pre>${JSON.stringify(data, null, 2)}</pre>
+                    `);
+                } else {
+                    showResult('insertResult', `
+                        <h4>❌ データ投稿失敗</h4>
+                        <p>ステータス: ${response.status}</p>
+                        <pre>${responseText}</pre>
+                    `, true);
+                }
+            } catch (error) {
+                showResult('insertResult', `
+                    <h4>❌ データ投稿エラー</h4>
+                    <pre>${error.message}</pre>
+                `, true);
+            }
+        }
+
+        // ページ読み込み時に自動実行
+        window.onload = function() {
+            console.log('Supabase診断ページ読み込み完了');
+            console.log('URL:', SUPABASE_URL);
+            console.log('Key (先頭10文字):', SUPABASE_KEY.substring(0, 10) + '...');
+        };
+    </script>
+</body>
+</html>

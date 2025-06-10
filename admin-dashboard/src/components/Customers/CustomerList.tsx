@@ -22,10 +22,7 @@ import {
   Search as SearchIcon,
   Edit as EditIcon,
   Link as LinkIcon,
-  Refresh as RefreshIcon,
-  CloudDownload as CloudDownloadIcon,
   Notifications as NotificationsIcon,
-  Email as EmailIcon,
   Sync as SyncIcon,
   Delete as DeleteIcon,
 } from '@mui/icons-material';
@@ -235,23 +232,6 @@ export default function CustomerList() {
             }}
           >
             Notion申し込み確認
-          </Button>
-          <Button
-            variant="contained"
-            color="secondary"
-            startIcon={<EmailIcon />}
-            onClick={() => {
-              alert('請求書メール一括送信機能\n各顧客の詳細画面から個別送信が可能です');
-            }}
-          >
-            請求書送信
-          </Button>
-          <Button
-            variant="contained"
-            startIcon={<LinkIcon />}
-            onClick={() => navigate('/accounts/link')}
-          >
-            アカウント紐付け
           </Button>
         </Box>
       </Box>

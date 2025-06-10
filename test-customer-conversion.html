@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>顧客管理機能テスト</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1000px; margin: 0 auto; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .sql-section { background: #f8f9fa; padding: 15px; border-radius: 4px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>顧客管理機能テスト</h1>
+    
+    <div class="test-section">
+        <h2>1. データベーススキーマ作成</h2>
+        <div class="sql-section">
+            <h3>実行が必要なSQLコマンド</h3>
+            <p>Supabaseの<strong>SQL Editor</strong>で以下のSQLを実行してください：</p>
+            <pre id="schemaSQL"></pre>
+            <button onclick="copySQL()">SQLコードをコピー</button>
+        </div>
+        <button onclick="testSchemaCreation()">スキーマ作成テスト</button>
+        <div id="schemaResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>2. テスト用お問い合わせデータ作成</h2>
+        <button onclick="createTestSubmission()">テスト用お問い合わせ作成</button>
+        <div id="submissionResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>3. 顧客変換テスト</h2>
+        <input type="text" id="submissionId" placeholder="お問い合わせID">
+        <button onclick="testCustomerConversion()">顧客への変換テスト</button>
+        <div id="conversionResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>4. 顧客一覧表示</h2>
+        <button onclick="loadCustomers()">顧客データ読み込み</button>
+        <div id="customersResult"></div>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://xyztpwuoptomidmpasxy.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5enRwd3VvcHRvbWlkbXBhc3h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2Mzk1MjUsImV4cCI6MjA1OTIxNTUyNX0.tvRP0zLfgNz0mnlBjClI-4B8nsstAXbs7_NDhz3VEzg';
+        
+        const { createClient } = supabase;
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+        const schemaSQL = \`-- Supabase用顧客管理スキーマ
+-- 顧客マスタテーブル
+CREATE TABLE IF NOT EXISTS customers (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    email VARCHAR(100) NOT NULL UNIQUE,
+    organization VARCHAR(200) NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(20),
+    postal_code VARCHAR(10),
+    address TEXT,
+    facility_type VARCHAR(50) DEFAULT 'other',
+    account_count INTEGER DEFAULT 1,
+    status VARCHAR(20) DEFAULT 'trial',
+    plan VARCHAR(20) DEFAULT 'plus',
+    payment_method VARCHAR(20) DEFAULT 'card',
+    subscription_months INTEGER DEFAULT 12,
+    expires_at TIMESTAMP WITH TIME ZONE,
+    last_activity_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    stripe_customer_id VARCHAR(100),
+    notes TEXT,
+    source_submission_id UUID,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ChatGPTアカウント管理テーブル
+CREATE TABLE IF NOT EXISTS chatgpt_accounts (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    customer_id UUID NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
+    email VARCHAR(100) NOT NULL,
+    is_active BOOLEAN DEFAULT true,
+    product_id UUID,
+    start_date TIMESTAMP WITH TIME ZONE,
+    end_date TIMESTAMP WITH TIME ZONE,
+    subscription_months INTEGER DEFAULT 12,
+    chatgpt_external_id VARCHAR(100),
+    status VARCHAR(20) DEFAULT 'active',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 製品・プランマスタテーブル
+CREATE TABLE IF NOT EXISTS products (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(200) NOT NULL,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    unit_price DECIMAL(10,2) NOT NULL,
+    tax_rate DECIMAL(5,2) DEFAULT 0.10,
+    billing_cycle VARCHAR(20) DEFAULT 'monthly',
+    description TEXT,
+    is_active BOOLEAN DEFAULT true,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- インデックス作成
+CREATE INDEX IF NOT EXISTS idx_customers_email ON customers(email);
+CREATE INDEX IF NOT EXISTS idx_customers_status ON customers(status);
+CREATE INDEX IF NOT EXISTS idx_customers_organization ON customers(organization);
+CREATE INDEX IF NOT EXISTS idx_customers_source_submission ON customers(source_submission_id);
+CREATE INDEX IF NOT EXISTS idx_chatgpt_accounts_customer_id ON chatgpt_accounts(customer_id);
+CREATE INDEX IF NOT EXISTS idx_chatgpt_accounts_email ON chatgpt_accounts(email);
+
+-- Row Level Security (RLS) 設定
+ALTER TABLE customers ENABLE ROW LEVEL SECURITY;
+ALTER TABLE chatgpt_accounts ENABLE ROW LEVEL SECURITY;
+ALTER TABLE products ENABLE ROW LEVEL SECURITY;
+
+-- 管理者用ポリシー（認証済みユーザーは全てアクセス可能）
+DROP POLICY IF EXISTS "Enable all operations for authenticated users" ON customers;
+CREATE POLICY "Enable all operations for authenticated users" ON customers
+    FOR ALL USING (auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Enable all operations for authenticated users" ON chatgpt_accounts;
+CREATE POLICY "Enable all operations for authenticated users" ON chatgpt_accounts
+    FOR ALL USING (auth.role() = 'authenticated');
+
+DROP POLICY IF EXISTS "Enable all operations for authenticated users" ON products;
+CREATE POLICY "Enable all operations for authenticated users" ON products
+    FOR ALL USING (auth.role() = 'authenticated');
+
+-- 匿名ユーザーからの読み込み許可
+DROP POLICY IF EXISTS "Enable read for anonymous users" ON customers;
+CREATE POLICY "Enable read for anonymous users" ON customers
+    FOR SELECT USING (true);
+
+-- 初期製品データ
+INSERT INTO products (name, code, unit_price, tax_rate, billing_cycle, description) 
+VALUES 
+('ChatGPT Plus 医療機関向けプラン', 'CHATGPT_PLUS_MEDICAL', 3000.00, 0.10, 'monthly', '医療機関向けChatGPT Plusアカウント（月額）'),
+('ChatGPT Plus 医療機関向けプラン（年額）', 'CHATGPT_PLUS_MEDICAL_YEARLY', 30000.00, 0.10, 'yearly', '医療機関向けChatGPT Plusアカウント（年額・2ヶ月分割引）')
+ON CONFLICT (code) DO NOTHING;
+
+-- Updated at トリガー関数
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = NOW();
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Updated at トリガー設定
+DROP TRIGGER IF EXISTS update_customers_updated_at ON customers;
+CREATE TRIGGER update_customers_updated_at BEFORE UPDATE ON customers
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+DROP TRIGGER IF EXISTS update_chatgpt_accounts_updated_at ON chatgpt_accounts;
+CREATE TRIGGER update_chatgpt_accounts_updated_at BEFORE UPDATE ON chatgpt_accounts
+    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();\`;
+
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = \`<div class="test-result \${type}">\${message}</div>\`;
+        }
+
+        function copySQL() {
+            navigator.clipboard.writeText(schemaSQL);
+            alert('SQLコードがコピーされました！Supabase SQL Editorで実行してください。');
+        }
+
+        async function testSchemaCreation() {
+            try {
+                // テーブル存在確認
+                const { data: tables, error } = await supabaseClient
+                    .from('information_schema.tables')
+                    .select('table_name')
+                    .eq('table_schema', 'public')
+                    .in('table_name', ['customers', 'chatgpt_accounts', 'products']);
+
+                if (error) throw error;
+
+                const tableNames = tables.map(t => t.table_name);
+                const requiredTables = ['customers', 'chatgpt_accounts', 'products'];
+                const missingTables = requiredTables.filter(t => !tableNames.includes(t));
+
+                if (missingTables.length > 0) {
+                    showResult('schemaResult', \`❌ 未作成のテーブル: \${missingTables.join(', ')}<br>上記のSQLを実行してください。\`, 'error');
+                } else {
+                    showResult('schemaResult', '✅ 全てのテーブルが作成済みです！', 'success');
+                }
+            } catch (error) {
+                showResult('schemaResult', \`❌ スキーマ確認エラー: \${error.message}\`, 'error');
+            }
+        }
+
+        async function createTestSubmission() {
+            try {
+                const testData = {
+                    organization: 'テスト医療機関（申し込み）',
+                    name: 'テスト申込者',
+                    email: 'apply-test@example.com',
+                    purpose: 'お申し込み',
+                    accounts: 3,
+                    message: 'これは顧客変換テスト用のお問い合わせです',
+                    status: 'new',
+                    user_agent: navigator.userAgent,
+                    ip_address: '127.0.0.1'
+                };
+
+                const { data, error } = await supabaseClient
+                    .from('form_submissions')
+                    .insert(testData)
+                    .select();
+
+                if (error) throw error;
+
+                showResult('submissionResult', \`✅ テスト用お問い合わせ作成成功！<br>ID: <strong>\${data[0].id}</strong><br>この IDを使って顧客変換をテストできます。\`, 'success');
+                document.getElementById('submissionId').value = data[0].id;
+            } catch (error) {
+                showResult('submissionResult', \`❌ お問い合わせ作成エラー: \${error.message}\`, 'error');
+            }
+        }
+
+        async function testCustomerConversion() {
+            const submissionId = document.getElementById('submissionId').value;
+            if (!submissionId) {
+                showResult('conversionResult', '❌ お問い合わせIDを入力してください', 'error');
+                return;
+            }
+
+            try {
+                // 1. お問い合わせデータ取得
+                const { data: submission, error: fetchError } = await supabaseClient
+                    .from('form_submissions')
+                    .select('*')
+                    .eq('id', submissionId)
+                    .single();
+
+                if (fetchError) throw fetchError;
+
+                // 2. 顧客データ作成
+                const expiresAt = new Date();
+                expiresAt.setMonth(expiresAt.getMonth() + 12);
+
+                const customerData = {
+                    email: submission.email,
+                    organization: submission.organization,
+                    name: submission.name,
+                    facility_type: 'clinic',
+                    account_count: submission.accounts,
+                    status: 'trial',
+                    plan: 'plus',
+                    payment_method: 'card',
+                    subscription_months: 12,
+                    expires_at: expiresAt.toISOString(),
+                    last_activity_at: new Date().toISOString(),
+                    notes: \`お問い合わせから変換: \${submission.purpose}\`,
+                    source_submission_id: submission.id
+                };
+
+                const { data: customer, error: createError } = await supabaseClient
+                    .from('customers')
+                    .insert(customerData)
+                    .select();
+
+                if (createError) throw createError;
+
+                // 3. お問い合わせステータス更新
+                const { error: updateError } = await supabaseClient
+                    .from('form_submissions')
+                    .update({ status: 'converted' })
+                    .eq('id', submissionId);
+
+                if (updateError) throw updateError;
+
+                showResult('conversionResult', \`✅ 顧客変換成功！<br>顧客ID: <strong>\${customer[0].id}</strong><br>医療機関名: \${customer[0].organization}<br>担当者: \${customer[0].name}\`, 'success');
+            } catch (error) {
+                showResult('conversionResult', \`❌ 顧客変換エラー: \${error.message}\`, 'error');
+            }
+        }
+
+        async function loadCustomers() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('customers')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                let html = \`<p>✅ 顧客データ読み込み成功! \${data.length}件のレコード</p>\`;
+                
+                if (data.length > 0) {
+                    html += '<table><thead><tr>';
+                    html += '<th>ID</th><th>医療機関名</th><th>担当者</th><th>メール</th><th>プラン</th><th>ステータス</th><th>アカウント数</th><th>作成日時</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    data.forEach(customer => {
+                        html += '<tr>';
+                        html += \`<td>\${customer.id.substring(0, 8)}...</td>\`;
+                        html += \`<td>\${customer.organization}</td>\`;
+                        html += \`<td>\${customer.name}</td>\`;
+                        html += \`<td>\${customer.email}</td>\`;
+                        html += \`<td>\${customer.plan}</td>\`;
+                        html += \`<td><span style="background:\${getStatusColor(customer.status)};padding:2px 6px;border-radius:3px;color:white">\${customer.status}</span></td>\`;
+                        html += \`<td>\${customer.account_count}</td>\`;
+                        html += \`<td>\${new Date(customer.created_at).toLocaleString('ja-JP')}</td>\`;
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                }
+
+                showResult('customersResult', html, 'success');
+            } catch (error) {
+                showResult('customersResult', \`❌ 顧客データ読み込みエラー: \${error.message}\`, 'error');
+            }
+        }
+
+        function getStatusColor(status) {
+            switch (status) {
+                case 'trial': return '#17a2b8';
+                case 'active': return '#28a745';
+                case 'suspended': return '#ffc107';
+                case 'cancelled': return '#dc3545';
+                default: return '#6c757d';
+            }
+        }
+
+        // 初期化
+        window.onload = function() {
+            document.getElementById('schemaSQL').textContent = schemaSQL;
+            testSchemaCreation();
+        };
+    </script>
+</body>
+</html>

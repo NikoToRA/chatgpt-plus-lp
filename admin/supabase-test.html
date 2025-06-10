@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase同期テスト</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .button { padding: 10px 20px; margin: 10px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px; }
+        .button:hover { background: #1e7e34; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body>
+    <h1>🔄 Supabase同期テスト</h1>
+    <p>このページで直接Supabase連携をテストします。</p>
+    
+    <button class="button" onclick="syncFromSupabase()">
+        🔄 Supabaseから同期
+    </button>
+    
+    <button class="button" onclick="testConnection()">
+        📡 接続テスト
+    </button>
+    
+    <button class="button" onclick="createTestCustomer()">
+        👤 テスト顧客作成
+    </button>
+    
+    <div id="result"></div>
+
+    <script>
+        const supabaseUrl = 'https://xyztpwuoptomidmpasxy.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5enRwd3VvcHRvbWlkbXBhc3h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2Mzk1MjUsImV4cCI6MjA1OTIxNTUyNX0.tvRP0zLfgNz0mnlBjClI-4B8nsstAXbs7_NDhz3VEzg';
+        
+        const { createClient } = supabase;
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+        function showResult(message, type = 'success') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = `<div class="result ${type}">${message}</div>`;
+        }
+
+        async function testConnection() {
+            try {
+                console.log('🔌 Supabase接続テスト開始');
+                
+                const { data, error } = await supabaseClient
+                    .from('customers')
+                    .select('count', { count: 'exact', head: true });
+                
+                if (error) throw error;
+                
+                showResult(`✅ Supabase接続成功！顧客データ: ${data || 0}件`, 'success');
+                console.log('✅ Supabase接続テスト完了');
+            } catch (error) {
+                showResult(`❌ 接続エラー: ${error.message}`, 'error');
+                console.error('❌ Supabase接続エラー:', error);
+            }
+        }
+
+        async function syncFromSupabase() {
+            try {
+                console.log('🔄 Supabaseから同期開始');
+                showResult('🔄 Supabaseからデータを同期中...', 'success');
+                
+                const { data, error } = await supabaseClient
+                    .from('customers')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                let html = `✅ Supabaseから${data.length}件の顧客データを取得しました！<br><br>`;
+                
+                if (data.length > 0) {
+                    html += '<table><thead><tr>';
+                    html += '<th>組織名</th><th>担当者</th><th>メール</th><th>ステータス</th><th>プラン</th><th>作成日</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    data.forEach(customer => {
+                        html += '<tr>';
+                        html += `<td>${customer.organization}</td>`;
+                        html += `<td>${customer.name}</td>`;
+                        html += `<td>${customer.email}</td>`;
+                        html += `<td>${customer.status}</td>`;
+                        html += `<td>${customer.plan}</td>`;
+                        html += `<td>${new Date(customer.created_at).toLocaleDateString('ja-JP')}</td>`;
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                } else {
+                    html += '<p>💡 顧客データがありません。テスト顧客を作成してみてください。</p>';
+                }
+                
+                showResult(html, 'success');
+                console.log('✅ Supabase同期完了', data);
+            } catch (error) {
+                showResult(`❌ 同期エラー: ${error.message}`, 'error');
+                console.error('❌ Supabase同期エラー:', error);
+            }
+        }
+
+        async function createTestCustomer() {
+            try {
+                console.log('👤 テスト顧客作成開始');
+                
+                const testCustomer = {
+                    email: `test-${Date.now()}@example.com`,
+                    organization: 'テスト医療機関',
+                    name: 'テスト担当者',
+                    phone_number: '03-1234-5678',
+                    postal_code: '100-0001',
+                    address: '東京都千代田区丸の内1-1-1',
+                    facility_type: 'clinic',
+                    account_count: 1,
+                    status: 'trial',
+                    plan: 'plus',
+                    payment_method: 'card',
+                    subscription_months: 12,
+                    expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+                    last_activity_at: new Date().toISOString(),
+                    notes: 'Supabase同期テスト用の顧客データ'
+                };
+
+                const { data, error } = await supabaseClient
+                    .from('customers')
+                    .insert(testCustomer)
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                showResult(`✅ テスト顧客を作成しました！<br>ID: ${data.id}<br>組織: ${data.organization}<br>メール: ${data.email}`, 'success');
+                console.log('✅ テスト顧客作成完了:', data);
+            } catch (error) {
+                showResult(`❌ 顧客作成エラー: ${error.message}`, 'error');
+                console.error('❌ テスト顧客作成エラー:', error);
+            }
+        }
+
+        // ページ読み込み時に接続テスト実行
+        window.onload = function() {
+            console.log('📱 Supabase同期テストページ読み込み完了');
+            testConnection();
+        };
+    </script>
+</body>
+</html>

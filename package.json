@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@notionhq/client": "^2.2.14",
+    "@supabase/supabase-js": "^2.50.0",
     "pdfkit": "^0.14.0"
   }
 }

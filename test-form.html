@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>フォームテスト</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 50px auto; padding: 20px; }
+        form { background: #f5f5f5; padding: 20px; border-radius: 8px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { background: #007cba; color: white; padding: 12px 24px; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #005a87; }
+        .result { margin-top: 20px; padding: 10px; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <h1>フォーム送信テスト</h1>
+    
+    <form id="testForm">
+        <div class="form-group">
+            <label for="organization">医療機関名 *</label>
+            <input type="text" id="organization" name="organization" value="テスト病院" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="name">ご担当者名 *</label>
+            <input type="text" id="name" name="name" value="山田太郎" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">メールアドレス *</label>
+            <input type="email" id="email" name="email" value="test@example.com" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="purpose">お問い合わせ目的 *</label>
+            <select id="purpose" name="purpose" required>
+                <option value="">選択してください</option>
+                <option value="資料請求">資料請求</option>
+                <option value="お申し込み">お申し込み</option>
+                <option value="その他">その他</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="accounts">希望アカウント数</label>
+            <input type="number" id="accounts" name="accounts" value="5" min="1">
+        </div>
+        
+        <div class="form-group">
+            <label for="message">メッセージ</label>
+            <textarea id="message" name="message" rows="4">テストメッセージです。</textarea>
+        </div>
+        
+        <button type="submit" id="submitBtn">送信</button>
+    </form>
+    
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('testForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const resultDiv = document.getElementById('result');
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = '送信中...';
+            resultDiv.innerHTML = '';
+            
+            const formData = {
+                organization: document.getElementById('organization').value,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                purpose: document.getElementById('purpose').value,
+                accounts: document.getElementById('accounts').value || '1',
+                message: document.getElementById('message').value
+            };
+            
+            console.log('送信データ:', formData);
+            
+            try {
+                // 直接Supabaseクライアントを使用してテスト
+                const response = await fetch('https://xyztpwuoptomidmpasxy.supabase.co/rest/v1/form_submissions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5enRwd3VvcHRvbWlkbXBhc3h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2Mzk1MjUsImV4cCI6MjA1OTIxNTUyNX0.tvRP0zLfgNz0mnlBjClI-4B8nsstAXbs7_NDhz3VEzg',
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5enRwd3VvcHRvbWlkbXBhc3h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2Mzk1MjUsImV4cCI6MjA1OTIxNTUyNX0.tvRP0zLfgNz0mnlBjClI-4B8nsstAXbs7_NDhz3VEzg',
+                        'Prefer': 'return=representation'
+                    },
+                    body: JSON.stringify({
+                        organization: formData.organization,
+                        name: formData.name,
+                        email: formData.email,
+                        purpose: formData.purpose,
+                        accounts: parseInt(formData.accounts),
+                        message: formData.message,
+                        user_agent: navigator.userAgent,
+                        ip_address: null
+                    })
+                });
+                
+                console.log('レスポンスステータス:', response.status);
+                const responseText = await response.text();
+                console.log('レスポンス内容:', responseText);
+                
+                if (response.ok) {
+                    const data = JSON.parse(responseText);
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+                            <h3>✅ 送信成功！</h3>
+                            <p><strong>送信ID:</strong> ${data[0]?.id || 'N/A'}</p>
+                            <p><strong>送信時刻:</strong> ${new Date(data[0]?.created_at || Date.now()).toLocaleString('ja-JP')}</p>
+                            <p>管理画面で確認してください。</p>
+                        </div>
+                    `;
+                } else {
+                    throw new Error(`HTTP ${response.status}: ${responseText}`);
+                }
+                
+            } catch (error) {
+                console.error('送信エラー:', error);
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        <h3>❌ 送信失敗</h3>
+                        <p><strong>エラー:</strong> ${error.message}</p>
+                        <p>コンソールで詳細を確認してください。</p>
+                    </div>
+                `;
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '送信';
+            }
+        });
+    </script>
+</body>
+</html>

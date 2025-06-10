@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supabase データ確認ツール</title>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .section { margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        button.refresh { background: #28a745; }
+        button.refresh:hover { background: #1e7e34; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 12px; }
+        th { background-color: #f2f2f2; font-weight: bold; }
+        .json-view { background: #f8f9fa; padding: 10px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; max-height: 300px; overflow-y: auto; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 10px; }
+        .tab { padding: 8px 16px; background: #f8f9fa; border: 1px solid #ddd; cursor: pointer; border-radius: 4px 4px 0 0; }
+        .tab.active { background: #007bff; color: white; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 15px 0; }
+        .stat-card { padding: 15px; background: #f8f9fa; border-radius: 8px; text-align: center; }
+        .stat-number { font-size: 24px; font-weight: bold; color: #007bff; }
+        .stat-label { font-size: 14px; color: #666; }
+    </style>
+</head>
+<body>
+    <h1>🗄️ Supabase データ確認ツール</h1>
+    
+    <div class="section">
+        <h2>📊 データベース統計情報</h2>
+        <button class="refresh" onclick="loadAllStats()">📈 統計情報を更新</button>
+        <div id="statsResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>📋 テーブル一覧とデータ</h2>
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('form_submissions')">お問い合わせ</div>
+            <div class="tab" onclick="switchTab('customers')">顧客</div>
+            <div class="tab" onclick="switchTab('chatgpt_accounts')">アカウント</div>
+            <div class="tab" onclick="switchTab('products')">製品</div>
+        </div>
+
+        <div id="form_submissions" class="tab-content active">
+            <h3>📝 お問い合わせデータ (form_submissions)</h3>
+            <button onclick="loadFormSubmissions()">🔄 データを読み込み</button>
+            <button onclick="loadFormSubmissions(true)">📊 詳細表示</button>
+            <div id="formSubmissionsResult"></div>
+        </div>
+
+        <div id="customers" class="tab-content">
+            <h3>👥 顧客データ (customers)</h3>
+            <button onclick="loadCustomers()">🔄 データを読み込み</button>
+            <button onclick="loadCustomers(true)">📊 詳細表示</button>
+            <div id="customersResult"></div>
+        </div>
+
+        <div id="chatgpt_accounts" class="tab-content">
+            <h3>🤖 ChatGPTアカウント (chatgpt_accounts)</h3>
+            <button onclick="loadChatGptAccounts()">🔄 データを読み込み</button>
+            <div id="chatgptAccountsResult"></div>
+        </div>
+
+        <div id="products" class="tab-content">
+            <h3>💰 製品・プラン (products)</h3>
+            <button onclick="loadProducts()">🔄 データを読み込み</button>
+            <div id="productsResult"></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🔍 リアルタイム検索</h2>
+        <input type="text" id="searchTerm" placeholder="検索キーワード（メールアドレス、組織名など）" style="width: 300px; padding: 8px;">
+        <button onclick="searchAllTables()">🔍 全テーブル検索</button>
+        <div id="searchResult"></div>
+    </div>
+
+    <div class="section">
+        <h2>📈 データ分析</h2>
+        <button onclick="analyzeData()">📊 データ分析実行</button>
+        <div id="analysisResult"></div>
+    </div>
+
+    <script>
+        const supabaseUrl = 'https://xyztpwuoptomidmpasxy.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5enRwd3VvcHRvbWlkbXBhc3h5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDM2Mzk1MjUsImV4cCI6MjA1OTIxNTUyNX0.tvRP0zLfgNz0mnlBjClI-4B8nsstAXbs7_NDhz3VEzg';
+        
+        const { createClient } = supabase;
+        const supabaseClient = createClient(supabaseUrl, supabaseKey);
+
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.innerHTML = `<div class="result ${type}">${message}</div>`;
+        }
+
+        function switchTab(tabName) {
+            // すべてのタブとコンテンツを非アクティブに
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // 選択されたタブとコンテンツをアクティブに
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+        }
+
+        async function loadAllStats() {
+            try {
+                const stats = {};
+                
+                // 各テーブルのレコード数を取得
+                const tables = ['form_submissions', 'customers', 'chatgpt_accounts', 'products'];
+                
+                for (const table of tables) {
+                    try {
+                        const { count, error } = await supabaseClient
+                            .from(table)
+                            .select('*', { count: 'exact', head: true });
+                        
+                        stats[table] = error ? 0 : count;
+                    } catch (e) {
+                        stats[table] = 'テーブル未作成';
+                    }
+                }
+
+                // 特別な統計
+                try {
+                    const { data: formStats } = await supabaseClient
+                        .from('form_submissions')
+                        .select('purpose, status');
+                    
+                    const newSubmissions = formStats?.filter(s => s.status === 'new').length || 0;
+                    const applications = formStats?.filter(s => s.purpose === 'お申し込み').length || 0;
+                    
+                    stats['new_submissions'] = newSubmissions;
+                    stats['applications'] = applications;
+                } catch (e) {
+                    stats['new_submissions'] = 'N/A';
+                    stats['applications'] = 'N/A';
+                }
+
+                const html = `
+                    <div class="stats">
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.form_submissions}</div>
+                            <div class="stat-label">お問い合わせ総数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.new_submissions}</div>
+                            <div class="stat-label">未対応お問い合わせ</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.applications}</div>
+                            <div class="stat-label">申し込み件数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.customers}</div>
+                            <div class="stat-label">登録顧客数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.chatgpt_accounts}</div>
+                            <div class="stat-label">ChatGPTアカウント数</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">${stats.products}</div>
+                            <div class="stat-label">製品・プラン数</div>
+                        </div>
+                    </div>
+                `;
+
+                showResult('statsResult', html, 'success');
+            } catch (error) {
+                showResult('statsResult', `❌ 統計情報取得エラー: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadFormSubmissions(detailed = false) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('form_submissions')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                let html = `✅ お問い合わせデータ: ${data.length}件\n\n`;
+
+                if (detailed) {
+                    html += '<div class="json-view">' + JSON.stringify(data, null, 2) + '</div>';
+                } else if (data.length > 0) {
+                    html += '<table><thead><tr>';
+                    html += '<th>ID</th><th>組織名</th><th>担当者</th><th>メール</th><th>目的</th><th>ステータス</th><th>作成日時</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    data.slice(0, 10).forEach(item => {
+                        html += '<tr>';
+                        html += `<td>${item.id.substring(0, 8)}...</td>`;
+                        html += `<td>${item.organization}</td>`;
+                        html += `<td>${item.name}</td>`;
+                        html += `<td>${item.email}</td>`;
+                        html += `<td>${item.purpose}</td>`;
+                        html += `<td>${item.status}</td>`;
+                        html += `<td>${new Date(item.created_at).toLocaleString('ja-JP')}</td>`;
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                    if (data.length > 10) {
+                        html += `<p>... 他${data.length - 10}件（詳細表示で全件確認）</p>`;
+                    }
+                }
+
+                showResult('formSubmissionsResult', html, 'success');
+            } catch (error) {
+                showResult('formSubmissionsResult', `❌ エラー: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadCustomers(detailed = false) {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('customers')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                let html = `✅ 顧客データ: ${data.length}件\n\n`;
+
+                if (detailed) {
+                    html += '<div class="json-view">' + JSON.stringify(data, null, 2) + '</div>';
+                } else if (data.length > 0) {
+                    html += '<table><thead><tr>';
+                    html += '<th>ID</th><th>組織名</th><th>担当者</th><th>メール</th><th>プラン</th><th>ステータス</th><th>作成日時</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    data.forEach(item => {
+                        html += '<tr>';
+                        html += `<td>${item.id.substring(0, 8)}...</td>`;
+                        html += `<td>${item.organization}</td>`;
+                        html += `<td>${item.name}</td>`;
+                        html += `<td>${item.email}</td>`;
+                        html += `<td>${item.plan}</td>`;
+                        html += `<td>${item.status}</td>`;
+                        html += `<td>${new Date(item.created_at).toLocaleString('ja-JP')}</td>`;
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                }
+
+                showResult('customersResult', html, 'success');
+            } catch (error) {
+                showResult('customersResult', `❌ エラー: ${error.message}\n\n💡 customersテーブルが未作成の可能性があります。/test-customer-conversion.html でスキーマを作成してください。`, 'error');
+            }
+        }
+
+        async function loadChatGptAccounts() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('chatgpt_accounts')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                let html = `✅ ChatGPTアカウント: ${data.length}件\n\n`;
+
+                if (data.length > 0) {
+                    html += '<table><thead><tr>';
+                    html += '<th>ID</th><th>顧客ID</th><th>メール</th><th>アクティブ</th><th>ステータス</th><th>作成日時</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    data.forEach(item => {
+                        html += '<tr>';
+                        html += `<td>${item.id.substring(0, 8)}...</td>`;
+                        html += `<td>${item.customer_id.substring(0, 8)}...</td>`;
+                        html += `<td>${item.email}</td>`;
+                        html += `<td>${item.is_active ? '✅' : '❌'}</td>`;
+                        html += `<td>${item.status}</td>`;
+                        html += `<td>${new Date(item.created_at).toLocaleString('ja-JP')}</td>`;
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                }
+
+                showResult('chatgptAccountsResult', html, 'success');
+            } catch (error) {
+                showResult('chatgptAccountsResult', `❌ エラー: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadProducts() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('products')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                let html = `✅ 製品・プラン: ${data.length}件\n\n`;
+
+                if (data.length > 0) {
+                    html += '<table><thead><tr>';
+                    html += '<th>ID</th><th>製品名</th><th>コード</th><th>価格</th><th>税率</th><th>請求周期</th><th>アクティブ</th>';
+                    html += '</tr></thead><tbody>';
+                    
+                    data.forEach(item => {
+                        html += '<tr>';
+                        html += `<td>${item.id.substring(0, 8)}...</td>`;
+                        html += `<td>${item.name}</td>`;
+                        html += `<td>${item.code}</td>`;
+                        html += `<td>¥${item.unit_price.toLocaleString()}</td>`;
+                        html += `<td>${(item.tax_rate * 100).toFixed(1)}%</td>`;
+                        html += `<td>${item.billing_cycle}</td>`;
+                        html += `<td>${item.is_active ? '✅' : '❌'}</td>`;
+                        html += '</tr>';
+                    });
+                    
+                    html += '</tbody></table>';
+                }
+
+                showResult('productsResult', html, 'success');
+            } catch (error) {
+                showResult('productsResult', `❌ エラー: ${error.message}`, 'error');
+            }
+        }
+
+        async function searchAllTables() {
+            const searchTerm = document.getElementById('searchTerm').value.trim();
+            if (!searchTerm) {
+                showResult('searchResult', '❌ 検索キーワードを入力してください', 'error');
+                return;
+            }
+
+            try {
+                let results = [];
+
+                // form_submissions検索
+                const { data: formData } = await supabaseClient
+                    .from('form_submissions')
+                    .select('*')
+                    .or(`organization.ilike.%${searchTerm}%,name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`);
+
+                if (formData && formData.length > 0) {
+                    results.push(`<h4>📝 お問い合わせ (${formData.length}件)</h4>`);
+                    formData.forEach(item => {
+                        results.push(`• ${item.organization} - ${item.name} (${item.email}) - ${item.purpose}`);
+                    });
+                }
+
+                // customers検索
+                const { data: customerData } = await supabaseClient
+                    .from('customers')
+                    .select('*')
+                    .or(`organization.ilike.%${searchTerm}%,name.ilike.%${searchTerm}%,email.ilike.%${searchTerm}%`);
+
+                if (customerData && customerData.length > 0) {
+                    results.push(`<h4>👥 顧客 (${customerData.length}件)</h4>`);
+                    customerData.forEach(item => {
+                        results.push(`• ${item.organization} - ${item.name} (${item.email}) - ${item.status}`);
+                    });
+                }
+
+                const html = results.length > 0 ? results.join('<br>') : '🔍 検索結果が見つかりませんでした';
+                showResult('searchResult', html, results.length > 0 ? 'success' : 'info');
+
+            } catch (error) {
+                showResult('searchResult', `❌ 検索エラー: ${error.message}`, 'error');
+            }
+        }
+
+        async function analyzeData() {
+            try {
+                const analysis = [];
+
+                // お問い合わせ分析
+                const { data: formData } = await supabaseClient
+                    .from('form_submissions')
+                    .select('purpose, status, created_at');
+
+                if (formData) {
+                    const purposeCount = {};
+                    const statusCount = {};
+                    
+                    formData.forEach(item => {
+                        purposeCount[item.purpose] = (purposeCount[item.purpose] || 0) + 1;
+                        statusCount[item.status] = (statusCount[item.status] || 0) + 1;
+                    });
+
+                    analysis.push('<h4>📊 お問い合わせ分析</h4>');
+                    analysis.push('<strong>目的別:</strong>');
+                    Object.entries(purposeCount).forEach(([key, value]) => {
+                        analysis.push(`• ${key}: ${value}件`);
+                    });
+                    analysis.push('<strong>ステータス別:</strong>');
+                    Object.entries(statusCount).forEach(([key, value]) => {
+                        analysis.push(`• ${key}: ${value}件`);
+                    });
+                }
+
+                // 顧客分析
+                const { data: customerData } = await supabaseClient
+                    .from('customers')
+                    .select('status, plan, facility_type');
+
+                if (customerData && customerData.length > 0) {
+                    const statusCount = {};
+                    const planCount = {};
+                    const facilityCount = {};
+                    
+                    customerData.forEach(item => {
+                        statusCount[item.status] = (statusCount[item.status] || 0) + 1;
+                        planCount[item.plan] = (planCount[item.plan] || 0) + 1;
+                        if (item.facility_type) {
+                            facilityCount[item.facility_type] = (facilityCount[item.facility_type] || 0) + 1;
+                        }
+                    });
+
+                    analysis.push('<h4>👥 顧客分析</h4>');
+                    analysis.push('<strong>ステータス別:</strong>');
+                    Object.entries(statusCount).forEach(([key, value]) => {
+                        analysis.push(`• ${key}: ${value}件`);
+                    });
+                    analysis.push('<strong>プラン別:</strong>');
+                    Object.entries(planCount).forEach(([key, value]) => {
+                        analysis.push(`• ${key}: ${value}件`);
+                    });
+                    if (Object.keys(facilityCount).length > 0) {
+                        analysis.push('<strong>施設種別:</strong>');
+                        Object.entries(facilityCount).forEach(([key, value]) => {
+                            analysis.push(`• ${key}: ${value}件`);
+                        });
+                    }
+                }
+
+                const html = analysis.length > 0 ? analysis.join('<br>') : '📊 分析データがありません';
+                showResult('analysisResult', html, 'success');
+
+            } catch (error) {
+                showResult('analysisResult', `❌ 分析エラー: ${error.message}`, 'error');
+            }
+        }
+
+        // 初期ロード
+        window.onload = function() {
+            loadAllStats();
+            loadFormSubmissions();
+        };
+    </script>
+</body>
+</html>
