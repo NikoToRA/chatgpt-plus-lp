@@ -20,6 +20,7 @@ import {
   People as PeopleIcon,
   Link as LinkIcon,
   Business as BusinessIcon,
+  ContactMail as ContactMailIcon,
   Logout as LogoutIcon,
 } from '@mui/icons-material';
 import { authService } from '../../services/auth';
@@ -29,6 +30,7 @@ const drawerWidth = 240;
 const menuItems = [
   { text: 'ダッシュボード', icon: <DashboardIcon />, path: '/' },
   { text: '顧客管理', icon: <PeopleIcon />, path: '/customers' },
+  { text: 'お問い合わせ', icon: <ContactMailIcon />, path: '/form-submissions' },
   { text: 'アカウント紐付け', icon: <LinkIcon />, path: '/accounts/link' },
   { text: '会社情報設定', icon: <BusinessIcon />, path: '/company' },
 ];

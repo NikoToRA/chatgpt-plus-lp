@@ -63,28 +63,39 @@ export default function CustomerNew() {
 
   const handleSave = async () => {
     try {
+      // 期限日を計算
+      const expiresAt = new Date();
+      expiresAt.setMonth(expiresAt.getMonth() + formData.subscriptionMonths);
+
       // 顧客データを構築
       const customerData = {
-        ...formData,
-        facilityType: formData.facilityType as 'hospital' | 'clinic' | 'dental_clinic' | 'pharmacy' | 'nursing_home' | 'other' | undefined,
+        email: formData.email,
+        organization: formData.organization,
+        name: formData.name,
+        phoneNumber: formData.phoneNumber,
+        postalCode: formData.postalCode,
+        address: formData.address,
+        facilityType: formData.facilityType as 'hospital' | 'clinic' | 'dental_clinic' | 'pharmacy' | 'nursing_home' | 'other',
+        requestedAccountCount: formData.requestedAccountCount,
         status: formData.status as 'trial' | 'active' | 'suspended' | 'cancelled',
         plan: formData.plan as 'basic' | 'plus' | 'enterprise',
         paymentMethod: formData.paymentMethod as 'card' | 'invoice',
+        subscriptionMonths: formData.subscriptionMonths,
+        expiresAt,
+        lastActivityAt: new Date(),
         chatGptAccounts: [],
-        stripeCustomerId: undefined,
-        termsAccepted: true,
-        privacyAccepted: true,
-        productId: formData.plan === 'plus' ? 'prod-1' : 'prod-2'
+        notes: formData.notes
       };
 
-      // Azure Table Storageに保存
+      // Supabaseに保存
       const newCustomer = await customerApi.create(customerData);
       
-      alert('新規顧客をAzure DBに登録しました！');
+      alert('新規顧客をSupabaseに登録しました！');
       navigate('/customers');
     } catch (error) {
       console.error('Error creating customer:', error);
-      alert('顧客登録に失敗しました。もう一度お試しください。');
+      const errorMessage = error instanceof Error ? error.message : '顧客登録に失敗しました。';
+      alert(`顧客登録エラー: ${errorMessage}`);
     }
   };
 

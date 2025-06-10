@@ -95,24 +95,6 @@ export default function CustomerDetail() {
 
   const loadCustomer = async (customerId: string) => {
     try {
-      // まずローカルストレージから確認
-      const localCustomers = localStorage.getItem('customers');
-      if (localCustomers) {
-        const parsedCustomers = JSON.parse(localCustomers);
-        const customer = parsedCustomers.find((c: Customer) => c.id === customerId);
-        if (customer) {
-          setCustomer(customer);
-          setFormData({
-            status: customer.status,
-            plan: customer.plan,
-            productId: customer.productId || '',
-            subscriptionMonths: customer.subscriptionMonths || 12,
-          });
-          setGptAccounts(customer.chatGptAccounts || []);
-          return;
-        }
-      }
-      
       const data = await customerApi.getById(customerId);
       setCustomer(data);
       setFormData({
@@ -124,61 +106,10 @@ export default function CustomerDetail() {
       setGptAccounts(data.chatGptAccounts || []);
     } catch (error) {
       console.error('Failed to load customer:', error);
-      // 開発用のダミーデータ
-      const dummyCustomer: Customer = {
-        id: customerId,
-        email: 'yamada@example.com',
-        organization: '山田総合病院',
-        name: '山田太郎',
-        phoneNumber: '03-1234-5678',
-        postalCode: '100-0001',
-        address: '東京都千代田区丸の内1-1-1',
-        facilityType: 'hospital',
-        requestedAccountCount: 4,
-        applicationDate: new Date('2025-04-25'),
-        chatGptAccounts: [
-          {
-            id: 'gpt-1',
-            email: 'yamada@chatgpt.com',
-            isActive: true,
-            createdAt: new Date('2025-05-01')
-          },
-          {
-            id: 'gpt-5',
-            email: 'yamada2@chatgpt.com',
-            isActive: true,
-            createdAt: new Date('2025-05-10')
-          },
-          {
-            id: 'gpt-6',
-            email: 'yamada3@chatgpt.com',
-            isActive: true,
-            createdAt: new Date('2025-05-15')
-          },
-          {
-            id: 'gpt-7',
-            email: 'yamada4@chatgpt.com',
-            isActive: true,
-            createdAt: new Date('2025-05-20')
-          }
-        ],
-        status: 'active',
-        plan: 'plus',
-        paymentMethod: 'card',
-        registeredAt: new Date('2025-05-01'),
-        subscriptionMonths: 12,
-        expiresAt: new Date('2026-05-01'),
-        lastActivityAt: new Date(),
-        stripeCustomerId: 'cus_123456789',
-      };
-      setCustomer(dummyCustomer);
-      setFormData({
-        status: dummyCustomer.status,
-        plan: dummyCustomer.plan,
-        productId: dummyCustomer.productId || '',
-        subscriptionMonths: dummyCustomer.subscriptionMonths,
+      setMessage({ 
+        type: 'error', 
+        text: error instanceof Error ? error.message : '顧客データの読み込みに失敗しました。' 
       });
-      setGptAccounts(dummyCustomer.chatGptAccounts);
     } finally {
       setIsLoading(false);
     }
@@ -202,21 +133,17 @@ export default function CustomerDetail() {
         expiresAt
       };
       
-      // ローカルストレージにも保存
-      const existingCustomers = JSON.parse(localStorage.getItem('customers') || '[]');
-      const updatedCustomers = existingCustomers.map((c: Customer) => 
-        c.id === customer.id ? updatedCustomer : c
-      );
-      localStorage.setItem('customers', JSON.stringify(updatedCustomers));
-      
       await customerApi.update(customer.id, updatedCustomer);
-      setMessage({ type: 'success', text: '顧客情報を更新しました。' });
+      setMessage({ type: 'success', text: '顧客情報をSupabaseに更新しました。' });
       
       // 顧客データを更新
       setCustomer(updatedCustomer);
     } catch (error) {
       console.error('Failed to save customer:', error);
-      setMessage({ type: 'error', text: '更新に失敗しました。' });
+      setMessage({ 
+        type: 'error', 
+        text: error instanceof Error ? error.message : '更新に失敗しました。' 
+      });
     } finally {
       setIsSaving(false);
     }

@@ -20,6 +20,7 @@ export interface Customer {
   address?: string;
   facilityType?: 'hospital' | 'clinic' | 'dental_clinic' | 'pharmacy' | 'nursing_home' | 'other';
   requestedAccountCount?: number;
+  account_count?: number;
   applicationDate?: Date;
   chatGptAccounts: ChatGptAccount[];
   status: 'trial' | 'active' | 'suspended' | 'cancelled';
@@ -31,14 +32,17 @@ export interface Customer {
   expiresAt: Date;
   lastActivityAt: Date;
   stripeCustomerId?: string;
+  notes?: string;
+  sourceSubmissionId?: string;
+  created_at?: Date;
+  updated_at?: Date;
 }
 
 export interface DashboardStats {
-  totalApplications: number;
-  pendingApplications: number;
-  activeAccounts: number;
+  totalCustomers: number;
+  activeCustomers: number;
+  totalRevenue: number;
   monthlyRevenue: number;
-  conversionRate: number;
 }
 
 export interface AccountLinking {
@@ -129,4 +133,19 @@ export interface InvoicePDF {
   emailSentAt?: Date;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface FormSubmission {
+  id: string;
+  organization: string;
+  name: string;
+  email: string;
+  purpose: '資料請求' | 'お申し込み' | 'その他';
+  accounts: number;
+  message?: string;
+  user_agent?: string;
+  ip_address?: string;
+  status: 'new' | 'contacted' | 'converted' | 'closed';
+  created_at: Date;
+  updated_at: Date;
 }

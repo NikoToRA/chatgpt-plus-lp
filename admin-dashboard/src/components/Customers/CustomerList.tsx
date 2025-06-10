@@ -26,6 +26,8 @@ import {
   CloudDownload as CloudDownloadIcon,
   Notifications as NotificationsIcon,
   Email as EmailIcon,
+  Sync as SyncIcon,
+  Delete as DeleteIcon,
 } from '@mui/icons-material';
 import { customerApi } from '../../services/api';
 import { Customer, CompanyInfo } from '../../types';
@@ -40,6 +42,7 @@ export default function CustomerList() {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [companyInfo, setCompanyInfo] = useState<CompanyInfo | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     loadCustomers();
@@ -63,48 +66,21 @@ export default function CustomerList() {
   const loadCustomers = async (forceRefresh = false) => {
     const loadingState = forceRefresh ? setIsRefreshing : setIsLoading;
     loadingState(true);
+    setError('');
+    
     try {
-      // Azure APIから最新データを取得（ローカルストレージフォールバック削除）
+      // Supabaseから最新データを取得
       const data = await customerApi.getAll();
       
-      const transformedData = data.map((customer: any) => ({
-        id: customer.id || customer.customerId || customer.rowKey,
-        email: customer.email,
-        organization: customer.organizationName || customer.organization,
-        name: customer.contactPerson || customer.name,
-        phoneNumber: customer.phoneNumber || '',
-        postalCode: customer.postalCode || '',
-        address: customer.address || '',
-        facilityType: customer.facilityType || '',
-        requestedAccountCount: customer.requestedAccountCount || customer.accountCount || 1,
-        applicationDate: customer.submittedAt ? new Date(customer.submittedAt) : undefined,
-        chatGptAccounts: customer.chatGptAccounts || [],
-        status: customer.status || 'trial',
-        plan: customer.planType || customer.plan || 'plus',
-        paymentMethod: customer.paymentMethod || 'card',
-        registeredAt: new Date(customer.createdAt || customer.registeredAt || customer.timestamp || Date.now()),
-        subscriptionMonths: customer.billingCycle === 'monthly' ? 1 : 12,
-        expiresAt: new Date(Date.now() + (customer.billingCycle === 'monthly' ? 30 : 365) * 24 * 60 * 60 * 1000),
-        lastActivityAt: new Date(customer.lastActiveAt || customer.lastActivityAt || customer.createdAt || Date.now()),
-        accountCount: customer.accountCount || customer.requestedAccountCount || 1,
-        applicationId: customer.applicationId,
-        isNewApplication: customer.isNewApplication || false,
-        productId: customer.productId || '',
-        stripeCustomerId: customer.stripeCustomerId || null
-      }));
+      setCustomers(data);
+      setFilteredCustomers(data);
       
-      setCustomers(transformedData);
-      setFilteredCustomers(transformedData);
-      
-      // 新規申込みがあるかチェック
-      const newApplications = transformedData.filter((c: any) => c.isNewApplication);
-      if (newApplications.length > 0) {
-        console.log(`${newApplications.length}件の新規申込みを検出:`, newApplications);
-      }
+      console.log(`Supabaseから${data.length}件の顧客データを取得しました`);
       
     } catch (error) {
-      console.error('Azure APIからの顧客データ取得に失敗:', error);
-      // エラー時は空配列を設定
+      console.error('Supabaseからの顧客データ取得に失敗:', error);
+      const errorMessage = error instanceof Error ? error.message : 'データの取得に失敗しました';
+      setError(errorMessage);
       setCustomers([]);
       setFilteredCustomers([]);
     } finally {
@@ -113,9 +89,33 @@ export default function CustomerList() {
     }
   };
 
-  // Azureから最新データを手動で取得
-  const refreshFromAzure = async () => {
+  // Supabaseから最新データを手動で取得
+  const refreshFromSupabase = async () => {
+    console.log('🔄 Supabaseから同期開始');
     await loadCustomers(true);
+    console.log('✅ Supabase同期完了');
+  };
+
+  // 顧客削除
+  const handleDeleteCustomer = async (customer: Customer) => {
+    const confirmMessage = `顧客「${customer.organization} - ${customer.name}」を削除しますか？\n\nこの操作は取り消せません。`;
+    
+    if (window.confirm(confirmMessage)) {
+      try {
+        await customerApi.delete(customer.id);
+        
+        // 一覧から削除
+        const updatedCustomers = customers.filter(c => c.id !== customer.id);
+        setCustomers(updatedCustomers);
+        setFilteredCustomers(updatedCustomers);
+        
+        console.log(`顧客 ${customer.name} を削除しました`);
+      } catch (error) {
+        console.error('顧客削除に失敗:', error);
+        const errorMessage = error instanceof Error ? error.message : '削除に失敗しました';
+        setError(`顧客削除エラー: ${errorMessage}`);
+      }
+    }
   };
 
   const loadCompanyInfo = () => {
@@ -192,18 +192,15 @@ export default function CustomerList() {
     return <Typography>Loading...</Typography>;
   }
 
-  // 新規申込みの数をカウント
-  const newApplicationsCount = customers.filter((c: any) => c.isNewApplication).length;
-
   return (
     <Box>
-      {newApplicationsCount > 0 && (
+      {error && (
         <Alert 
-          severity="info" 
-          icon={<NotificationsIcon />}
+          severity="error" 
           sx={{ mb: 3 }}
+          onClose={() => setError('')}
         >
-          {newApplicationsCount}件の新規申込みがあります。「Azureから最新データ取得」ボタンで最新情報を確認してください。
+          {error}
         </Alert>
       )}
       
@@ -219,6 +216,15 @@ export default function CustomerList() {
             onClick={() => navigate('/customers/new')}
           >
             新規顧客を登録
+          </Button>
+          <Button
+            variant="contained"
+            color="success"
+            startIcon={<SyncIcon />}
+            onClick={refreshFromSupabase}
+            disabled={isRefreshing}
+          >
+{isRefreshing ? 'Supabase同期中...' : 'Supabaseから同期'}
           </Button>
           <Button
             variant="outlined"
@@ -239,15 +245,6 @@ export default function CustomerList() {
             }}
           >
             請求書送信
-          </Button>
-          <Button
-            variant="outlined"
-            onClick={() => {
-              console.log('Test navigation to customer 1');
-              navigate('/customers/1');
-            }}
-          >
-            テスト: 顧客詳細を開く
           </Button>
           <Button
             variant="contained"
@@ -299,23 +296,9 @@ export default function CustomerList() {
                   <TableRow 
                     key={customer.id} 
                     hover
-                    sx={(customer as any).isNewApplication ? { 
-                      backgroundColor: '#fff3cd',
-                      '&:hover': { backgroundColor: '#ffeaa7' }
-                    } : undefined}
                   >
                     <TableCell>
-                      <Box display="flex" alignItems="center" gap={1}>
-                        {customer.name}
-                        {(customer as any).isNewApplication && (
-                          <Chip 
-                            label="新規申込み" 
-                            size="small" 
-                            color="warning" 
-                            variant="filled"
-                          />
-                        )}
-                      </Box>
+                      {customer.name}
                     </TableCell>
                     <TableCell>{customer.organization}</TableCell>
                     <TableCell>{customer.email}</TableCell>
@@ -350,8 +333,17 @@ export default function CustomerList() {
                           navigate(`/customers/${customer.id}`);
                         }}
                         title="顧客詳細を編集"
+                        sx={{ mr: 1 }}
                       >
                         <EditIcon />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        color="error"
+                        onClick={() => handleDeleteCustomer(customer)}
+                        title="顧客を削除"
+                      >
+                        <DeleteIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>

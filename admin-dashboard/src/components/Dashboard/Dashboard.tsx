@@ -135,11 +135,10 @@ export default function Dashboard() {
       const conversionRate = totalApplications > 0 ? (activeAccounts / totalApplications) * 100 : 0;
       
       setStats({
-        totalApplications,
-        pendingApplications,
-        activeAccounts,
+        totalCustomers: totalApplications,
+        activeCustomers: activeAccounts,
+        totalRevenue: monthlyRevenue * 12,
         monthlyRevenue,
-        conversionRate: Math.round(conversionRate * 100) / 100,
       });
       
       // 最新の申込み（お試し状態の顧客）
@@ -156,20 +155,14 @@ export default function Dashboard() {
 
   const statCards = [
     {
-      title: '総申込数',
-      value: stats?.totalApplications || 0,
+      title: '総顧客数',
+      value: stats?.totalCustomers || 0,
       icon: <AssignmentIcon />,
       color: '#3f51b5',
     },
     {
-      title: '処理待ち',
-      value: stats?.pendingApplications || 0,
-      icon: <AssignmentIcon />,
-      color: '#ff9800',
-    },
-    {
-      title: 'アクティブアカウント',
-      value: stats?.activeAccounts || 0,
+      title: 'アクティブ顧客',
+      value: stats?.activeCustomers || 0,
       icon: <PeopleIcon />,
       color: '#4caf50',
     },
@@ -178,6 +171,12 @@ export default function Dashboard() {
       value: `¥${(stats?.monthlyRevenue || 0).toLocaleString()}`,
       icon: <AttachMoneyIcon />,
       color: '#f44336',
+    },
+    {
+      title: '年間売上',
+      value: `¥${(stats?.totalRevenue || 0).toLocaleString()}`,
+      icon: <TrendingUpIcon />,
+      color: '#9c27b0',
     },
   ];
 
@@ -235,18 +234,18 @@ export default function Dashboard() {
         <Grid item xs={12} md={4}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="h6" gutterBottom>
-              コンバージョン率
+              顧客統計
             </Typography>
             <Box display="flex" alignItems="center" justifyContent="center" sx={{ height: 200 }}>
               <Box textAlign="center">
-                <Typography variant="h2" color="primary">
-                  {stats?.conversionRate || 0}%
+                <Typography variant="h3" color="primary">
+                  {stats?.activeCustomers || 0}
                 </Typography>
                 <Typography color="textSecondary">
-                  申込 → アクティブ
+                  アクティブ顧客
                 </Typography>
                 <Typography variant="caption" color="textSecondary" sx={{ mt: 1, display: 'block' }}>
-                  ※申込み＝契約のため、現在は参考値
+                  / {stats?.totalCustomers || 0} 総顧客数
                 </Typography>
                 <Typography variant="caption" color="textSecondary">
                   LP資料申込数との比較用項目として維持
