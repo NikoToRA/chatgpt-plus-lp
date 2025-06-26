@@ -1,16 +1,15 @@
 name: 🔄 Claude Token Refresher
-
 on:
-  schedule:
-    # 毎日午前9時（JST）に実行
-    - cron: '0 0 * * *'
+  # 一時的に無効化
   workflow_dispatch:
     inputs:
       force_refresh:
         description: '強制リフレッシュ'
         type: boolean
         default: false
-
+  # schedule:
+  #   # 毎日午前9時（JST）に実行
+  #   - cron: '0 0 * * *'
 jobs:
   check-and-refresh:
     runs-on: ubuntu-latest
