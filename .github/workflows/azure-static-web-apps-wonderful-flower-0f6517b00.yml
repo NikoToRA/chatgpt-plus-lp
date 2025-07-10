@@ -57,6 +57,7 @@ jobs:
           cp favicon.ico deploy/ || true
           cp manifest.json deploy/ || true
           cp robots.txt deploy/ || true
+          cp privacy.html deploy/ || true
           # サイズチェック
           du -sh deploy/
       
