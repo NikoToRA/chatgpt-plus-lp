@@ -26,13 +26,13 @@
       }
     },
     {
-      "route": "/api/*",
-      "allowedRoles": ["anonymous"]
-    },
-    {
       "route": "/privacy.html",
       "serve": "/privacy.html",
       "statusCode": 200
+    },
+    {
+      "route": "/api/*",
+      "allowedRoles": ["anonymous"]
     },
     {
       "route": "/lp",
@@ -54,6 +54,7 @@
     "rewrite": "/index.html",
     "exclude": [
       "/admin/*",
+      "/privacy.html",
       "/images/*.{png,jpg,gif,svg}", 
       "/css/*", 
       "/js/*", 
@@ -61,8 +62,7 @@
       "/*.pdf", 
       "/docs/*.pdf",
       "/docs/PDF_DL.pdf",
-      "/PDF_DL.pdf",
-      "/privacy.html"
+      "/PDF_DL.pdf"
     ]
   },
   "trailingSlash": "auto",
