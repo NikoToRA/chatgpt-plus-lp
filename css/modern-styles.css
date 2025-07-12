@@ -250,31 +250,6 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: var(--shadow-glow);
 }
 
-/* Pricing Card */
-.pricing-card {
-  position: relative;
-  padding: 2.5rem;
-  border-radius: 20px;
-  background: white;
-  box-shadow: var(--shadow-lg);
-  transition: var(--transition-base);
-}
-
-.pricing-card.featured {
-  background: var(--primary-gradient);
-  color: white;
-  transform: scale(1.05);
-  box-shadow: var(--shadow-2xl);
-}
-
-.pricing-card:hover {
-  transform: translateY(-8px);
-  box-shadow: var(--shadow-2xl);
-}
-
-.pricing-card.featured:hover {
-  transform: scale(1.05) translateY(-8px);
-}
 
 /* Interactive Elements */
 .interactive-badge {
@@ -411,10 +386,6 @@ h1, h2, h3, h4, h5, h6 {
     left: 30px;
   }
   
-  .pricing-card.featured {
-    transform: scale(1);
-  }
-}
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {

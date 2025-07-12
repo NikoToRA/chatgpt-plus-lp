@@ -95,51 +95,19 @@
   box-shadow: var(--shadow-attention);
 }
 
-/* Section 2: INTEREST (興味) - 料金・機能 */
+/* Section 2: INTEREST (興味) - 機能 */
 .aidma-interest {
   background: #eff6ff;
   color: #111827;
 }
 
-.aidma-interest .pricing-card {
-  background: #ffffff;
-  border: 2px solid #3b82f6;
-  border-radius: 20px;
-  transition: all 0.3s ease;
-  overflow: hidden;
-}
 
-.aidma-interest .pricing-card:hover {
-  transform: translateY(-10px);
-  box-shadow: var(--shadow-interest);
-  border-color: var(--interest-primary);
-}
-
-.aidma-interest .pricing-card.featured {
-  background: var(--gradient-interest);
-  color: var(--neutral-white);
-  transform: scale(1.05);
-  border-color: var(--interest-primary);
-}
-
-/* Section 3: DESIRE (欲求) - 導入事例・FAQ */
+/* Section 3: DESIRE (欲求) - 導入事例 */
 .aidma-desire {
   background: var(--desire-bg);
   color: var(--neutral-gray-900);
 }
 
-.aidma-desire .faq-item {
-  background: var(--neutral-white);
-  border-left: 4px solid var(--desire-primary);
-  transition: all 0.3s ease;
-}
-
-.aidma-desire .faq-item:hover {
-  background: var(--desire-bg);
-  border-left-width: 8px;
-  transform: translateX(8px);
-  box-shadow: var(--shadow-desire);
-}
 
 /* Section 4: MEMORY (記憶) - 特徴・差別化 */
 .aidma-memory {

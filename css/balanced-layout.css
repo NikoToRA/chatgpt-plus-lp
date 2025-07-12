@@ -57,121 +57,18 @@ section {
   display: none !important; /* Hide the duplicate section */
 }
 
-/* Pricing section improvements */
-#pricing {
-  background: #ffffff;
-  padding: 5rem 0;
-}
 
-/* Pricing card consistency */
-.pricing-card {
-  background: #ffffff;
-  border-radius: 1rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  overflow: hidden;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
 
-.pricing-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-}
-
-/* Featured pricing card */
-.pricing-card.featured {
-  transform: scale(1.05);
-  z-index: 10;
-}
-
-/* Featured card gradient background for header */
-.pricing-card.featured > div:first-child {
-  background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%) !important;
-}
-
-.pricing-card.featured h3,
-.pricing-card.featured p,
-.pricing-card.featured span {
-  color: #ffffff;
-}
-
-/* Popular plan visibility fix */
-.pricing-card.featured .absolute.-top-6 > div {
-  background: linear-gradient(135deg, #dc2626 0%, #f97316 100%);
-  color: #ffffff !important;
-  padding: 0.5rem 1.5rem;
-  border-radius: 9999px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
-  z-index: 30;
-}
-
-/* Ensure popular badge text is visible */
-.pricing-card.featured .absolute.-top-6 {
-  z-index: 30;
-}
-
-/* Unified checkmark styling */
-.pricing-card li svg,
-.pricing-card li .w-6.h-6 {
-  width: 1.5rem;
-  height: 1.5rem;
-  flex-shrink: 0;
-}
-
-.pricing-card li {
-  display: flex;
-  align-items: start;
-  gap: 0.75rem;
-}
-
-/* Checkmark circle styling */
-.pricing-card li > div:first-child {
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-/* Non-featured checkmarks */
-.pricing-card:not(.featured) li > div:first-child {
-  background-color: #3b82f6;
-}
-
-.pricing-card:not(.featured) li svg {
-  color: #ffffff;
-}
-
-/* Featured checkmarks */
-.pricing-card.featured li > div:first-child {
-  background: linear-gradient(135deg, #dc2626 0%, #f97316 100%);
-}
-
-.pricing-card.featured li svg {
-  color: #ffffff;
-}
-
-/* Third pricing option (10+ accounts) */
-#pricing .max-w-5xl > div > div:last-child {
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
-#pricing .max-w-5xl > div > div:last-child .p-6:last-child {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
-#pricing .max-w-5xl > div > div:last-child ul {
   flex-grow: 1;
 }
 
@@ -234,20 +131,6 @@ footer .grid {
 
 /* Mobile responsive adjustments */
 @media (max-width: 767px) {
-  .pricing-card.featured {
-    transform: scale(1);
-    margin: 0;
-  }
-  
-  footer .grid {
-    text-align: center;
-  }
-  
-  .doctor-hero-container {
-    flex-direction: column;
-    text-align: center;
-  }
-}
 
 /* Remove excessive shadows and effects */
 .card {
@@ -278,22 +161,7 @@ header {
   z-index: auto;
 }
 
-/* Pricing card grid improvements */
-#pricing .max-w-5xl.mx-auto.grid {
-  align-items: stretch;
-  gap: 2rem;
-}
 
-@media (min-width: 768px) {
-  #pricing .max-w-5xl.mx-auto.grid {
-    gap: 1rem;
-  }
-}
-
-/* Ensure all pricing cards have the same height */
-.pricing-card {
-  min-height: 650px;
-}
 
 /* Footer balance improvements */
 footer .container {
@@ -323,9 +191,7 @@ section.relative.bg-white.py-12,
   padding: 2rem 0;
 }
 
-/* Service section spacing */
-#service,
-#faq {
+#service {
   padding: 4rem 0;
 }
 
@@ -400,8 +266,3 @@ p {
     -webkit-text-fill-color: #000000;
   }
   
-  .pricing-card.featured {
-    background: #000080;
-    color: #ffffff;
-  }
-}

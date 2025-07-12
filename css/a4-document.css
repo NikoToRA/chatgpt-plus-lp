@@ -35,7 +35,6 @@
   .point-card,
   .benefit-card,
   .service-overview,
-  .faq-item,
   .company-section {
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
@@ -44,7 +43,6 @@
   /* Ensure gradients print */
   .logo-icon,
   .step-icon,
-  .pricing-table th,
   .cta-section,
   .highlight {
     -webkit-print-color-adjust: exact;
@@ -94,7 +92,6 @@
   
   /* Sharper borders for high-res printing */
   .benefit-card,
-  .faq-item,
   .service-overview,
   .company-section {
     border-width: 0.5pt;
@@ -107,7 +104,6 @@
   .subtitle,
   .point-card p,
   .benefit-card p,
-  .faq-item p,
   .company-info {
     color: #374151 !important;
   }
@@ -123,8 +119,6 @@
 .service-overview,
 .benefits-grid,
 .workflow-section,
-.pricing-section,
-.faq-section,
 .cta-section {
   page-break-inside: avoid;
 }
@@ -140,14 +134,6 @@ h1, h2, h3, h4, h5, h6 {
   page-break-inside: avoid;
 }
 
-/* Table printing optimization */
-.pricing-table {
-  page-break-inside: avoid;
-}
-
-.pricing-table tr {
-  page-break-inside: avoid;
-}
 
 /* Image and icon optimization for print */
 @media print {

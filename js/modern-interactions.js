@@ -25,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
   animatedElements.forEach(el => scrollObserver.observe(el));
   
   // Initialize interactive components
-  initPricingCalculator();
   initSmoothScroll();
   initFormValidation();
   initTestimonialSlider();
@@ -53,61 +52,6 @@ function animateCounter(element) {
   updateCounter();
 }
 
-// Pricing Calculator
-function initPricingCalculator() {
-  const calculator = document.getElementById('pricing-calculator');
-  if (!calculator) return;
-  
-  const slider = calculator.querySelector('#account-slider');
-  const display = calculator.querySelector('#account-display');
-  const monthlyPrice = calculator.querySelector('#monthly-price');
-  const yearlyPrice = calculator.querySelector('#yearly-price');
-  const savings = calculator.querySelector('#yearly-savings');
-  
-  if (!slider) return;
-  
-  const basePrice = 6000;
-  const discounts = {
-    1: 0,
-    10: 0.1,
-    20: 0.15,
-    50: 0.2,
-    100: 0.25
-  };
-  
-  function getDiscount(accounts) {
-    let discount = 0;
-    for (const [threshold, rate] of Object.entries(discounts)) {
-      if (accounts >= parseInt(threshold)) {
-        discount = rate;
-      }
-    }
-    return discount;
-  }
-  
-  function updatePricing() {
-    const accounts = parseInt(slider.value);
-    const discount = getDiscount(accounts);
-    const discountedPrice = basePrice * (1 - discount);
-    
-    display.textContent = accounts;
-    
-    const monthly = accounts * discountedPrice;
-    const yearly = monthly * 11; // 1 month free for yearly
-    const saved = monthly * 12 - yearly;
-    
-    monthlyPrice.textContent = monthly.toLocaleString();
-    yearlyPrice.textContent = yearly.toLocaleString();
-    savings.textContent = saved.toLocaleString();
-    
-    // Update visual indicator
-    const percentage = (accounts - 1) / 99 * 100;
-    slider.style.background = `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${percentage}%, #e5e7eb ${percentage}%, #e5e7eb 100%)`;
-  }
-  
-  slider.addEventListener('input', updatePricing);
-  updatePricing();
-}
 
 // Smooth Scroll
 function initSmoothScroll() {

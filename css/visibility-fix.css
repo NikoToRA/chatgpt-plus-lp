@@ -83,38 +83,7 @@ section {
   color: #111827 !important;
 }
 
-/* Pricing section */
-#pricing {
-  background: #eff6ff !important;
-}
 
-#pricing h2, #pricing h3 {
-  color: #111827 !important;
-}
-
-#pricing .pricing-card {
-  background: #ffffff !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-}
-
-#pricing .pricing-card.featured {
-  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
-}
-
-#pricing .pricing-card.featured h3,
-#pricing .pricing-card.featured p,
-#pricing .pricing-card.featured span {
-  color: #ffffff !important;
-}
-
-/* FAQ section */
-#faq {
-  background: #ffffff !important;
-}
-
-#faq h2, #faq h3, #faq p {
-  color: #111827 !important;
-}
 
 /* Contact section */
 #contact {
